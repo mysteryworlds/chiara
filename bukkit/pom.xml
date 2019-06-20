@@ -10,6 +10,10 @@
 
     <artifactId>chiara-bukkit</artifactId>
 
+    <properties>
+        <spigot.version>1.14.2-R0.1-SNAPSHOT</spigot.version>
+    </properties>
+
     <repositories>
 
         <!-- Spigot -->
@@ -25,8 +29,21 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.2-R0.1-SNAPSHOT</version>
+            <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <targetPath>.</targetPath>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources/</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>

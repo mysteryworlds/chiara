@@ -1,0 +1,23 @@
+# Name of the plugin
+name: Chiara
+
+# Current version delivered via maven
+version: ${project.version}
+
+# The main class of the plugin
+main: de.felixklauke.chiara.bukkit.ChiaraPlugin
+
+# Human readable description
+description: Hassle free and stupid simple permissions plugin
+
+# Implemented against api version delivered by maven
+api-version: ${spigot.version}
+
+# Author
+author: Felix Klauke <info@felix-lklauke.com>
+
+# The logger prefix
+prefix: Chiara
+
+# My homepage
+website: https://www.felix-klauke.com
