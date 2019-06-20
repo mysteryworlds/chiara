@@ -25,20 +25,35 @@ website: https://www.felix-klauke.com
 # Commands
 commands:
   permissions:
-    usage: /permissions
+    usage: |
+      /permissions - Zeigt dir die Command Hilfe
+      /permissions list - Zeigt dir alle deine Permissions
     aliases:
       - perms
       - permissionslist
       - permlist
     permission: chiara.command.permissions
     description: Prints all your permissions
+    permission-message: "&cAccess Denied."
 
 # Permissions
 permissions:
+
+  chiara.*:
+    description: Gives you full access to chiara
+    default: op
+    children:
+      - chiara.command.*
+
   chiara.command.*:
     description: Gives you access to all commands
     default: op
     children:
       - chiara.command.permissions
+      - chiara.command.permissions.list
+
   chiara.command.permissions:
+    description: Permissions to work with permissions
+
+  chiara.command.permissions.list:
     description: Permissions to show all your permissions

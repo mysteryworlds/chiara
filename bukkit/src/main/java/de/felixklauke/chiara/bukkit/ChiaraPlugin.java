@@ -11,6 +11,7 @@ import de.felixklauke.chiara.bukkit.service.PermissionsServiceImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -31,11 +32,16 @@ public class ChiaraPlugin extends JavaPlugin {
     public void onEnable() {
 
         // Configs
-        saveResource(GROUPS_CONFIG_FILE_NAME, false);
-        saveResource(USERS_CONFIG_FILE_NAME, false);
-
         Path groupsPath = Paths.get(getDataFolder().getAbsolutePath(), GROUPS_CONFIG_FILE_NAME);
         Path usersPath = Paths.get(getDataFolder().getAbsolutePath(), USERS_CONFIG_FILE_NAME);
+
+        if (!Files.exists(groupsPath)) {
+            saveResource(GROUPS_CONFIG_FILE_NAME, false);
+        }
+
+        if (!Files.exists(usersPath)) {
+            saveResource(USERS_CONFIG_FILE_NAME, false);
+        }
 
         // Init service and repos
         PermissionUserRepository userRepository = new YamlPermissionUserRepository(usersPath);
@@ -51,6 +57,7 @@ public class ChiaraPlugin extends JavaPlugin {
         // Register commands
         PermissionsCommand permissionsCommand = new PermissionsCommand();
         getCommand("permissions").setExecutor(permissionsCommand);
+        getCommand("permissions").setTabCompleter(permissionsCommand);
     }
 
     @Override
