@@ -12,6 +12,10 @@
     </modules>
 
     <properties>
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.language>java</sonar.language>
 
         <!-- Maven -->
         <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
@@ -19,6 +23,7 @@
         <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
         <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
         <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
+        <maven.plugin.jacoco.version>0.8.4</maven.plugin.jacoco.version>
     </properties>
 
     <distributionManagement>
@@ -106,6 +111,45 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- SonarQube -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${maven.plugin.sonar.version}</version>
+            </plugin>
+
+            <!-- JaCocCo -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.plugin.jacoco.version}</version>
+
+                <!-- Aggregate the reports in the given sonar repo -->
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                    <append>true</append>
+                </configuration>
+
+                <executions>
+                    <!-- Prepare Agent -->
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Create reports -->
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
