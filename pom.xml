@@ -17,6 +17,8 @@
         <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
         <maven.plugin.release.version>2.5.3</maven.plugin.release.version>
         <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
+        <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
+        <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
     </properties>
 
     <distributionManagement>
@@ -60,6 +62,37 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.plguin.surefire.version}</version>
             </plugin>
+
+            <!-- Maven Source plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.plugin.source.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Maven JavaDocs plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.plugin.javadoc.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
