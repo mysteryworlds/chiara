@@ -11,6 +11,12 @@
         <module>bukkit</module>
     </modules>
 
+    <properties>
+
+        <!-- Maven -->
+        <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
+    </properties>
+
     <distributionManagement>
         <repository>
             <id>klauke-enterprises-maven-releases</id>
@@ -24,6 +30,22 @@
             <url>https://repository.klauke-enterprises.com/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <build>
+        <plugins>
+
+            <!-- Maven Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.plugin.compiler.version}</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <developers>
         <developer>
