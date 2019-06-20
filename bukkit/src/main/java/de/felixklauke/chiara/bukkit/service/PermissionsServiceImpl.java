@@ -101,6 +101,10 @@ public class PermissionsServiceImpl implements PermissionsService {
         UUID uniqueId = player.getUniqueId();
         PermissionUser permissionUser = getUser(uniqueId);
 
+        if (permissionUser == null) {
+            return new HashMap<>();
+        }
+
         // The real permissions
         Map<String, Boolean> permissions = new LinkedHashMap<>();
 
@@ -131,7 +135,32 @@ public class PermissionsServiceImpl implements PermissionsService {
      */
     private Map<String, Boolean> calculateGroupPermissions(String groupName, String worldName) {
 
-        return new HashMap<>();
+        // Get the group
+        PermissionGroup group = getGroup(groupName);
+
+        if (group == null) {
+            return new HashMap<>();
+        }
+
+        // The real permissions
+        Map<String, Boolean> permissions = new LinkedHashMap<>();
+
+        // Calculate inherited permissions
+        List<String> inheritance = group.getInheritance();
+        for (String parentGroup : inheritance) {
+            Map<String, Boolean> parentGroupPermissions = calculateGroupPermissions(parentGroup, worldName);
+            permissions.putAll(parentGroupPermissions);
+        }
+
+        // Group permissions
+        Map<String, Boolean> groupPermissions = group.getPermissions();
+        permissions.putAll(groupPermissions);
+
+        // Group world permissions
+        Map<String, Boolean> groupWorldPermissions = group.getWorldPermissions(worldName);
+        permissions.putAll(groupWorldPermissions);
+
+        return permissions;
     }
 
     private PermissionUser getUser(UUID uniqueId) {
