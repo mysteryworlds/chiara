@@ -11,5 +11,12 @@
         <module>bukkit</module>
     </modules>
 
+    <developers>
+        <developer>
+            <id>felixklauke</id>
+            <name>Felix Klauke</name>
+            <email>info@felix-klauke.de</email>
+        </developer>
+    </developers>
 
 </project>
