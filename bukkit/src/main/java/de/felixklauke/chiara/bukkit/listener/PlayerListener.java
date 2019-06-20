@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -36,5 +37,12 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
         permissionsService.unregisterPlayer(player);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+
+        Player player = event.getPlayer();
+        permissionsService.refreshPlayer(player);
     }
 }

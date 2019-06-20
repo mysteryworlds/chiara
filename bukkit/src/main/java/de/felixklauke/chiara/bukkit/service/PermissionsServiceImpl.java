@@ -31,7 +31,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 
         UUID uniqueId = player.getUniqueId();
 
-        if (!permissionAttachments.containsKey(uniqueId)) {
+        if (permissionAttachments.containsKey(uniqueId)) {
             unregisterPlayer(player);
         }
 
@@ -48,7 +48,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 
         UUID uniqueId = player.getUniqueId();
 
-        if (permissionAttachments.containsKey(uniqueId)) {
+        if (!permissionAttachments.containsKey(uniqueId)) {
             return;
         }
 
@@ -56,6 +56,18 @@ public class PermissionsServiceImpl implements PermissionsService {
         PermissionAttachment attachment = permissionAttachments.get(uniqueId);
         player.removeAttachment(attachment);
         permissionAttachments.remove(uniqueId);
+    }
+
+    @Override
+    public void refreshPlayer(Player player) {
+
+        UUID uniqueId = player.getUniqueId();
+        if (permissionAttachments.containsKey(uniqueId)) {
+            calculatePermissionAttachment(player);
+            return;
+        }
+
+        registerPlayer(player);
     }
 
     /**
@@ -163,11 +175,23 @@ public class PermissionsServiceImpl implements PermissionsService {
         return permissions;
     }
 
+    /**
+     * Load the permissions user with the given unique id.
+     *
+     * @param uniqueId The unique id of the user.
+     * @return The user.
+     */
     private PermissionUser getUser(UUID uniqueId) {
 
         return new PermissionUser(null, null, null, null);
     }
 
+    /**
+     * Load the group with the given name.
+     *
+     * @param groupName The name of the group.
+     * @return The group.
+     */
     private PermissionGroup getGroup(String groupName) {
 
         return new PermissionGroup(null, null, null, null);
