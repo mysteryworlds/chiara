@@ -15,6 +15,7 @@
 
         <!-- Maven -->
         <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
+        <maven.plugin.release.version>2.5.3</maven.plugin.release.version>
     </properties>
 
     <distributionManagement>
@@ -43,6 +44,13 @@
                     <source>11</source>
                     <target>11</target>
                 </configuration>
+            </plugin>
+
+            <!-- Maven Release -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven.plugin.release.version}</version>
             </plugin>
         </plugins>
     </build>
