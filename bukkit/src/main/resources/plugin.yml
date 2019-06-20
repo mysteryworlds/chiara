@@ -21,3 +21,24 @@ prefix: Chiara
 
 # My homepage
 website: https://www.felix-klauke.com
+
+# Commands
+commands:
+  permissions:
+    usage: /permissions
+    aliases:
+      - perms
+      - permissionslist
+      - permlist
+    permission: chiara.command.permissions
+    description: Prints all your permissions
+
+# Permissions
+permissions:
+  chiara.command.*:
+    description: Gives you access to all commands
+    default: op
+    children:
+      - chiara.command.permissions
+  chiara.command.permissions:
+    description: Permissions to show all your permissions

@@ -40,10 +40,14 @@ public class PermissionGroup {
     }
 
     public List<String> getInheritance() {
-        return new ArrayList<>(inheritance);
+        return inheritance == null ? new ArrayList<>() : new ArrayList<>(inheritance);
     }
 
     public Map<String, Boolean> getWorldPermissions(String worldName) {
+
+        if (worldPermissions == null) {
+            return new HashMap<>();
+        }
 
         Map<String, Boolean> worldPermissions = this.worldPermissions.get(worldName);
         return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);

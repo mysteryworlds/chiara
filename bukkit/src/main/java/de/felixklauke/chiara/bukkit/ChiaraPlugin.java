@@ -1,5 +1,7 @@
 package de.felixklauke.chiara.bukkit;
 
+import de.felixklauke.chiara.bukkit.command.PermissionsCommand;
+import de.felixklauke.chiara.bukkit.listener.PlayerListener;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
 import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import de.felixklauke.chiara.bukkit.repository.yaml.YamlPermissionGroupRepository;
@@ -42,6 +44,13 @@ public class ChiaraPlugin extends JavaPlugin {
 
         // Register all players
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> permissionsService.registerPlayer(onlinePlayer));
+
+        // Register listener
+        getServer().getPluginManager().registerEvents(new PlayerListener(permissionsService), this);
+
+        // Register commands
+        PermissionsCommand permissionsCommand = new PermissionsCommand();
+        getCommand("permissions").setExecutor(permissionsCommand);
     }
 
     @Override

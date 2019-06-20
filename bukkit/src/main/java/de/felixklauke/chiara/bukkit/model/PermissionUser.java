@@ -29,7 +29,7 @@ public class PermissionUser {
     }
 
     public List<String> getGroups() {
-        return new ArrayList<>(groups);
+        return groups == null ? new ArrayList<>() : new ArrayList<>(groups);
     }
 
     public Map<String, Boolean> getPermissions() {
@@ -46,6 +46,9 @@ public class PermissionUser {
 
     public Map<String, Boolean> getWorldPermissions(String worldName) {
 
+        if (worldPermissions == null) {
+            return new HashMap<>();
+        }
         Map<String, Boolean> worldPermissions = this.worldPermissions.get(worldName);
         return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
     }
