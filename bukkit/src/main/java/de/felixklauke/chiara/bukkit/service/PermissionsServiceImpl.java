@@ -3,6 +3,8 @@ package de.felixklauke.chiara.bukkit.service;
 import com.google.common.collect.Maps;
 import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 import de.felixklauke.chiara.bukkit.model.PermissionUser;
+import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
+import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import de.felixklauke.chiara.bukkit.util.ReflectionUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -21,9 +23,13 @@ public class PermissionsServiceImpl implements PermissionsService {
      */
     private final Map<UUID, PermissionAttachment> permissionAttachments = Maps.newConcurrentMap();
     private final Plugin plugin;
+    private final PermissionGroupRepository permissionGroupRepository;
+    private final PermissionUserRepository permissionUserRepository;
 
-    public PermissionsServiceImpl(Plugin plugin) {
+    public PermissionsServiceImpl(Plugin plugin, PermissionGroupRepository permissionGroupRepository, PermissionUserRepository permissionUserRepository) {
         this.plugin = plugin;
+        this.permissionGroupRepository = permissionGroupRepository;
+        this.permissionUserRepository = permissionUserRepository;
     }
 
     @Override
@@ -183,7 +189,7 @@ public class PermissionsServiceImpl implements PermissionsService {
      */
     private PermissionUser getUser(UUID uniqueId) {
 
-        return new PermissionUser(null, null, null, null);
+        return permissionUserRepository.findUser(uniqueId);
     }
 
     /**
@@ -194,6 +200,6 @@ public class PermissionsServiceImpl implements PermissionsService {
      */
     private PermissionGroup getGroup(String groupName) {
 
-        return new PermissionGroup(null, null, null, null);
+        return permissionGroupRepository.findGroup(groupName);
     }
 }

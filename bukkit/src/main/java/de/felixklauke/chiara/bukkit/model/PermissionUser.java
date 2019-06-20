@@ -1,5 +1,7 @@
 package de.felixklauke.chiara.bukkit.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +10,16 @@ import java.util.UUID;
 
 public class PermissionUser {
 
-    private UUID uniqueId;
+    private transient UUID uniqueId;
+    @JsonProperty("permissions")
     private Map<String, Boolean> permissions;
+    @JsonProperty("worlds")
     private Map<String, Map<String, Boolean>> worldPermissions;
+    @JsonProperty("groups")
     private List<String> groups;
+
+    public PermissionUser() {
+    }
 
     public PermissionUser(UUID uniqueId, Map<String, Boolean> permissions, Map<String, Map<String, Boolean>> worldPermissions, List<String> groups) {
         this.uniqueId = uniqueId;
@@ -26,6 +34,10 @@ public class PermissionUser {
 
     public Map<String, Boolean> getPermissions() {
         return permissions == null ? new HashMap<>() : new HashMap<>(permissions);
+    }
+
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public UUID getUniqueId() {

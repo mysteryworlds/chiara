@@ -1,0 +1,25 @@
+groups:
+  # Admin Group
+  admin:
+    # Group permissions
+    permissions:
+      worldedit.admin.*: true
+    # World specific permissions
+    worlds:
+      world:
+        worldguard.*: true
+    # Inheritance
+    inheritance:
+      - moderator
+
+  # Moderator group
+  moderator:
+    # Group permissions
+    permissions:
+      server.broadcast: true
+      server.kick: true
+      server.kill: true
+    # World specific permissions
+    worlds:
+      world_nether:
+        command.gamemode: false
