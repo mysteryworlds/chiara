@@ -14,7 +14,7 @@ description: Hassle free and stupid simple permissions plugin
 api-version: ${spigot.version}
 
 # Author
-author: Felix Klauke <info@felix-lklauke.com>
+author: Felix Klauke <info@felix-klauke.com>
 
 # The logger prefix
 prefix: Chiara
