@@ -8,7 +8,7 @@ Simple but effective bukkit permissions plugin.
 # Build Status
 |             | Build Status                                                                                                            |
 |-------------|-------------------------------------------------------------------------------------------------------------------------|
-| Master      | [![Build Status](https://travis-ci.org/FelixKlauke/chiara.svg?branch=master)](https://travis-ci.org/FelixKlauke/chiara) |
+| Master      | [![Build Status](https://travis-ci.com/FelixKlauke/chiara.svg?branch=master)](https://travis-ci.com/FelixKlauke/chiara) |
 
 # Configuration
 
