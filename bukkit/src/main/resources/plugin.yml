@@ -34,7 +34,7 @@ commands:
       - permlist
     permission: chiara.command.permissions
     description: Prints all your permissions
-    permission-message: "&cAccess Denied."
+    permission-message: "§cAccess Denied."
 
 # Permissions
 permissions:
