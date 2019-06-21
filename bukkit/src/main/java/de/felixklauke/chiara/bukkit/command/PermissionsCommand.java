@@ -102,7 +102,7 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
         // Check command ident level and copy partial matches
         switch (args.length) {
             case 1: {
-                List<String> candidates = Arrays.asList("list");
+                List<String> candidates = Arrays.asList("list", "reload");
                 StringUtil.copyPartialMatches(args[0], candidates, completions);
             }
         }
