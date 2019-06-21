@@ -13,4 +13,14 @@ public interface PermissionUserRepository {
      * @return The user.
      */
     PermissionUser findUser(UUID uniqueId);
+
+    /**
+     * Reload all users and invalidate cache.
+     */
+    void reloadUsers();
+
+    /**
+     * Save all user data.
+     */
+    void saveUsers();
 }

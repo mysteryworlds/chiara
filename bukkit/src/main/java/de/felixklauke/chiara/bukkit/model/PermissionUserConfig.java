@@ -17,11 +17,11 @@ public class PermissionUserConfig {
         this.users = permissionUsers;
     }
 
-    public Map<UUID, PermissionUser> getPermissionUsers() {
+    public Map<UUID, PermissionUser> getUsers() {
         return users;
     }
 
-    public void setPermissionUsers(Map<UUID, PermissionUser> permissionUsers) {
+    public void setUsers(Map<UUID, PermissionUser> permissionUsers) {
         this.users = permissionUsers;
     }
 }

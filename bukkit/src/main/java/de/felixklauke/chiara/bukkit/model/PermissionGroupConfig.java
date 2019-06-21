@@ -16,11 +16,11 @@ public class PermissionGroupConfig {
         this.groups = permissionGroups;
     }
 
-    public Map<String, PermissionGroup> getPermissionGroups() {
+    public Map<String, PermissionGroup> getGroups() {
         return groups;
     }
 
-    public void setPermissionGroups(Map<String, PermissionGroup> permissionGroups) {
+    public void setGroups(Map<String, PermissionGroup> permissionGroups) {
         this.groups = permissionGroups;
     }
 }

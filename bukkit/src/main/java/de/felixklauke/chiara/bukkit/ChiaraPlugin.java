@@ -20,6 +20,8 @@ public class ChiaraPlugin extends JavaPlugin {
     private static final String GROUPS_CONFIG_FILE_NAME = "groups.yml";
     private static final String USERS_CONFIG_FILE_NAME = "users.yml";
 
+    private PermissionUserRepository userRepository;
+    private PermissionGroupRepository groupRepository;
     private PermissionsService permissionsService;
 
     @Override
@@ -44,8 +46,8 @@ public class ChiaraPlugin extends JavaPlugin {
         }
 
         // Init service and repos
-        PermissionUserRepository userRepository = new YamlPermissionUserRepository(usersPath);
-        PermissionGroupRepository groupRepository = new YamlPermissionGroupRepository(groupsPath);
+        userRepository = new YamlPermissionUserRepository(usersPath);
+        groupRepository = new YamlPermissionGroupRepository(groupsPath);
         permissionsService = new PermissionsServiceImpl(this, groupRepository, userRepository);
 
         // Register all players
@@ -55,7 +57,7 @@ public class ChiaraPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(permissionsService), this);
 
         // Register commands
-        PermissionsCommand permissionsCommand = new PermissionsCommand();
+        PermissionsCommand permissionsCommand = new PermissionsCommand(permissionsService);
         getCommand("permissions").setExecutor(permissionsCommand);
         getCommand("permissions").setTabCompleter(permissionsCommand);
     }
@@ -65,5 +67,8 @@ public class ChiaraPlugin extends JavaPlugin {
 
         // Unregister all players
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> permissionsService.unregisterPlayer(onlinePlayer));
+
+        groupRepository.saveGroups();
+        userRepository.saveUsers();
     }
 }

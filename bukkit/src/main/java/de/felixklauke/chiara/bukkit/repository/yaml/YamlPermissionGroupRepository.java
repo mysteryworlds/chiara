@@ -26,7 +26,7 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
         try {
             PermissionGroupConfig permissionGroupConfig = objectMapper.readValue(getConfig().toFile(), PermissionGroupConfig.class);
-            permissionGroups.putAll(permissionGroupConfig.getPermissionGroups());
+            permissionGroups.putAll(permissionGroupConfig.getGroups());
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't read groups.", e);
         }
@@ -42,5 +42,25 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
         permissionGroup.setName(groupName);
         return permissionGroup;
+    }
+
+    @Override
+    public void saveGroups() {
+
+        PermissionGroupConfig permissionGroupConfig = new PermissionGroupConfig(permissionGroups);
+        ObjectMapper objectMapper = getObjectMapper();
+
+        try {
+            objectMapper.writeValue(getConfig().toFile(), permissionGroupConfig);
+        } catch (IOException e) {
+            throw new IllegalStateException("Couldn't write groups", e);
+        }
+    }
+
+    @Override
+    public void reloadGroups() {
+
+        permissionGroups.clear();
+        readGroups();
     }
 }

@@ -26,15 +26,16 @@ website: https://www.felix-klauke.com
 commands:
   permissions:
     usage: |
-      /permissions - Zeigt dir die Command Hilfe
-      /permissions list - Zeigt dir alle deine Permissions
+      §7[§cChiara§7]: §e/permissions - Zeigt dir die Command Hilfe.
+      §7[§cChiara§7]: §e/permissions list - Zeigt dir alle deine Permissions.
+      §7[§cChiara§7]: §e/permissions reload - Lädt die Permissions neu aus der Config.
     aliases:
       - perms
       - permissionslist
       - permlist
     permission: chiara.command.permissions
-    description: Prints all your permissions
-    permission-message: "§cAccess Denied."
+    description: Permission management command
+    permission-message: "§7[§cChiara§7]: §e§cAccess Denied."
 
 # Permissions
 permissions:
@@ -49,11 +50,21 @@ permissions:
     description: Gives you access to all commands
     default: op
     children:
+      - chiara.command.permissions.*
+
+  chiara.command.permissions.*:
+    description: Permissions to work with all permissions
+    default: op
+    children:
       - chiara.command.permissions
       - chiara.command.permissions.list
+      - chiara.command.permissions.reload
 
   chiara.command.permissions:
     description: Permissions to work with permissions
 
   chiara.command.permissions.list:
     description: Permissions to show all your permissions
+
+  chiara.command.permissions.reload:
+    description: Reload the permissions from config

@@ -6,6 +6,7 @@ import de.felixklauke.chiara.bukkit.model.PermissionUser;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
 import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import de.felixklauke.chiara.bukkit.util.ReflectionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
@@ -76,12 +77,21 @@ public class PermissionsServiceImpl implements PermissionsService {
         registerPlayer(player);
     }
 
+    @Override
+    public void reloadPermissions() {
+
+        permissionGroupRepository.reloadGroups();
+        permissionUserRepository.reloadUsers();
+
+        Bukkit.getOnlinePlayers().forEach(this::refreshPlayer);
+    }
+
     /**
      * Calculate the permission attachment for the given player.
      *
      * @param player The player.
      */
-    private void calculatePermissionAttachment(Player player) {
+    private void  calculatePermissionAttachment(Player player) {
 
         UUID uniqueId = player.getUniqueId();
 

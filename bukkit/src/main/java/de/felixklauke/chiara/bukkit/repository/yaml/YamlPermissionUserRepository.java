@@ -6,7 +6,6 @@ import de.felixklauke.chiara.bukkit.model.PermissionUser;
 import de.felixklauke.chiara.bukkit.model.PermissionUserConfig;
 import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class YamlPermissionUserRepository extends YamlPermissionRepository imple
 
         try {
             PermissionUserConfig permissionUserConfig = objectMapper.readValue(getConfig().toFile(), PermissionUserConfig.class);
-            permissionUsers.putAll(permissionUserConfig.getPermissionUsers());
+            permissionUsers.putAll(permissionUserConfig.getUsers());
         } catch (IOException e) {
             throw new IllegalStateException("Couldn't read users.", e);
         }
@@ -43,5 +42,25 @@ public class YamlPermissionUserRepository extends YamlPermissionRepository imple
 
         permissionUser.setUniqueId(uniqueId);
         return permissionUser;
+    }
+
+    @Override
+    public void reloadUsers() {
+
+        permissionUsers.clear();
+        readUsers();
+    }
+
+    @Override
+    public void saveUsers() {
+
+        ObjectMapper objectMapper = getObjectMapper();
+        PermissionUserConfig permissionUserConfig = new PermissionUserConfig(permissionUsers);
+
+        try {
+            objectMapper.writeValue(getConfig().toFile(), permissionUserConfig);
+        } catch (IOException e) {
+            throw new IllegalStateException("Couldn't write users.", e);
+        }
     }
 }

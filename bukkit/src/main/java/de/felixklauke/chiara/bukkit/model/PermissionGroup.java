@@ -1,5 +1,7 @@
 package de.felixklauke.chiara.bukkit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -9,11 +11,15 @@ import java.util.Map;
 
 public class PermissionGroup {
 
+    @JsonIgnore
     private transient String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("permissions")
     private Map<String, Boolean> permissions;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("worlds")
     private Map<String, Map<String, Boolean>> worldPermissions;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("inheritance")
     private List<String> inheritance;
 

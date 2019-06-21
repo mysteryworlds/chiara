@@ -24,4 +24,9 @@ public interface PermissionsService {
      * @param player The player.
      */
     void refreshPlayer(Player player);
+
+    /**
+     * Reload all permissions.
+     */
+    void reloadPermissions();
 }

@@ -11,4 +11,11 @@ public interface PermissionGroupRepository {
      * @return The group.
      */
     PermissionGroup findGroup(String groupName);
+
+    void saveGroups();
+
+    /**
+     * Reload all groups and invalidate cache.
+     */
+    void reloadGroups();
 }

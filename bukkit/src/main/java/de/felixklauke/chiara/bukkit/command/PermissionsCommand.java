@@ -1,5 +1,6 @@
 package de.felixklauke.chiara.bukkit.command;
 
+import de.felixklauke.chiara.bukkit.service.PermissionsService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,13 @@ import java.util.Set;
 
 public class PermissionsCommand implements CommandExecutor, TabCompleter {
 
+    private static final String MESSAGE_PREFIX = "§7[§cChiara§7]: §e";
+    private final PermissionsService permissionsService;
+
+    public PermissionsCommand(PermissionsService permissionsService) {
+        this.permissionsService = permissionsService;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -30,6 +38,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                 String arg = args[0];
                 if (arg.equalsIgnoreCase("list")) {
                     return showPermissions(player, command);
+                } else if (arg.equalsIgnoreCase("reload")) {
+                    return reloadPermissions(player, command);
                 }
                 return false;
             }
@@ -37,6 +47,27 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
         }
+    }
+
+    /**
+     * Reload the permissions users and groups.
+     *
+     * @param player The player who wants to reload.
+     * @param command The command.
+     * @return If its a valid command.
+     */
+    private boolean reloadPermissions(Player player, Command command) {
+
+        // Check permission
+        if (!player.hasPermission("chiara.command.permissions.reload")) {
+            player.sendMessage(command.getPermissionMessage());
+            return true;
+        }
+
+        permissionsService.reloadPermissions();
+        player.sendMessage(MESSAGE_PREFIX + "The permissions have been reload.");
+
+        return true;
     }
 
     /**
