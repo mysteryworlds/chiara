@@ -31,8 +31,7 @@ commands:
       §7[§cChiara§7]: §e/permissions reload - Lädt die Permissions neu aus der Config.
     aliases:
       - perms
-      - permissionslist
-      - permlist
+      - perm
     permission: chiara.command.permissions
     description: Permission management command
     permission-message: "§7[§cChiara§7]: §e§cAccess Denied."
