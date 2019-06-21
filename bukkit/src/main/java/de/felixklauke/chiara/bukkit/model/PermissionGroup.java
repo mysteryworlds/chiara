@@ -49,6 +49,10 @@ public class PermissionGroup {
         return inheritance == null ? new ArrayList<>() : new ArrayList<>(inheritance);
     }
 
+    public Map<String, Map<String, Boolean>> getWorldPermissions() {
+        return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+    }
+
     public Map<String, Boolean> getWorldPermissions(String worldName) {
 
         if (worldPermissions == null) {

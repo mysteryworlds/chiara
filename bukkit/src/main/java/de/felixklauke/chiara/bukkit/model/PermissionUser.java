@@ -50,6 +50,10 @@ public class PermissionUser {
         return uniqueId;
     }
 
+    public Map<String, Map<String, Boolean>> getWorldPermissions() {
+        return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+    }
+
     public Map<String, Boolean> getWorldPermissions(String worldName) {
 
         if (worldPermissions == null) {
