@@ -45,22 +45,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Jackson -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.9</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- Jackson YAML -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.9.9</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- Vault -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
@@ -102,10 +86,6 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>de.felixklauke.chiara.bukkit</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.fasterxml.jackson</pattern>
-                            <shadedPattern>de.felixklauke.chiara.jackson</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

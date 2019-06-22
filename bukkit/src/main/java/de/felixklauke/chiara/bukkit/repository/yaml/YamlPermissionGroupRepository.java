@@ -1,46 +1,52 @@
 package de.felixklauke.chiara.bukkit.repository.yaml;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import de.felixklauke.chiara.bukkit.model.PermissionGroup;
-import de.felixklauke.chiara.bukkit.model.PermissionGroupConfig;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
-public class YamlPermissionGroupRepository extends YamlPermissionRepository implements PermissionGroupRepository {
+public class YamlPermissionGroupRepository implements PermissionGroupRepository {
 
+    private final Path config;
     private final Logger logger;
     private final Map<String, PermissionGroup> permissionGroups = Maps.newHashMap();
 
     public YamlPermissionGroupRepository(Path config, Logger logger) {
-        super(config);
+        this.config = config;
         this.logger = logger;
         readGroups();
     }
 
     private void readGroups() {
+        DumperOptions options = new DumperOptions();
+        options.setPrettyFlow(true);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        Yaml yaml = new Yaml(options);
 
-        ObjectMapper objectMapper = getObjectMapper();
-
-        try {
-            PermissionGroupConfig permissionGroupConfig = objectMapper.readValue(getConfig().toFile(), PermissionGroupConfig.class);
-            for (Map.Entry<String, PermissionGroup> entry : permissionGroupConfig.getGroups().entrySet()) {
-                entry.getValue().setName(entry.getKey());
-            }
-
-            int groupAmount = permissionGroupConfig.getGroups().size();
-            logger.fine(String.format("Successfully read %d groups from permission config.", groupAmount));
-
-            permissionGroups.putAll(permissionGroupConfig.getGroups());
+        try (BufferedReader reader = Files.newBufferedReader(config)){
+            Map map = yaml.loadAs(reader, Map.class);
+            Map<String, Object> groups = (Map<String, Object>) map.get("groups");
+            System.out.println(map);
+            groups.forEach((key, value) -> {
+                Map<String, Object> groupMap = (Map<String, Object>) value;
+                PermissionGroup permissionGroup = groupFromMap(key, groupMap);
+                permissionGroups.put(key, permissionGroup);
+            });
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Couldn't read permission groups from config.", e);
+            e.printStackTrace();
         }
     }
 
@@ -52,14 +58,25 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
     @Override
     public void writeGroups() {
+        DumperOptions options = new DumperOptions();
+        options.setPrettyFlow(true);
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        Yaml yaml = new Yaml(options);
 
-        PermissionGroupConfig permissionGroupConfig = new PermissionGroupConfig(permissionGroups);
-        ObjectMapper objectMapper = getObjectMapper();
+        Map<String, Object> document = new HashMap<>();
 
-        try {
-            objectMapper.writeValue(getConfig().toFile(), permissionGroupConfig);
+        Map<String, Object> groups = new HashMap<>();
+        permissionGroups.forEach((groupName, permissionGroup) -> {
+            Map<String, Object> map = groupToMap(permissionGroup);
+            groups.put(groupName, map);
+        });
+
+        document.put("groups", groups);
+
+        try (BufferedWriter writer = Files.newBufferedWriter(config)) {
+            yaml.dump(document, writer);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Couldn't write permission groups to config.", e);
+            e.printStackTrace();
         }
     }
 
@@ -88,5 +105,24 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
     public void saveGroup(PermissionGroup permissionGroup) {
 
         permissionGroups.put(permissionGroup.getName(), permissionGroup);
+    }
+
+    private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("permissions", permissionGroup.getPermissions());
+        map.put("worlds", permissionGroup.getWorldPermissions());
+        map.put("inheritance", permissionGroup.getInheritance());
+        return map;
+    }
+
+    private PermissionGroup groupFromMap(String groupName, Map<String, Object> map) {
+
+        PermissionGroup permissionGroup = new PermissionGroup();
+        permissionGroup.setName(groupName);
+        permissionGroup.setPermissions((Map<String, Boolean>) map.get("permissions"));
+        permissionGroup.setWorldPermissions((Map<String, Map<String, Boolean>>) map.get("worlds"));
+        permissionGroup.setInheritance((List<String>) map.get("inheritance"));
+        return permissionGroup;
     }
 }
