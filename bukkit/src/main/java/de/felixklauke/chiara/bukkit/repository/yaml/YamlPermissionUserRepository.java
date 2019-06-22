@@ -1,7 +1,6 @@
 package de.felixklauke.chiara.bukkit.repository.yaml;
 
 import com.google.common.collect.Maps;
-import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 import de.felixklauke.chiara.bukkit.model.PermissionUser;
 import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import org.yaml.snakeyaml.DumperOptions;
@@ -17,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +34,7 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
     private void readUsers() {
         Yaml yaml = new Yaml();
 
-        try (BufferedReader reader = Files.newBufferedReader(config)){
+        try (BufferedReader reader = Files.newBufferedReader(config)) {
             Map map = yaml.loadAs(reader, Map.class);
             Map<String, Object> users = (Map<String, Object>) map.get("users");
 
@@ -50,6 +48,19 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error while reading users.", e);
         }
+    }
+
+    @Override
+    public PermissionUser findUser(UUID uniqueId) {
+
+        return permissionUsers.get(uniqueId);
+    }
+
+    @Override
+    public void reloadUsers() {
+
+        permissionUsers.clear();
+        readUsers();
     }
 
     @Override
@@ -78,19 +89,6 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
     }
 
     @Override
-    public PermissionUser findUser(UUID uniqueId) {
-
-        return permissionUsers.get(uniqueId);
-    }
-
-    @Override
-    public void reloadUsers() {
-
-        permissionUsers.clear();
-        readUsers();
-    }
-
-    @Override
     public PermissionUser createUser(UUID uniqueId) {
 
         PermissionUser permissionUser = new PermissionUser(uniqueId, null, null, null);
@@ -108,7 +106,8 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
      * Convert the given map into a user with the given name.
      *
      * @param uniqueId The unique id.
-     * @param map The map.
+     * @param map      The map.
+     *
      * @return The user.
      */
     private PermissionUser userFromMap(UUID uniqueId, Map<String, Object> map) {
@@ -125,6 +124,7 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
      * Convert the given user into a map.
      *
      * @param permissionUser The user.
+     *
      * @return The map.
      */
     private Map<String, Object> userToMap(PermissionUser permissionUser) {

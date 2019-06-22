@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +34,7 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
     private void readGroups() {
         Yaml yaml = new Yaml();
 
-        try (BufferedReader reader = Files.newBufferedReader(config)){
+        try (BufferedReader reader = Files.newBufferedReader(config)) {
             Map map = yaml.loadAs(reader, Map.class);
             Map<String, Object> groups = (Map<String, Object>) map.get("groups");
 
@@ -110,6 +109,7 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
      * Convert the given permission group into a map.
      *
      * @param permissionGroup The permission group.
+     *
      * @return The map.
      */
     private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
@@ -125,7 +125,8 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
      * Convert the given map into a group with the given name.
      *
      * @param groupName The name of the group.
-     * @param map The map.
+     * @param map       The map.
+     *
      * @return The group.
      */
     private PermissionGroup groupFromMap(String groupName, Map<String, Object> map) {

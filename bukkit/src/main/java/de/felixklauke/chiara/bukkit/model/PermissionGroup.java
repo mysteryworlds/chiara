@@ -3,8 +3,6 @@ package de.felixklauke.chiara.bukkit.model;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +23,12 @@ public class PermissionGroup {
         this.inheritance = inheritance;
     }
 
-    public void setPermissions(Map<String, Boolean> permissions) {
-        this.permissions = permissions;
-    }
-
     public Map<String, Boolean> getPermissions() {
         return permissions == null ? Maps.newLinkedHashMap() : Maps.newLinkedHashMap(permissions);
+    }
+
+    public void setPermissions(Map<String, Boolean> permissions) {
+        this.permissions = permissions;
     }
 
     public String getName() {
