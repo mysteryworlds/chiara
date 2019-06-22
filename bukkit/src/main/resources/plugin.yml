@@ -46,19 +46,16 @@ permissions:
 
   chiara.*:
     description: Gives you full access to chiara
-    default: op
     children:
       - chiara.command.*
 
   chiara.command.*:
     description: Gives you access to all commands
-    default: op
     children:
       - chiara.command.permissions.*
 
   chiara.command.permissions.*:
     description: Permissions to work with all permissions
-    default: op
     children:
       - chiara.command.permissions
       - chiara.command.permissions.list
@@ -76,7 +73,6 @@ permissions:
 
   chiara.command.permissions.group.*:
     description: Access to group commands
-    default: op
     children:
       - chiara.command.permissions.group.list
 
