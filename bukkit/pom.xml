@@ -103,6 +103,10 @@
                             <pattern>org.bstats</pattern>
                             <shadedPattern>de.felixklauke.chiara.bukkit</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.fasterxml.jackson</pattern>
+                            <shadedPattern>de.felixklauke.chiara.jackson</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>

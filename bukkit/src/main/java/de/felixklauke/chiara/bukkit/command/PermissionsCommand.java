@@ -29,18 +29,21 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
         switch (args.length) {
             case 1: {
                 String arg = args[0];
+
                 if (arg.equalsIgnoreCase("list")) {
                     return showPermissions(commandSender, command);
                 } else if (arg.equalsIgnoreCase("reload")) {
                     return reloadPermissions(commandSender, command);
                 }
+
                 return false;
             }
             case 2: {
                 String arg = args[0];
+
                 if (arg.equalsIgnoreCase("group")) {
-                    arg = args[1];
-                    if (arg.equalsIgnoreCase("list")) {
+                    String arg1 = args[1];
+                    if (arg1.equalsIgnoreCase("list")) {
                         return showGroups(commandSender, command);
                     }
                 }
