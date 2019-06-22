@@ -10,6 +10,7 @@ public interface PermissionGroupRepository {
      * Find the group with the given name.
      *
      * @param groupName The name of the group.
+     *
      * @return The group.
      */
     PermissionGroup findGroup(String groupName);
@@ -32,6 +33,7 @@ public interface PermissionGroupRepository {
      * Create a new group with the given name.
      *
      * @param group The group name.
+     *
      * @return The group.
      */
     PermissionGroup createGroup(String group);

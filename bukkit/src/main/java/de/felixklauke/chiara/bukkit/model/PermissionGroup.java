@@ -40,12 +40,12 @@ public class PermissionGroup {
         return permissions == null ? new HashMap<>() : new HashMap<>(permissions);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<String> getInheritance() {

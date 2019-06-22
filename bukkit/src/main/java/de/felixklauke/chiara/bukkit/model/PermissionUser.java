@@ -45,12 +45,12 @@ public class PermissionUser {
         return permissions == null ? new HashMap<>() : new HashMap<>(permissions);
     }
 
-    public void setUniqueId(UUID uniqueId) {
-        this.uniqueId = uniqueId;
-    }
-
     public UUID getUniqueId() {
         return uniqueId;
+    }
+
+    public void setUniqueId(UUID uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public Map<String, Map<String, Boolean>> getWorldPermissions() {

@@ -10,6 +10,7 @@ public interface PermissionUserRepository {
      * Find the user with the given unique id.
      *
      * @param uniqueId The unique id.
+     *
      * @return The user.
      */
     PermissionUser findUser(UUID uniqueId);
@@ -28,6 +29,7 @@ public interface PermissionUserRepository {
      * Create a new user with the given unique id.
      *
      * @param uniqueId The unique id.
+     *
      * @return The user.
      */
     PermissionUser createUser(UUID uniqueId);

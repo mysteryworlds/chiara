@@ -39,12 +39,6 @@ public class VaultPermissions extends Permission {
     }
 
     @Override
-    public boolean hasGroupSupport() {
-
-        return true;
-    }
-
-    @Override
     public boolean playerHas(String world, String player, String permission) {
 
         Player bukkitPlayer = Bukkit.getPlayer(player);
@@ -164,6 +158,12 @@ public class VaultPermissions extends Permission {
     public String[] getGroups() {
 
         return permissionService.getGroups();
+    }
+
+    @Override
+    public boolean hasGroupSupport() {
+
+        return true;
     }
 
     private UUID getUniqueId(String player) {

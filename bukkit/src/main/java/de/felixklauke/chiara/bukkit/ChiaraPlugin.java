@@ -36,6 +36,16 @@ public class ChiaraPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onDisable() {
+
+        // Unregister all players
+        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> permissionService.unregisterPlayer(onlinePlayer));
+
+        groupRepository.writeGroups();
+        userRepository.writeUsers();
+    }
+
+    @Override
     public void onEnable() {
 
         Logger logger = getLogger();
@@ -89,15 +99,5 @@ public class ChiaraPlugin extends JavaPlugin {
         Metrics metrics = new Metrics(this);
         Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups", () -> permissionService.getGroups().length);
         metrics.addCustomChart(groupsChart);
-    }
-
-    @Override
-    public void onDisable() {
-
-        // Unregister all players
-        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> permissionService.unregisterPlayer(onlinePlayer));
-
-        groupRepository.writeGroups();
-        userRepository.writeUsers();
     }
 }

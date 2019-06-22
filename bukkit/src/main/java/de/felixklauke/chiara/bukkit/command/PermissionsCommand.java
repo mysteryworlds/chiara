@@ -58,7 +58,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Show all existent groups.
      *
      * @param commandSender The command sender.
-     * @param command The command.
+     * @param command       The command.
+     *
      * @return If its a valid command.
      */
     private boolean showGroups(CommandSender commandSender, Command command) {
@@ -84,7 +85,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Reload the permissions users and groups.
      *
      * @param commandSender The oe who wants to reload.
-     * @param command The command.
+     * @param command       The command.
+     *
      * @return If its a valid command.
      */
     private boolean reloadPermissions(CommandSender commandSender, Command command) {
@@ -105,7 +107,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Show the commandSender a list of his effective permissions.
      *
      * @param commandSender The player.
-     * @param command The command.
+     * @param command       The command.
+     *
      * @return If its a valid command.
      */
     private boolean showPermissions(CommandSender commandSender, Command command) {

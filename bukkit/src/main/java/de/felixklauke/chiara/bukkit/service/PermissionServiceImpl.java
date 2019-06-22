@@ -68,15 +68,6 @@ public class PermissionServiceImpl implements PermissionService {
         permissionAttachments.remove(uniqueId);
     }
 
-
-    private void refreshPlayer(UUID uniqueId) {
-
-        Player player = Bukkit.getPlayer(uniqueId);
-        if (player != null) {
-            refreshPlayer(player);
-        }
-    }
-
     @Override
     public void refreshPlayer(Player player) {
 
@@ -87,42 +78,6 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         registerPlayer(player);
-    }
-
-    private void refreshGroup(String group) {
-
-        Set<String> childGroups = getChildGroups(group);
-        for (String childGroup : childGroups) {
-
-            for (UUID uniqueId : permissionAttachments.keySet()) {
-                PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
-                List<String> permissionUserGroups = permissionUser.getGroups();
-
-                if (permissionUserGroups.contains(childGroup) || permissionUserGroups.contains(group)) {
-                    refreshPlayer(uniqueId);
-                }
-            }
-        }
-    }
-
-    private Set<String> getChildGroups(String group) {
-
-        Set<String> childGroups = new HashSet<>();
-        List<PermissionGroup> permissionGroups = permissionGroupRepository.findGroups();
-
-        for (PermissionGroup permissionGroup : permissionGroups) {
-
-            List<String> inheritance = permissionGroup.getInheritance();
-            if (!inheritance.contains(group)) {
-                continue;
-            }
-
-            String childName = permissionGroup.getName();
-            Set<String> recursiveChildGroups = getChildGroups(childName);
-            childGroups.addAll(recursiveChildGroups);
-        }
-
-        return childGroups;
     }
 
     @Override
@@ -291,6 +246,50 @@ public class PermissionServiceImpl implements PermissionService {
         refreshPlayer(uniqueId);
     }
 
+    private void refreshPlayer(UUID uniqueId) {
+
+        Player player = Bukkit.getPlayer(uniqueId);
+        if (player != null) {
+            refreshPlayer(player);
+        }
+    }
+
+    private void refreshGroup(String group) {
+
+        Set<String> childGroups = getChildGroups(group);
+        for (String childGroup : childGroups) {
+
+            for (UUID uniqueId : permissionAttachments.keySet()) {
+                PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
+                List<String> permissionUserGroups = permissionUser.getGroups();
+
+                if (permissionUserGroups.contains(childGroup) || permissionUserGroups.contains(group)) {
+                    refreshPlayer(uniqueId);
+                }
+            }
+        }
+    }
+
+    private Set<String> getChildGroups(String group) {
+
+        Set<String> childGroups = new HashSet<>();
+        List<PermissionGroup> permissionGroups = permissionGroupRepository.findGroups();
+
+        for (PermissionGroup permissionGroup : permissionGroups) {
+
+            List<String> inheritance = permissionGroup.getInheritance();
+            if (!inheritance.contains(group)) {
+                continue;
+            }
+
+            String childName = permissionGroup.getName();
+            Set<String> recursiveChildGroups = getChildGroups(childName);
+            childGroups.addAll(recursiveChildGroups);
+        }
+
+        return childGroups;
+    }
+
     private PermissionGroup getGroupOrCreateGroup(String group) {
 
         PermissionGroup permissionGroup = getGroup(group);
@@ -316,7 +315,7 @@ public class PermissionServiceImpl implements PermissionService {
      *
      * @param player The player.
      */
-    private void  calculatePermissionAttachment(Player player) {
+    private void calculatePermissionAttachment(Player player) {
 
         UUID uniqueId = player.getUniqueId();
 
@@ -345,6 +344,7 @@ public class PermissionServiceImpl implements PermissionService {
      * Calculate the permissions for the given player.
      *
      * @param player The player.
+     *
      * @return The permissions.
      */
     private Map<String, Boolean> calculatePermissions(Player player) {
@@ -384,6 +384,7 @@ public class PermissionServiceImpl implements PermissionService {
      *
      * @param groupName The name of the group.
      * @param worldName The name of the world.
+     *
      * @return The permissions of the group.
      */
     private Map<String, Boolean> calculateGroupPermissions(String groupName, String worldName) {
@@ -424,6 +425,7 @@ public class PermissionServiceImpl implements PermissionService {
      * Load the permissions user with the given unique id.
      *
      * @param uniqueId The unique id of the user.
+     *
      * @return The user.
      */
     private PermissionUser getUser(UUID uniqueId) {
@@ -435,6 +437,7 @@ public class PermissionServiceImpl implements PermissionService {
      * Load the group with the given name.
      *
      * @param groupName The name of the group.
+     *
      * @return The group.
      */
     private PermissionGroup getGroup(String groupName) {
