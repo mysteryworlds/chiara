@@ -2,12 +2,14 @@ package de.felixklauke.chiara.bukkit.vault;
 
 import de.felixklauke.chiara.bukkit.service.PermissionsService;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
 import java.util.UUID;
 
 public class VaultPermissions extends Permission {
@@ -39,69 +41,125 @@ public class VaultPermissions extends Permission {
     }
 
     @Override
-    public boolean playerHas(String world, String player, String permission) {
+    public boolean hasGroupSupport() {
 
-
+        return true;
     }
 
-    private UUID getUniqueId(String player) {
-        return null;
+    @Override
+    public boolean playerHas(String world, String player, String permission) {
+
+        Player bukkitPlayer = Bukkit.getPlayer(player);
+        if (bukkitPlayer == null) {
+            return false;
+        }
+
+        return bukkitPlayer.hasPermission(permission);
     }
 
     @Override
     public boolean playerAdd(String world, String player, String permission) {
-        return false;
+
+        UUID uniqueId = getUniqueId(player);
+
+        if (world == null) {
+            permissionsService.setUserPermission(uniqueId, permission, true);
+            return true;
+        }
+
+        permissionsService.setUserPermission(uniqueId, world, permission, true);
+        return true;
     }
 
     @Override
     public boolean playerRemove(String world, String player, String permission) {
-        return false;
+
+        UUID uniqueId = getUniqueId(player);
+
+        if (world == null) {
+            permissionsService.unsetUserPermission(uniqueId, permission);
+            return true;
+        }
+
+        permissionsService.unsetUserPermission(uniqueId, world, permission);
+        return true;
     }
 
     @Override
     public boolean groupHas(String world, String group, String permission) {
-        return false;
+
+        if (world == null) {
+            return permissionsService.hasGroupPermission(group, permission, true);
+        }
+
+        return permissionsService.hasGroupPermission(group, world, permission, true);
     }
 
     @Override
     public boolean groupAdd(String world, String group, String permission) {
-        return false;
+
+        if (world == null) {
+            permissionsService.setGroupPermission(group, permission, true);
+            return true;
+        }
+
+        permissionsService.setGroupPermission(group, world, permission, true);
+        return true;
     }
 
     @Override
     public boolean groupRemove(String world, String group, String permission) {
-        return false;
+
+        if (world == null) {
+            permissionsService.unsetGroupPermission(group, permission);
+            return true;
+        }
+
+        permissionsService.unsetGroupPermission(group, world, permission);
+        return true;
     }
 
     @Override
     public boolean playerInGroup(String world, String player, String group) {
-        return false;
+
+        UUID uniqueId = getUniqueId(player);
+        return permissionsService.getGroups(uniqueId).contains(group);
     }
 
     @Override
     public boolean playerAddGroup(String world, String player, String group) {
-        return false;
+
+        UUID uniqueId = getUniqueId(player);
+        permissionsService.addUserGroup(uniqueId, group);
+        return true;
     }
 
     @Override
     public boolean playerRemoveGroup(String world, String player, String group) {
-        return false;
+
+        UUID uniqueId = getUniqueId(player);
+        permissionsService.removeUserGroup(uniqueId, group);
+        return true;
     }
 
     @Override
     public String[] getPlayerGroups(String world, String player) {
-        return new String[0];
+
+        UUID uniqueId = getUniqueId(player);
+        return permissionsService.getGroups(uniqueId).toArray(new String[0]);
     }
 
     @Override
     public String getPrimaryGroup(String world, String player) {
 
-        String[] playerGroups = getPlayerGroups(world, player);
-        if (playerGroups.length == 0) {
-            return "";
+        UUID uniqueId = getUniqueId(player);
+        List<String> groups = permissionsService.getGroups(uniqueId);
+
+        if (groups.size() == 0) {
+            return null;
         }
 
-        return playerGroups[0];
+        return groups.get(0);
     }
 
     @Override
@@ -110,154 +168,9 @@ public class VaultPermissions extends Permission {
         return permissionsService.getGroups();
     }
 
-    @Override
-    public boolean hasGroupSupport() {
+    private UUID getUniqueId(String player) {
 
-        return true;
-    }
-
-    @Override
-    public boolean has(CommandSender sender, String permission) {
-        return super.has(sender, permission);
-    }
-
-    @Override
-    public boolean has(Player player, String permission) {
-        return super.has(player, permission);
-    }
-
-    @Override
-    public boolean playerHas(String world, OfflinePlayer player, String permission) {
-        return super.playerHas(world, player, permission);
-    }
-
-    @Override
-    public boolean playerHas(Player player, String permission) {
-        return super.playerHas(player, permission);
-    }
-
-    @Override
-    public boolean playerAdd(String world, OfflinePlayer player, String permission) {
-        return super.playerAdd(world, player, permission);
-    }
-
-    @Override
-    public boolean playerAdd(Player player, String permission) {
-        return super.playerAdd(player, permission);
-    }
-
-    @Override
-    public boolean playerAddTransient(OfflinePlayer player, String permission) throws UnsupportedOperationException {
-        return super.playerAddTransient(player, permission);
-    }
-
-    @Override
-    public boolean playerAddTransient(Player player, String permission) {
-        return super.playerAddTransient(player, permission);
-    }
-
-    @Override
-    public boolean playerAddTransient(String worldName, OfflinePlayer player, String permission) {
-        return super.playerAddTransient(worldName, player, permission);
-    }
-
-    @Override
-    public boolean playerAddTransient(String worldName, Player player, String permission) {
-        return super.playerAddTransient(worldName, player, permission);
-    }
-
-    @Override
-    public boolean playerRemoveTransient(String worldName, OfflinePlayer player, String permission) {
-        return super.playerRemoveTransient(worldName, player, permission);
-    }
-
-    @Override
-    public boolean playerRemoveTransient(String worldName, Player player, String permission) {
-        return super.playerRemoveTransient(worldName, player, permission);
-    }
-
-    @Override
-    public boolean playerRemove(String world, OfflinePlayer player, String permission) {
-        return super.playerRemove(world, player, permission);
-    }
-
-    @Override
-    public boolean playerRemove(Player player, String permission) {
-        return super.playerRemove(player, permission);
-    }
-
-    @Override
-    public boolean playerRemoveTransient(OfflinePlayer player, String permission) {
-        return super.playerRemoveTransient(player, permission);
-    }
-
-    @Override
-    public boolean playerRemoveTransient(Player player, String permission) {
-        return super.playerRemoveTransient(player, permission);
-    }
-
-    @Override
-    public boolean groupHas(World world, String group, String permission) {
-        return super.groupHas(world, group, permission);
-    }
-
-    @Override
-    public boolean groupAdd(World world, String group, String permission) {
-        return super.groupAdd(world, group, permission);
-    }
-
-    @Override
-    public boolean groupRemove(World world, String group, String permission) {
-        return super.groupRemove(world, group, permission);
-    }
-
-    @Override
-    public boolean playerInGroup(String world, OfflinePlayer player, String group) {
-        return super.playerInGroup(world, player, group);
-    }
-
-    @Override
-    public boolean playerInGroup(Player player, String group) {
-        return super.playerInGroup(player, group);
-    }
-
-    @Override
-    public boolean playerAddGroup(String world, OfflinePlayer player, String group) {
-        return super.playerAddGroup(world, player, group);
-    }
-
-    @Override
-    public boolean playerAddGroup(Player player, String group) {
-        return super.playerAddGroup(player, group);
-    }
-
-    @Override
-    public boolean playerRemoveGroup(String world, OfflinePlayer player, String group) {
-        return super.playerRemoveGroup(world, player, group);
-    }
-
-    @Override
-    public boolean playerRemoveGroup(Player player, String group) {
-        return super.playerRemoveGroup(player, group);
-    }
-
-    @Override
-    public String[] getPlayerGroups(String world, OfflinePlayer player) {
-        return super.getPlayerGroups(world, player);
-    }
-
-    @Override
-    public String[] getPlayerGroups(Player player) {
-        return super.getPlayerGroups(player);
-    }
-
-    @Override
-    public String getPrimaryGroup(String world, OfflinePlayer player) {
-        return super.getPrimaryGroup(world, player);
-    }
-
-    @Override
-    public String getPrimaryGroup(Player player) {
-        return super.getPrimaryGroup(player);
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+        return offlinePlayer.getUniqueId();
     }
 }

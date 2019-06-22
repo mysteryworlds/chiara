@@ -8,7 +8,10 @@ import de.felixklauke.chiara.bukkit.repository.yaml.YamlPermissionGroupRepositor
 import de.felixklauke.chiara.bukkit.repository.yaml.YamlPermissionUserRepository;
 import de.felixklauke.chiara.bukkit.service.PermissionsService;
 import de.felixklauke.chiara.bukkit.service.PermissionsServiceImpl;
+import de.felixklauke.chiara.bukkit.vault.VaultPermissions;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Files;
@@ -60,6 +63,13 @@ public class ChiaraPlugin extends JavaPlugin {
         PermissionsCommand permissionsCommand = new PermissionsCommand(permissionsService);
         getCommand("permissions").setExecutor(permissionsCommand);
         getCommand("permissions").setTabCompleter(permissionsCommand);
+
+        // Register services
+        if (getServer().getPluginManager().isPluginEnabled("Vault")) {
+
+            VaultPermissions vaultPermissions = new VaultPermissions(this, permissionsService);
+            getServer().getServicesManager().register(Permission.class, vaultPermissions, this, ServicePriority.Highest);
+        }
     }
 
     @Override

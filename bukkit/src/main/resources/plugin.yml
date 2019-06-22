@@ -16,7 +16,11 @@ api-version: ${spigot.version}
 # Author
 author: Felix Klauke <info@felix-klauke.com>
 
-# The logger prefix
+# Soft dependencies
+softdepend:
+  - Vault
+
+  # The logger prefix
 prefix: Chiara
 
 # My homepage

@@ -14,12 +14,15 @@ public class PermissionUser {
 
     @JsonIgnore
     private transient UUID uniqueId;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("permissions")
     private Map<String, Boolean> permissions;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("worlds")
     private Map<String, Map<String, Boolean>> worldPermissions;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("groups")
     private List<String> groups;
@@ -61,5 +64,61 @@ public class PermissionUser {
         }
         Map<String, Boolean> worldPermissions = this.worldPermissions.get(worldName);
         return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+    }
+
+    public void setPermission(String permission, boolean value) {
+
+        if (permissions == null) {
+            permissions = new HashMap<>();
+        }
+
+        permissions.put(permission, value);
+    }
+
+    public void unsetPermission(String permission) {
+
+        if (permissions == null) {
+            return;
+        }
+
+        permissions.remove(permission);
+    }
+
+    public void setWorldPermission(String world, String permission, boolean value) {
+
+        Map<String, Boolean> worldPermissions = this.worldPermissions.computeIfAbsent(world, k -> new HashMap<>());
+        worldPermissions.put(permission, value);
+    }
+
+    public void unsetWorldPermission(String world, String permission) {
+
+        if (worldPermissions == null) {
+            return;
+        }
+
+        Map<String, Boolean> worldPermissions = this.worldPermissions.get(world);
+        if (worldPermissions == null) {
+            return;
+        }
+
+        worldPermissions.remove(permission);
+    }
+
+    public void addGroup(String group) {
+
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
+
+        groups.add(group);
+    }
+
+    public void removeGroup(String group) {
+
+        if (groups == null) {
+            return;
+        }
+
+        groups.remove(group);
     }
 }

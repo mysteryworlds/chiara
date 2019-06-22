@@ -63,4 +63,18 @@ public class YamlPermissionUserRepository extends YamlPermissionRepository imple
             throw new IllegalStateException("Couldn't write users.", e);
         }
     }
+
+    @Override
+    public PermissionUser createUser(UUID uniqueId) {
+
+        PermissionUser permissionUser = new PermissionUser(uniqueId, null, null, null);
+        saveUser(permissionUser);
+        return permissionUser;
+    }
+
+    @Override
+    public void saveUser(PermissionUser permissionUser) {
+
+        permissionUsers.put(permissionUser.getUniqueId(), permissionUser);
+    }
 }

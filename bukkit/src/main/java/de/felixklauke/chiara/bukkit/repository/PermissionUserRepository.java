@@ -23,4 +23,19 @@ public interface PermissionUserRepository {
      * Save all user data.
      */
     void saveUsers();
+
+    /**
+     * Create a new user with the given unique id.
+     *
+     * @param uniqueId The unique id.
+     * @return The user.
+     */
+    PermissionUser createUser(UUID uniqueId);
+
+    /**
+     * Save the data of the given permission user.
+     *
+     * @param permissionUser The permission user.
+     */
+    void saveUser(PermissionUser permissionUser);
 }

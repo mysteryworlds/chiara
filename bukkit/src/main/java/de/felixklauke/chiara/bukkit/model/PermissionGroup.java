@@ -13,12 +13,15 @@ public class PermissionGroup {
 
     @JsonIgnore
     private transient String name;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("permissions")
     private Map<String, Boolean> permissions;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("worlds")
     private Map<String, Map<String, Boolean>> worldPermissions;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty("inheritance")
     private List<String> inheritance;
@@ -61,5 +64,47 @@ public class PermissionGroup {
 
         Map<String, Boolean> worldPermissions = this.worldPermissions.get(worldName);
         return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+    }
+
+    public void setPermission(String permission, boolean value) {
+
+        if (permissions == null) {
+            permissions = new HashMap<>();
+        }
+
+        permissions.put(permission, value);
+    }
+
+    public void setWorldPermission(String world, String permission, boolean value) {
+
+        if (worldPermissions == null) {
+            worldPermissions = new HashMap<>();
+        }
+
+        Map<String, Boolean> worldPermissions = this.worldPermissions.computeIfAbsent(world, k -> new HashMap<>());
+        worldPermissions.put(permission, value);
+    }
+
+    public void unsetWorldPermission(String world, String permission) {
+
+        if (worldPermissions == null) {
+            return;
+        }
+
+        Map<String, Boolean> worldPermissions = this.worldPermissions.get(world);
+        if (worldPermissions == null) {
+            return;
+        }
+
+        worldPermissions.remove(permission);
+    }
+
+    public void unsetPermission(String permission) {
+
+        if (permissions == null) {
+            return;
+        }
+
+        permissions.remove(permission);
     }
 }

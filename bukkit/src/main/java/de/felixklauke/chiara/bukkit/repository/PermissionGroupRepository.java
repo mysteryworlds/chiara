@@ -27,4 +27,19 @@ public interface PermissionGroupRepository {
      * @return The groups.
      */
     List<PermissionGroup> findGroups();
+
+    /**
+     * Create a new group with the given name.
+     *
+     * @param group The group name.
+     * @return The group.
+     */
+    PermissionGroup createGroup(String group);
+
+    /**
+     * Save the given group.
+     *
+     * @param permissionGroup The group.
+     */
+    void saveGroup(PermissionGroup permissionGroup);
 }

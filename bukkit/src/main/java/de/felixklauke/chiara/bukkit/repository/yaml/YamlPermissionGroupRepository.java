@@ -70,4 +70,18 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
         return new ArrayList<>(permissionGroups.values());
     }
+
+    @Override
+    public PermissionGroup createGroup(String group) {
+
+        PermissionGroup permissionGroup = new PermissionGroup(group, null, null, null);
+        saveGroup(permissionGroup);
+        return permissionGroup;
+    }
+
+    @Override
+    public void saveGroup(PermissionGroup permissionGroup) {
+
+        permissionGroups.put(permissionGroup.getName(), permissionGroup);
+    }
 }
