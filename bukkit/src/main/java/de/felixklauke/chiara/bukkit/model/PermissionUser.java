@@ -27,8 +27,16 @@ public class PermissionUser {
         return groups == null ? new ArrayList<>() : new ArrayList<>(groups);
     }
 
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
+    }
+
     public Map<String, Boolean> getPermissions() {
         return permissions == null ? new HashMap<>() : new HashMap<>(permissions);
+    }
+
+    public void setPermissions(Map<String, Boolean> permissions) {
+        this.permissions = permissions;
     }
 
     public UUID getUniqueId() {
@@ -41,6 +49,10 @@ public class PermissionUser {
 
     public Map<String, Map<String, Boolean>> getWorldPermissions() {
         return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+    }
+
+    public void setWorldPermissions(Map<String, Map<String, Boolean>> worldPermissions) {
+        this.worldPermissions = worldPermissions;
     }
 
     public Map<String, Boolean> getWorldPermissions(String worldName) {

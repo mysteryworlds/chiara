@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -31,15 +32,12 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
     }
 
     private void readGroups() {
-        DumperOptions options = new DumperOptions();
-        options.setPrettyFlow(true);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        Yaml yaml = new Yaml(options);
+        Yaml yaml = new Yaml();
 
         try (BufferedReader reader = Files.newBufferedReader(config)){
             Map map = yaml.loadAs(reader, Map.class);
             Map<String, Object> groups = (Map<String, Object>) map.get("groups");
-            System.out.println(map);
+
             groups.forEach((key, value) -> {
                 Map<String, Object> groupMap = (Map<String, Object>) value;
                 PermissionGroup permissionGroup = groupFromMap(key, groupMap);
@@ -109,7 +107,7 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
 
     private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
 
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("permissions", permissionGroup.getPermissions());
         map.put("worlds", permissionGroup.getWorldPermissions());
         map.put("inheritance", permissionGroup.getInheritance());
