@@ -1,11 +1,10 @@
 package de.felixklauke.chiara.bukkit.command;
 
-import de.felixklauke.chiara.bukkit.service.PermissionsService;
+import de.felixklauke.chiara.bukkit.service.PermissionService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.StringUtil;
 
@@ -18,30 +17,33 @@ import java.util.Set;
 public class PermissionsCommand implements CommandExecutor, TabCompleter {
 
     private static final String MESSAGE_PREFIX = "§7[§cChiara§7]: §e";
-    private final PermissionsService permissionsService;
+    private final PermissionService permissionService;
 
-    public PermissionsCommand(PermissionsService permissionsService) {
-        this.permissionsService = permissionsService;
+    public PermissionsCommand(PermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (!(sender instanceof Player)) {
-            return false;
-        }
-
-        Player player = (Player) sender;
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
 
         switch (args.length) {
             case 1: {
                 String arg = args[0];
                 if (arg.equalsIgnoreCase("list")) {
-                    return showPermissions(player, command);
+                    return showPermissions(commandSender, command);
                 } else if (arg.equalsIgnoreCase("reload")) {
-                    return reloadPermissions(player, command);
+                    return reloadPermissions(commandSender, command);
                 }
                 return false;
+            }
+            case 2: {
+                String arg = args[0];
+                if (arg.equalsIgnoreCase("group")) {
+                    arg = args[1];
+                    if (arg.equalsIgnoreCase("list")) {
+                        return showGroups(commandSender, command);
+                    }
+                }
             }
             default: {
                 return false;
@@ -50,46 +52,72 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
     }
 
     /**
-     * Reload the permissions users and groups.
+     * Show all existent groups.
      *
-     * @param player The player who wants to reload.
+     * @param commandSender The command sender.
      * @param command The command.
      * @return If its a valid command.
      */
-    private boolean reloadPermissions(Player player, Command command) {
+    private boolean showGroups(CommandSender commandSender, Command command) {
 
         // Check permission
-        if (!player.hasPermission("chiara.command.permissions.reload")) {
-            player.sendMessage(command.getPermissionMessage());
+        if (!commandSender.hasPermission("chiara.command.permissions.group.list")) {
+            commandSender.sendMessage(command.getPermissionMessage());
             return true;
         }
 
-        permissionsService.reloadPermissions();
-        player.sendMessage(MESSAGE_PREFIX + "The permissions have been reload.");
+        String[] groups = permissionService.getGroups();
+        int groupAmount = groups.length;
+
+        commandSender.sendMessage(String.format("%sEs gibt %d Gruppen:", MESSAGE_PREFIX, groupAmount));
+        for (String group : groups) {
+            commandSender.sendMessage(String.format("%s- %s", MESSAGE_PREFIX, group));
+        }
 
         return true;
     }
 
     /**
-     * Show the player a list of his effective permissions.
+     * Reload the permissions users and groups.
      *
-     * @param player The player.
+     * @param commandSender The oe who wants to reload.
      * @param command The command.
      * @return If its a valid command.
      */
-    private boolean showPermissions(Player player, Command command) {
+    private boolean reloadPermissions(CommandSender commandSender, Command command) {
 
         // Check permission
-        if (!player.hasPermission("chiara.command.permissions.list")) {
-            player.sendMessage(command.getPermissionMessage());
+        if (!commandSender.hasPermission("chiara.command.permissions.reload")) {
+            commandSender.sendMessage(command.getPermissionMessage());
+            return true;
+        }
+
+        permissionService.reloadPermissions();
+        commandSender.sendMessage(MESSAGE_PREFIX + "The permissions have been reload.");
+
+        return true;
+    }
+
+    /**
+     * Show the commandSender a list of his effective permissions.
+     *
+     * @param commandSender The player.
+     * @param command The command.
+     * @return If its a valid command.
+     */
+    private boolean showPermissions(CommandSender commandSender, Command command) {
+
+        // Check permission
+        if (!commandSender.hasPermission("chiara.command.permissions.list")) {
+            commandSender.sendMessage(command.getPermissionMessage());
             return true;
         }
 
         // Get effective permissions and send them to the player.
-        Set<PermissionAttachmentInfo> permissions = player.getEffectivePermissions();
+        Set<PermissionAttachmentInfo> permissions = commandSender.getEffectivePermissions();
         permissions.stream()
                 .map(permission -> permission.getPermission() + ": " + permission.getValue())
-                .forEach(player::sendMessage);
+                .forEach(commandSender::sendMessage);
 
         return true;
     }
@@ -102,8 +130,14 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
         // Check command ident level and copy partial matches
         switch (args.length) {
             case 1: {
-                List<String> candidates = Arrays.asList("list", "reload");
+                List<String> candidates = Arrays.asList("list", "reload", "group");
                 StringUtil.copyPartialMatches(args[0], candidates, completions);
+                break;
+            }
+            case 2: {
+                List<String> candidates = Arrays.asList("list");
+                StringUtil.copyPartialMatches(args[1], candidates, completions);
+                break;
             }
         }
 

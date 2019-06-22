@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.UUID;
 
-public interface PermissionsService {
+public interface PermissionService {
 
     /**
      * Register the given player and calculate his permissions.

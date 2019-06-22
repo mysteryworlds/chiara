@@ -11,13 +11,17 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class YamlPermissionGroupRepository extends YamlPermissionRepository implements PermissionGroupRepository {
 
+    private final Logger logger;
     private final Map<String, PermissionGroup> permissionGroups = Maps.newHashMap();
 
-    public YamlPermissionGroupRepository(Path config) {
+    public YamlPermissionGroupRepository(Path config, Logger logger) {
         super(config);
+        this.logger = logger;
         readGroups();
     }
 
@@ -27,26 +31,27 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
         try {
             PermissionGroupConfig permissionGroupConfig = objectMapper.readValue(getConfig().toFile(), PermissionGroupConfig.class);
+            for (Map.Entry<String, PermissionGroup> entry : permissionGroupConfig.getGroups().entrySet()) {
+                entry.getValue().setName(entry.getKey());
+            }
+
+            int groupAmount = permissionGroupConfig.getGroups().size();
+            logger.fine(String.format("Successfully read %d groups from permission config.", groupAmount));
+
             permissionGroups.putAll(permissionGroupConfig.getGroups());
         } catch (IOException e) {
-            throw new IllegalStateException("Couldn't read groups.", e);
+            logger.log(Level.SEVERE, "Couldn't read permission groups from config.", e);
         }
     }
 
     @Override
     public PermissionGroup findGroup(String groupName) {
 
-        PermissionGroup permissionGroup = permissionGroups.get(groupName);
-        if (permissionGroup == null) {
-            return null;
-        }
-
-        permissionGroup.setName(groupName);
-        return permissionGroup;
+        return permissionGroups.get(groupName);
     }
 
     @Override
-    public void saveGroups() {
+    public void writeGroups() {
 
         PermissionGroupConfig permissionGroupConfig = new PermissionGroupConfig(permissionGroups);
         ObjectMapper objectMapper = getObjectMapper();
@@ -54,7 +59,7 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
         try {
             objectMapper.writeValue(getConfig().toFile(), permissionGroupConfig);
         } catch (IOException e) {
-            throw new IllegalStateException("Couldn't write groups", e);
+            logger.log(Level.SEVERE, "Couldn't write permission groups to config.", e);
         }
     }
 

@@ -1,6 +1,6 @@
 package de.felixklauke.chiara.bukkit.listener;
 
-import de.felixklauke.chiara.bukkit.service.PermissionsService;
+import de.felixklauke.chiara.bukkit.service.PermissionService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,37 +12,37 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    private final PermissionsService permissionsService;
+    private final PermissionService permissionService;
 
-    public PlayerListener(PermissionsService permissionsService) {
-        this.permissionsService = permissionsService;
+    public PlayerListener(PermissionService permissionService) {
+        this.permissionService = permissionService;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
 
         Player player = event.getPlayer();
-        permissionsService.registerPlayer(player);
+        permissionService.registerPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         Player player = event.getPlayer();
-        permissionsService.unregisterPlayer(player);
+        permissionService.unregisterPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
 
         Player player = event.getPlayer();
-        permissionsService.unregisterPlayer(player);
+        permissionService.unregisterPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onWorldChange(PlayerChangedWorldEvent event) {
 
         Player player = event.getPlayer();
-        permissionsService.refreshPlayer(player);
+        permissionService.refreshPlayer(player);
     }
 }

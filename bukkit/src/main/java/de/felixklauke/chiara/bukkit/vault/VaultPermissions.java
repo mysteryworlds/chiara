@@ -1,11 +1,9 @@
 package de.felixklauke.chiara.bukkit.vault;
 
-import de.felixklauke.chiara.bukkit.service.PermissionsService;
+import de.felixklauke.chiara.bukkit.service.PermissionService;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -15,11 +13,11 @@ import java.util.UUID;
 public class VaultPermissions extends Permission {
 
     private final Plugin plugin;
-    private final PermissionsService permissionsService;
+    private final PermissionService permissionService;
 
-    public VaultPermissions(Plugin plugin, PermissionsService permissionsService) {
+    public VaultPermissions(Plugin plugin, PermissionService permissionService) {
         this.plugin = plugin;
-        this.permissionsService = permissionsService;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -63,11 +61,11 @@ public class VaultPermissions extends Permission {
         UUID uniqueId = getUniqueId(player);
 
         if (world == null) {
-            permissionsService.setUserPermission(uniqueId, permission, true);
+            permissionService.setUserPermission(uniqueId, permission, true);
             return true;
         }
 
-        permissionsService.setUserPermission(uniqueId, world, permission, true);
+        permissionService.setUserPermission(uniqueId, world, permission, true);
         return true;
     }
 
@@ -77,11 +75,11 @@ public class VaultPermissions extends Permission {
         UUID uniqueId = getUniqueId(player);
 
         if (world == null) {
-            permissionsService.unsetUserPermission(uniqueId, permission);
+            permissionService.unsetUserPermission(uniqueId, permission);
             return true;
         }
 
-        permissionsService.unsetUserPermission(uniqueId, world, permission);
+        permissionService.unsetUserPermission(uniqueId, world, permission);
         return true;
     }
 
@@ -89,21 +87,21 @@ public class VaultPermissions extends Permission {
     public boolean groupHas(String world, String group, String permission) {
 
         if (world == null) {
-            return permissionsService.hasGroupPermission(group, permission, true);
+            return permissionService.hasGroupPermission(group, permission, true);
         }
 
-        return permissionsService.hasGroupPermission(group, world, permission, true);
+        return permissionService.hasGroupPermission(group, world, permission, true);
     }
 
     @Override
     public boolean groupAdd(String world, String group, String permission) {
 
         if (world == null) {
-            permissionsService.setGroupPermission(group, permission, true);
+            permissionService.setGroupPermission(group, permission, true);
             return true;
         }
 
-        permissionsService.setGroupPermission(group, world, permission, true);
+        permissionService.setGroupPermission(group, world, permission, true);
         return true;
     }
 
@@ -111,11 +109,11 @@ public class VaultPermissions extends Permission {
     public boolean groupRemove(String world, String group, String permission) {
 
         if (world == null) {
-            permissionsService.unsetGroupPermission(group, permission);
+            permissionService.unsetGroupPermission(group, permission);
             return true;
         }
 
-        permissionsService.unsetGroupPermission(group, world, permission);
+        permissionService.unsetGroupPermission(group, world, permission);
         return true;
     }
 
@@ -123,14 +121,14 @@ public class VaultPermissions extends Permission {
     public boolean playerInGroup(String world, String player, String group) {
 
         UUID uniqueId = getUniqueId(player);
-        return permissionsService.getGroups(uniqueId).contains(group);
+        return permissionService.getGroups(uniqueId).contains(group);
     }
 
     @Override
     public boolean playerAddGroup(String world, String player, String group) {
 
         UUID uniqueId = getUniqueId(player);
-        permissionsService.addUserGroup(uniqueId, group);
+        permissionService.addUserGroup(uniqueId, group);
         return true;
     }
 
@@ -138,7 +136,7 @@ public class VaultPermissions extends Permission {
     public boolean playerRemoveGroup(String world, String player, String group) {
 
         UUID uniqueId = getUniqueId(player);
-        permissionsService.removeUserGroup(uniqueId, group);
+        permissionService.removeUserGroup(uniqueId, group);
         return true;
     }
 
@@ -146,14 +144,14 @@ public class VaultPermissions extends Permission {
     public String[] getPlayerGroups(String world, String player) {
 
         UUID uniqueId = getUniqueId(player);
-        return permissionsService.getGroups(uniqueId).toArray(new String[0]);
+        return permissionService.getGroups(uniqueId).toArray(new String[0]);
     }
 
     @Override
     public String getPrimaryGroup(String world, String player) {
 
         UUID uniqueId = getUniqueId(player);
-        List<String> groups = permissionsService.getGroups(uniqueId);
+        List<String> groups = permissionService.getGroups(uniqueId);
 
         if (groups.size() == 0) {
             return null;
@@ -165,7 +163,7 @@ public class VaultPermissions extends Permission {
     @Override
     public String[] getGroups() {
 
-        return permissionsService.getGroups();
+        return permissionService.getGroups();
     }
 
     private UUID getUniqueId(String player) {

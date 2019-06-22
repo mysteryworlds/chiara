@@ -9,9 +9,6 @@ import java.nio.file.Path;
 public class YamlPermissionRepository {
 
     private final Path config;
-    private final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()
-            .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES));
 
 
     public YamlPermissionRepository(Path config) {
@@ -23,6 +20,8 @@ public class YamlPermissionRepository {
     }
 
     protected ObjectMapper getObjectMapper() {
-        return objectMapper;
+        return new ObjectMapper(new YAMLFactory()
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES));
     }
 }

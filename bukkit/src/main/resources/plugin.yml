@@ -33,6 +33,7 @@ commands:
       §7[§cChiara§7]: §e/permissions - Zeigt dir die Command Hilfe.
       §7[§cChiara§7]: §e/permissions list - Zeigt dir alle deine Permissions.
       §7[§cChiara§7]: §e/permissions reload - Lädt die Permissions neu aus der Config.
+      §7[§cChiara§7]: §e/permissions group list - Listet alle verfügbaren Gruppen auf.
     aliases:
       - perms
       - perm
@@ -62,6 +63,7 @@ permissions:
       - chiara.command.permissions
       - chiara.command.permissions.list
       - chiara.command.permissions.reload
+      - chiara.command.permissions.group.*
 
   chiara.command.permissions:
     description: Permissions to work with permissions
@@ -71,3 +73,12 @@ permissions:
 
   chiara.command.permissions.reload:
     description: Reload the permissions from config
+
+  chiara.command.permissions.group.*:
+    description: Access to group commands
+    default: op
+    children:
+      - chiara.command.permissions.group.list
+
+  chiara.command.permissions.group.list:
+    description: Permission to print out all groups

@@ -1,6 +1,6 @@
 package de.felixklauke.chiara.bukkit.listener;
 
-import de.felixklauke.chiara.bukkit.service.PermissionsService;
+import de.felixklauke.chiara.bukkit.service.PermissionService;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,7 @@ import java.net.InetAddress;
 class PlayerListenerTest {
 
     @Mock
-    private PermissionsService permissionsService;
+    private PermissionService permissionService;
 
     @Mock
     private Player player;
@@ -25,7 +25,7 @@ class PlayerListenerTest {
 
     @BeforeEach
     void setUp() {
-        playerListener = new PlayerListener(permissionsService);
+        playerListener = new PlayerListener(permissionService);
     }
 
     @Test
@@ -35,6 +35,6 @@ class PlayerListenerTest {
 
         playerListener.onPlayerLogin(playerLoginEvent);
 
-        Mockito.verify(permissionsService).registerPlayer(Mockito.eq(player));
+        Mockito.verify(permissionService).registerPlayer(Mockito.eq(player));
     }
 }

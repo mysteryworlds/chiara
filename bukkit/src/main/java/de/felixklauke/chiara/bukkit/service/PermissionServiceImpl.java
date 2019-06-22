@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class PermissionsServiceImpl implements PermissionsService {
+public class PermissionServiceImpl implements PermissionService {
 
     /**
      * All currently managed permissions attachments.
@@ -30,7 +30,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     private final PermissionGroupRepository permissionGroupRepository;
     private final PermissionUserRepository permissionUserRepository;
 
-    public PermissionsServiceImpl(Plugin plugin, PermissionGroupRepository permissionGroupRepository, PermissionUserRepository permissionUserRepository) {
+    public PermissionServiceImpl(Plugin plugin, PermissionGroupRepository permissionGroupRepository, PermissionUserRepository permissionUserRepository) {
         this.plugin = plugin;
         this.permissionGroupRepository = permissionGroupRepository;
         this.permissionUserRepository = permissionUserRepository;

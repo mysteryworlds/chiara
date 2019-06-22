@@ -14,7 +14,7 @@ public interface PermissionGroupRepository {
      */
     PermissionGroup findGroup(String groupName);
 
-    void saveGroups();
+    void writeGroups();
 
     /**
      * Reload all groups and invalidate cache.

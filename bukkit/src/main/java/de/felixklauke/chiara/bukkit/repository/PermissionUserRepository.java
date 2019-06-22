@@ -22,7 +22,7 @@ public interface PermissionUserRepository {
     /**
      * Save all user data.
      */
-    void saveUsers();
+    void writeUsers();
 
     /**
      * Create a new user with the given unique id.
