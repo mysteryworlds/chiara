@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
 public class PermissionsServiceImpl implements PermissionsService {
 
@@ -84,6 +85,15 @@ public class PermissionsServiceImpl implements PermissionsService {
         permissionUserRepository.reloadUsers();
 
         Bukkit.getOnlinePlayers().forEach(this::refreshPlayer);
+    }
+
+    @Override
+    public String[] getGroups() {
+
+        return permissionGroupRepository.findGroups()
+                .stream()
+                .map(PermissionGroup::getName)
+                .toArray(String[]::new);
     }
 
     /**

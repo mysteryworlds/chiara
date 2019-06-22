@@ -2,6 +2,8 @@ package de.felixklauke.chiara.bukkit.repository;
 
 import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 
+import java.util.List;
+
 public interface PermissionGroupRepository {
 
     /**
@@ -18,4 +20,11 @@ public interface PermissionGroupRepository {
      * Reload all groups and invalidate cache.
      */
     void reloadGroups();
+
+    /**
+     * Find all groups.
+     *
+     * @return The groups.
+     */
+    List<PermissionGroup> findGroups();
 }

@@ -6,9 +6,10 @@ import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 import de.felixklauke.chiara.bukkit.model.PermissionGroupConfig;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class YamlPermissionGroupRepository extends YamlPermissionRepository implements PermissionGroupRepository {
@@ -62,5 +63,11 @@ public class YamlPermissionGroupRepository extends YamlPermissionRepository impl
 
         permissionGroups.clear();
         readGroups();
+    }
+
+    @Override
+    public List<PermissionGroup> findGroups() {
+
+        return new ArrayList<>(permissionGroups.values());
     }
 }

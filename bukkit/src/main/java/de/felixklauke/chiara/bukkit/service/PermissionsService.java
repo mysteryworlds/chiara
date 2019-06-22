@@ -29,4 +29,11 @@ public interface PermissionsService {
      * Reload all permissions.
      */
     void reloadPermissions();
+
+    /**
+     * Get the names of all groups.
+     *
+     * @return The names of the groups.
+     */
+    String[] getGroups();
 }
