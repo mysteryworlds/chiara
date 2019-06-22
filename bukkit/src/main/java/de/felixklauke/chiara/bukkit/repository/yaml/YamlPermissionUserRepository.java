@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class YamlPermissionUserRepository implements PermissionUserRepository {
@@ -47,7 +48,7 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
             });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while reading users.", e);
         }
     }
 
@@ -71,7 +72,7 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
         try (BufferedWriter writer = Files.newBufferedWriter(config)) {
             yaml.dump(document, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while writing users.", e);
         }
 
     }
@@ -103,6 +104,13 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
         permissionUsers.put(permissionUser.getUniqueId(), permissionUser);
     }
 
+    /**
+     * Convert the given map into a user with the given name.
+     *
+     * @param uniqueId The unique id.
+     * @param map The map.
+     * @return The user.
+     */
     private PermissionUser userFromMap(UUID uniqueId, Map<String, Object> map) {
 
         PermissionUser permissionUser = new PermissionUser();
@@ -113,6 +121,12 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
         return permissionUser;
     }
 
+    /**
+     * Convert the given user into a map.
+     *
+     * @param permissionUser The user.
+     * @return The map.
+     */
     private Map<String, Object> userToMap(PermissionUser permissionUser) {
 
         Map<String, Object> map = new LinkedHashMap<>();

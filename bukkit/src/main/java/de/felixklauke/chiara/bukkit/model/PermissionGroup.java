@@ -1,5 +1,8 @@
 package de.felixklauke.chiara.bukkit.model;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +30,7 @@ public class PermissionGroup {
     }
 
     public Map<String, Boolean> getPermissions() {
-        return permissions == null ? new HashMap<>() : new HashMap<>(permissions);
+        return permissions == null ? Maps.newLinkedHashMap() : Maps.newLinkedHashMap(permissions);
     }
 
     public String getName() {
@@ -39,7 +42,7 @@ public class PermissionGroup {
     }
 
     public List<String> getInheritance() {
-        return inheritance == null ? new ArrayList<>() : new ArrayList<>(inheritance);
+        return inheritance == null ? Lists.newLinkedList() : Lists.newLinkedList(inheritance);
     }
 
     public void setInheritance(List<String> inheritance) {
@@ -47,7 +50,7 @@ public class PermissionGroup {
     }
 
     public Map<String, Map<String, Boolean>> getWorldPermissions() {
-        return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+        return worldPermissions == null ? Maps.newLinkedHashMap() : Maps.newHashMap(worldPermissions);
     }
 
     public void setWorldPermissions(Map<String, Map<String, Boolean>> worldPermissions) {
@@ -57,17 +60,17 @@ public class PermissionGroup {
     public Map<String, Boolean> getWorldPermissions(String worldName) {
 
         if (worldPermissions == null) {
-            return new HashMap<>();
+            return Maps.newLinkedHashMap();
         }
 
         Map<String, Boolean> worldPermissions = this.worldPermissions.get(worldName);
-        return worldPermissions == null ? new HashMap<>() : new HashMap<>(worldPermissions);
+        return worldPermissions == null ? Maps.newLinkedHashMap() : Maps.newLinkedHashMap(worldPermissions);
     }
 
     public void setPermission(String permission, boolean value) {
 
         if (permissions == null) {
-            permissions = new HashMap<>();
+            permissions = Maps.newLinkedHashMap();
         }
 
         permissions.put(permission, value);
@@ -76,10 +79,10 @@ public class PermissionGroup {
     public void setWorldPermission(String world, String permission, boolean value) {
 
         if (worldPermissions == null) {
-            worldPermissions = new HashMap<>();
+            worldPermissions = Maps.newLinkedHashMap();
         }
 
-        Map<String, Boolean> worldPermissions = this.worldPermissions.computeIfAbsent(world, k -> new HashMap<>());
+        Map<String, Boolean> worldPermissions = this.worldPermissions.computeIfAbsent(world, k -> Maps.newLinkedHashMap());
         worldPermissions.put(permission, value);
     }
 

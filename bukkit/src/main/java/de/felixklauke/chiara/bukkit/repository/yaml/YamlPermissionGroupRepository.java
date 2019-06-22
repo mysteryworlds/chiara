@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class YamlPermissionGroupRepository implements PermissionGroupRepository {
@@ -44,7 +45,7 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
                 permissionGroups.put(key, permissionGroup);
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while reading groups.", e);
         }
     }
 
@@ -74,7 +75,7 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
         try (BufferedWriter writer = Files.newBufferedWriter(config)) {
             yaml.dump(document, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error while writing groups.", e);
         }
     }
 
@@ -105,6 +106,12 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
         permissionGroups.put(permissionGroup.getName(), permissionGroup);
     }
 
+    /**
+     * Convert the given permission group into a map.
+     *
+     * @param permissionGroup The permission group.
+     * @return The map.
+     */
     private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
 
         Map<String, Object> map = new LinkedHashMap<>();
@@ -114,6 +121,13 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
         return map;
     }
 
+    /**
+     * Convert the given map into a group with the given name.
+     *
+     * @param groupName The name of the group.
+     * @param map The map.
+     * @return The group.
+     */
     private PermissionGroup groupFromMap(String groupName, Map<String, Object> map) {
 
         PermissionGroup permissionGroup = new PermissionGroup();

@@ -1,6 +1,8 @@
 package de.felixklauke.chiara.bukkit.service;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 import de.felixklauke.chiara.bukkit.model.PermissionUser;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
@@ -103,7 +105,7 @@ public class PermissionServiceImpl implements PermissionService {
 
         PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
         if (permissionUser == null) {
-            return new ArrayList<>();
+            return Lists.newArrayList();
         }
 
         return permissionUser.getGroups();
@@ -272,7 +274,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     private Set<String> getChildGroups(String group) {
 
-        Set<String> childGroups = new HashSet<>();
+        Set<String> childGroups = Sets.newHashSet();
         List<PermissionGroup> permissionGroups = permissionGroupRepository.findGroups();
 
         for (PermissionGroup permissionGroup : permissionGroups) {
@@ -355,11 +357,11 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionUser permissionUser = getUser(uniqueId);
 
         if (permissionUser == null) {
-            return new HashMap<>();
+            return Maps.newLinkedHashMap();
         }
 
         // The real permissions
-        Map<String, Boolean> permissions = new LinkedHashMap<>();
+        Map<String, Boolean> permissions = Maps.newLinkedHashMap();
 
         // Calculate group permissions
         List<String> groups = permissionUser.getGroups();
@@ -393,11 +395,11 @@ public class PermissionServiceImpl implements PermissionService {
         PermissionGroup group = getGroup(groupName);
 
         if (group == null) {
-            return new HashMap<>();
+            return Maps.newLinkedHashMap();
         }
 
         // The real permissions
-        Map<String, Boolean> permissions = new LinkedHashMap<>();
+        Map<String, Boolean> permissions = Maps.newLinkedHashMap();
 
         // Calculate inherited permissions
         List<String> inheritance = group.getInheritance();
