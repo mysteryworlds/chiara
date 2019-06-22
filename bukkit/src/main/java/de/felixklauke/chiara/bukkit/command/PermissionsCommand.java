@@ -34,6 +34,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                     return showPermissions(commandSender, command);
                 } else if (arg.equalsIgnoreCase("reload")) {
                     return reloadPermissions(commandSender, command);
+                } else if (arg.equalsIgnoreCase("save")) {
+                    return savePermissions(commandSender, command);
                 }
 
                 return false;
@@ -52,6 +54,27 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
         }
+    }
+
+    /**
+     * Try to save the permissions to disk.
+     *
+     * @param commandSender The command sender.
+     * @param command       The command.
+     *
+     * @return If ots a valid command.
+     */
+    private boolean savePermissions(CommandSender commandSender, Command command) {
+
+        // Check permission
+        if (!commandSender.hasPermission("chiara.command.permissions.save")) {
+            commandSender.sendMessage(command.getPermissionMessage());
+            return true;
+        }
+
+        permissionService.savePermissions();
+        commandSender.sendMessage(String.format("%sThe permissions have been saved.", MESSAGE_PREFIX));
+        return true;
     }
 
     /**
@@ -84,7 +107,7 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
     /**
      * Reload the permissions users and groups.
      *
-     * @param commandSender The oe who wants to reload.
+     * @param commandSender The one who wants to reload.
      * @param command       The command.
      *
      * @return If its a valid command.
@@ -136,7 +159,7 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
         // Check command ident level and copy partial matches
         switch (args.length) {
             case 1: {
-                List<String> candidates = Arrays.asList("list", "reload", "group");
+                List<String> candidates = Arrays.asList("list", "reload", "save", "group");
                 StringUtil.copyPartialMatches(args[0], candidates, completions);
                 break;
             }

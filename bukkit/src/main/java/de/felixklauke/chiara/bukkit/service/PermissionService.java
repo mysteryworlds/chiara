@@ -34,6 +34,11 @@ public interface PermissionService {
     void reloadPermissions();
 
     /**
+     * Save all permissions.
+     */
+    void savePermissions();
+
+    /**
      * Get the names of all groups.
      *
      * @return The names of the groups.

@@ -88,6 +88,13 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public void savePermissions() {
+
+        permissionGroupRepository.writeGroups();
+        permissionUserRepository.writeUsers();
+    }
+
+    @Override
     public String[] getGroups() {
 
         return permissionGroupRepository.findGroups()

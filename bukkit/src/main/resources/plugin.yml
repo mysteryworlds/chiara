@@ -30,9 +30,10 @@ website: https://www.felix-klauke.com
 commands:
   permissions:
     usage: |
-      §7[§cChiara§7]: §e/permissions - Zeigt dir die Command Hilfe.
-      §7[§cChiara§7]: §e/permissions list - Zeigt dir alle deine Permissions.
-      §7[§cChiara§7]: §e/permissions reload - Lädt die Permissions neu aus der Config.
+      §7[§cChiara§7]: §e/permissions - Shows you the command help.
+      §7[§cChiara§7]: §e/permissions list - Shows all your permissions.
+      §7[§cChiara§7]: §e/permissions reload - Reloads the permissions from the config.
+      §7[§cChiara§7]: §e/permissions save - Saves the permissions to the config.
       §7[§cChiara§7]: §e/permissions group list - Listet alle verfügbaren Gruppen auf.
     aliases:
       - perms
@@ -60,6 +61,7 @@ permissions:
       - chiara.command.permissions
       - chiara.command.permissions.list
       - chiara.command.permissions.reload
+      - chiara.command.permissions.save
       - chiara.command.permissions.group.*
 
   chiara.command.permissions:
@@ -69,7 +71,10 @@ permissions:
     description: Permissions to show all your permissions
 
   chiara.command.permissions.reload:
-    description: Reload the permissions from config
+    description: Reload the permissions from the config
+
+  chiara.command.permissions.save:
+    description: Save the permissions to the config
 
   chiara.command.permissions.group.*:
     description: Access to group commands

@@ -41,8 +41,7 @@ public class ChiaraPlugin extends JavaPlugin {
         // Unregister all players
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> permissionService.unregisterPlayer(onlinePlayer));
 
-        groupRepository.writeGroups();
-        userRepository.writeUsers();
+        permissionService.savePermissions();
     }
 
     @Override
