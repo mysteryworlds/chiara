@@ -9,7 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.util.StringUtil;
 
@@ -45,7 +44,7 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                     return savePermissions(commandSender, command);
                 }
 
-                return false;
+                break;
             }
             case 2: {
                 String arg = args[0];
@@ -56,6 +55,29 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                         return showGroups(commandSender, command);
                     }
                 }
+
+                break;
+            }
+            case 4: {
+                String arg0 = args[0];
+
+                if (arg0.equalsIgnoreCase("user")) {
+
+                    // The selected user
+                    String arg1 = args[1];
+                    String arg2 = args[2];
+
+                    if (arg2.equalsIgnoreCase("group")) {
+
+                        String arg3 = args[3];
+                        if (arg3.equalsIgnoreCase("list")) {
+
+                            return showUserGroups(commandSender, command, arg1);
+                        }
+                    }
+                }
+
+                break;
             }
             case 5: {
                 String arg0 = args[0];
@@ -63,8 +85,8 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
 
                     // The selected user
                     String arg1 = args[1];
-
                     String arg2 = args[2];
+
                     if (arg2.equalsIgnoreCase("group")) {
 
                         String arg3 = args[3];
@@ -82,13 +104,58 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
+
+                break;
             }
             default: {
                 return false;
             }
         }
+
+        return false;
     }
 
+    /**
+     * Show the groups of the given user.
+     *
+     * @param commandSender The command sender.
+     * @param command The command.
+     * @param playerName The name of the user.
+     * @return If its a valid command.
+     */
+    private boolean showUserGroups(CommandSender commandSender, Command command, String playerName) {
+
+        // Check permission
+        if (!commandSender.hasPermission("chiara.command.permissions.user.group.list")) {
+            commandSender.sendMessage(command.getPermissionMessage());
+            return true;
+        }
+
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(playerName);
+        List<String> groups = permissionService.getGroups(uniqueId);
+
+        if (groups.isEmpty()) {
+            commandSender.sendMessage(String.format("%sIt seems like %s%s%s isn't member of any group.", MESSAGE_PREFIX, ChatColor.GOLD, playerName, ChatColor.YELLOW));
+        } else {
+            commandSender.sendMessage(String.format("%s%s%s%s is member %s%d%s groups:", MESSAGE_PREFIX, ChatColor.GOLD, playerName, ChatColor.YELLOW, ChatColor.GOLD, groups.size(), ChatColor.YELLOW));
+
+            for (String group : groups) {
+                commandSender.sendMessage(String.format("%s- %s%s", MESSAGE_PREFIX, ChatColor.GOLD, group));
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Try to remove a user from a group.
+     *
+     * @param commandSender The command sender.
+     * @param command The command.
+     * @param playerName The name of the user.
+     * @param groupName The name of the group.
+     * @return If its a valid command.
+     */
     private boolean removeUserGroup(CommandSender commandSender, Command command, String playerName, String groupName) {
 
         // Check permission
@@ -266,7 +333,7 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
 
                     if (arg2.equalsIgnoreCase("group")) {
 
-                        List<String> candidates = Arrays.asList("add", "remove");
+                        List<String> candidates = Arrays.asList("add", "remove", "list");
                         StringUtil.copyPartialMatches(args[3], candidates, completions);
                     }
                 }

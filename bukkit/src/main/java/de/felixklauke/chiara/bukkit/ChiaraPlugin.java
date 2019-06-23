@@ -12,12 +12,14 @@ import de.felixklauke.chiara.bukkit.vault.VaultPermissions;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.OptionalDouble;
 import java.util.logging.Logger;
 
 public class ChiaraPlugin extends JavaPlugin {
@@ -96,7 +98,23 @@ public class ChiaraPlugin extends JavaPlugin {
         getLogger().info("Setting up Metrics.");
 
         Metrics metrics = new Metrics(this);
-        Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups", () -> permissionService.getGroups().length);
+
+        Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups", () -> permissionService.getGroups().size());
+        Metrics.SingleLineChart averageFoodLevelChart = new Metrics.SingleLineChart("average_food_level", () -> {
+            OptionalDouble average = Bukkit.getOnlinePlayers()
+                    .stream()
+                    .mapToInt(Player::getFoodLevel).average();
+            return (int) average.orElse(-1D);
+        });
+        Metrics.SingleLineChart averageExperienceLevelChart = new Metrics.SingleLineChart("average_experience_level", () -> {
+            OptionalDouble average = Bukkit.getOnlinePlayers()
+                    .stream()
+                    .mapToInt(Player::getLevel).average();
+            return (int) average.orElse(-1D);
+        });
+
         metrics.addCustomChart(groupsChart);
+        metrics.addCustomChart(averageFoodLevelChart);
+        metrics.addCustomChart(averageExperienceLevelChart);
     }
 }

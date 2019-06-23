@@ -35,8 +35,9 @@ commands:
       §7[§cChiara§7]: §e/permissions reload - Reloads the permissions from the config.
       §7[§cChiara§7]: §e/permissions save - Saves the permissions to the config.
       §7[§cChiara§7]: §e/permissions group list - Shows all available groups.
-      §7[§cChiara§7]: §e/permissions user group add (name) - Add a user to a group.
-      §7[§cChiara§7]: §e/permissions user group remove (name) - Remove a user from a group.
+      §7[§cChiara§7]: §e/permissions user (user) group list - List all groups of a user.
+      §7[§cChiara§7]: §e/permissions user (user) group add (name) - Add a user to a group.
+      §7[§cChiara§7]: §e/permissions user (user) group remove (name) - Remove a user from a group.
     aliases:
       - perms
       - perm
@@ -97,9 +98,13 @@ permissions:
     children:
       - chiara.command.permissions.user.group.add
       - chiara.command.permissions.user.group.remove
+      - chiara.command.permissions.user.group.list
 
   chiara.command.permissions.user.group.add:
     description: Permission to add a user to a group
 
   chiara.command.permissions.user.group.remove:
     description: Permission to remove a user from a group
+
+  chiara.command.permissions.user.group.list:
+    description: Permission to list a users groups.
