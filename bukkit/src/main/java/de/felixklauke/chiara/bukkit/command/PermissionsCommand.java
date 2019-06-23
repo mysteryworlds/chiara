@@ -119,8 +119,9 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Show the groups of the given user.
      *
      * @param commandSender The command sender.
-     * @param command The command.
-     * @param playerName The name of the user.
+     * @param command       The command.
+     * @param playerName    The name of the user.
+     *
      * @return If its a valid command.
      */
     private boolean showUserGroups(CommandSender commandSender, Command command, String playerName) {
@@ -151,9 +152,10 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Try to remove a user from a group.
      *
      * @param commandSender The command sender.
-     * @param command The command.
-     * @param playerName The name of the user.
-     * @param groupName The name of the group.
+     * @param command       The command.
+     * @param playerName    The name of the user.
+     * @param groupName     The name of the group.
+     *
      * @return If its a valid command.
      */
     private boolean removeUserGroup(CommandSender commandSender, Command command, String playerName, String groupName) {
@@ -174,9 +176,10 @@ public class PermissionsCommand implements CommandExecutor, TabCompleter {
      * Try to add a user to a group.
      *
      * @param commandSender The command sender.
-     * @param command The command.
-     * @param playerName The player to add to a group.
-     * @param groupName The group.
+     * @param command       The command.
+     * @param playerName    The player to add to a group.
+     * @param groupName     The group.
+     *
      * @return If its a valid command.
      */
     private boolean addUserGroup(CommandSender commandSender, Command command, String playerName, String groupName) {
