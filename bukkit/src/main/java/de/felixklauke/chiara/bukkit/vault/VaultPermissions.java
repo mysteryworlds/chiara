@@ -1,6 +1,7 @@
 package de.felixklauke.chiara.bukkit.vault;
 
 import de.felixklauke.chiara.bukkit.service.PermissionService;
+import de.felixklauke.chiara.bukkit.util.BukkitUtils;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -52,7 +53,7 @@ public class VaultPermissions extends Permission {
     @Override
     public boolean playerAdd(String world, String player, String permission) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
 
         if (world == null) {
             permissionService.setUserPermission(uniqueId, permission, true);
@@ -66,7 +67,7 @@ public class VaultPermissions extends Permission {
     @Override
     public boolean playerRemove(String world, String player, String permission) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
 
         if (world == null) {
             permissionService.unsetUserPermission(uniqueId, permission);
@@ -114,14 +115,14 @@ public class VaultPermissions extends Permission {
     @Override
     public boolean playerInGroup(String world, String player, String group) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
         return permissionService.getGroups(uniqueId).contains(group);
     }
 
     @Override
     public boolean playerAddGroup(String world, String player, String group) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
         permissionService.addUserGroup(uniqueId, group);
         return true;
     }
@@ -129,7 +130,7 @@ public class VaultPermissions extends Permission {
     @Override
     public boolean playerRemoveGroup(String world, String player, String group) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
         permissionService.removeUserGroup(uniqueId, group);
         return true;
     }
@@ -137,14 +138,14 @@ public class VaultPermissions extends Permission {
     @Override
     public String[] getPlayerGroups(String world, String player) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
         return permissionService.getGroups(uniqueId).toArray(new String[0]);
     }
 
     @Override
     public String getPrimaryGroup(String world, String player) {
 
-        UUID uniqueId = getUniqueId(player);
+        UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
         List<String> groups = permissionService.getGroups(uniqueId);
 
         if (groups.size() == 0) {
@@ -157,18 +158,12 @@ public class VaultPermissions extends Permission {
     @Override
     public String[] getGroups() {
 
-        return permissionService.getGroups();
+        return permissionService.getGroups().toArray(new String[0]);
     }
 
     @Override
     public boolean hasGroupSupport() {
 
         return true;
-    }
-
-    private UUID getUniqueId(String player) {
-
-        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-        return offlinePlayer.getUniqueId();
     }
 }

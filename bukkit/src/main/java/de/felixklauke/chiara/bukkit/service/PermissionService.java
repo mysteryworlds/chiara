@@ -43,7 +43,7 @@ public interface PermissionService {
      *
      * @return The names of the groups.
      */
-    String[] getGroups();
+    List<String> getGroups();
 
     /**
      * Get a list of groups of the player with the given unique id.

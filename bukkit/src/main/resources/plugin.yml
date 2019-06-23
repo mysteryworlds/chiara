@@ -34,7 +34,9 @@ commands:
       §7[§cChiara§7]: §e/permissions list - Shows all your permissions.
       §7[§cChiara§7]: §e/permissions reload - Reloads the permissions from the config.
       §7[§cChiara§7]: §e/permissions save - Saves the permissions to the config.
-      §7[§cChiara§7]: §e/permissions group list - Listet alle verfügbaren Gruppen auf.
+      §7[§cChiara§7]: §e/permissions group list - Shows all available groups.
+      §7[§cChiara§7]: §e/permissions user group add (name) - Add a user to a group.
+      §7[§cChiara§7]: §e/permissions user group remove (name) - Remove a user from a group.
     aliases:
       - perms
       - perm
@@ -63,6 +65,7 @@ permissions:
       - chiara.command.permissions.reload
       - chiara.command.permissions.save
       - chiara.command.permissions.group.*
+      - chiara.command.permissions.user.*
 
   chiara.command.permissions:
     description: Permissions to work with permissions
@@ -83,3 +86,20 @@ permissions:
 
   chiara.command.permissions.group.list:
     description: Permission to print out all groups
+
+  chiara.command.permissions.user.*:
+    description: Access to iser commands
+    children:
+      - chiara.command.permissions.user.group.*
+
+  chiara.command.permissions.user.group.*:
+    description: Access to user group commands
+    children:
+      - chiara.command.permissions.user.group.add
+      - chiara.command.permissions.user.group.remove
+
+  chiara.command.permissions.user.group.add:
+    description: Permission to add a user to a group
+
+  chiara.command.permissions.user.group.remove:
+    description: Permission to remove a user from a group

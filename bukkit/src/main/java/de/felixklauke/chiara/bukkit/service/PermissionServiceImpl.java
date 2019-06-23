@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PermissionServiceImpl implements PermissionService {
 
@@ -95,12 +96,12 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public String[] getGroups() {
+    public List<String> getGroups() {
 
         return permissionGroupRepository.findGroups()
                 .stream()
                 .map(PermissionGroup::getName)
-                .toArray(String[]::new);
+                .collect(Collectors.toList());
     }
 
     @Override
