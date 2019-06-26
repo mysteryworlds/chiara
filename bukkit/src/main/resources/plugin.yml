@@ -11,7 +11,7 @@ main: de.felixklauke.chiara.bukkit.ChiaraPlugin
 description: Hassle free and stupid simple permissions plugin
 
 # Implemented against api version delivered by maven
-api-version: ${spigot.version}
+api-version: "1.14"
 
 # Author
 author: Felix Klauke <info@felix-klauke.com>
