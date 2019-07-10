@@ -81,11 +81,67 @@ There is a general management command:
 `/permissions [list|reload]` (Aliases: `perms`, `perm`)
 
 # Permissions
-```text
-Admin Permission                   : chiara.*
-Access to all commands             : chiara.command.*
-Full access to permissions command : chiara.command.permissions.*
-Command Permissions                : chiara.command.permissions
-Command Permissions list           : chiara.command.permissions.list
-Command Permissions reload         : chiara.command.permissions.reload
+```yaml
+permissions:
+
+  chiara.*:
+    description: Gives you full access to chiara
+    children:
+      - chiara.command.*
+
+  chiara.command.*:
+    description: Gives you access to all commands
+    children:
+      - chiara.command.permissions.*
+
+  chiara.command.permissions.*:
+    description: Permissions to work with all permissions
+    children:
+      - chiara.command.permissions
+      - chiara.command.permissions.list
+      - chiara.command.permissions.reload
+      - chiara.command.permissions.save
+      - chiara.command.permissions.group.*
+      - chiara.command.permissions.user.*
+
+  chiara.command.permissions:
+    description: Permissions to work with permissions
+
+  chiara.command.permissions.list:
+    description: Permissions to show all your permissions
+
+  chiara.command.permissions.reload:
+    description: Reload the permissions from the config
+
+  chiara.command.permissions.save:
+    description: Save the permissions to the config
+
+  chiara.command.permissions.group.*:
+    description: Access to group commands
+    children:
+      - chiara.command.permissions.group.list
+
+  chiara.command.permissions.group.list:
+    description: Permission to print out all groups
+
+  chiara.command.permissions.user.*:
+    description: Access to iser commands
+    children:
+      - chiara.command.permissions.user.group.*
+
+  chiara.command.permissions.user.group.*:
+    description: Access to user group commands
+    children:
+      - chiara.command.permissions.user.group.add
+      - chiara.command.permissions.user.group.remove
+      - chiara.command.permissions.user.group.list
+
+  chiara.command.permissions.user.group.add:
+    description: Permission to add a user to a group
+
+  chiara.command.permissions.user.group.remove:
+    description: Permission to remove a user from a group
+
+  chiara.command.permissions.user.group.list:
+    description: Permission to list a users groups.
 ```
