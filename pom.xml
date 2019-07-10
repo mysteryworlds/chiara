@@ -1,185 +1,187 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>chiara-parent</artifactId>
 
-    <groupId>de.felixklauke.chiara</groupId>
-    <artifactId>chiara-parent</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0</version>
-    <modules>
-        <module>bukkit</module>
-    </modules>
+  <build>
+    <plugins>
 
-    <properties>
-        <!-- Sonar -->
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
-        <sonar.language>java</sonar.language>
+      <!-- Maven Compiler -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${maven.plugin.compiler.version}</version>
+      </plugin>
 
-        <!-- Maven -->
-        <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
-        <maven.plugin.release.version>2.5.3</maven.plugin.release.version>
-        <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
-        <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
-        <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
-        <maven.plugin.sonar.version>3.6.0.1398</maven.plugin.sonar.version>
-        <maven.plugin.jacoco.version>0.8.4</maven.plugin.jacoco.version>
-    </properties>
+      <!-- Maven Release -->
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${maven.plugin.release.version}</version>
+      </plugin>
 
-    <distributionManagement>
-        <repository>
-            <id>klauke-enterprises-maven-releases</id>
-            <name>Klauke Enterprises Maven Releases</name>
-            <url>https://repository.klauke-enterprises.com/repository/maven-releases/</url>
-        </repository>
+      <!-- Maven Surefire -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${maven.plguin.surefire.version}</version>
+      </plugin>
 
-        <snapshotRepository>
-            <id>klauke-enterprises-maven-snapshots</id>
-            <name>Klauke Enterprises Maven Snapshots</name>
-            <url>https://repository.klauke-enterprises.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+      <!-- Maven Source plugin -->
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <id>attach-sources</id>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${maven.plugin.source.version}</version>
+      </plugin>
 
-    <dependencies>
-        <!-- JUnit Jupiter -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.4.2</version>
-            <scope>test</scope>
-        </dependency>
+      <!-- Maven JavaDocs plugin -->
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <id>attach-javadocs</id>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${maven.plugin.javadoc.version}</version>
+      </plugin>
 
-        <!-- Junit Jupiter Engine -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.4.2</version>
-            <scope>test</scope>
-        </dependency>
+      <!-- SonarQube -->
+      <plugin>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <version>${maven.plugin.sonar.version}</version>
+      </plugin>
 
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>2.28.2</version>
-            <scope>test</scope>
-        </dependency>
+      <!-- JaCocCo -->
+      <plugin>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <append>true</append>
+          <destFile>${sonar.jacoco.reportPaths}</destFile>
+        </configuration>
+        <executions>
+          <!-- Prepare Agent -->
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <id>jacoco-initialize</id>
+          </execution>
 
-    </dependencies>
+          <!-- Create reports -->
+          <execution>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <id>jacoco-site</id>
+            <phase>package</phase>
+          </execution>
+        </executions>
 
-    <build>
-        <plugins>
+        <!-- Aggregate the reports in the given sonar repo -->
+        <groupId>org.jacoco</groupId>
 
-            <!-- Maven Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.plugin.compiler.version}</version>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
+        <version>${maven.plugin.jacoco.version}</version>
+      </plugin>
 
-            <!-- Maven Release -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.plugin.release.version}</version>
-            </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <!-- JUnit Jupiter -->
+    <dependency>
+      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+      <version>5.4.2</version>
+    </dependency>
 
-            <!-- Maven Surefire -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.plguin.surefire.version}</version>
-            </plugin>
+    <!-- Junit Jupiter Engine -->
+    <dependency>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+      <version>5.4.2</version>
+    </dependency>
 
-            <!-- Maven Source plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven.plugin.source.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <!-- Mockito -->
+    <dependency>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+      <version>2.28.2</version>
+    </dependency>
 
-            <!-- Maven JavaDocs plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven.plugin.javadoc.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+  </dependencies>
+  <developers>
+    <developer>
+      <email>info@felix-klauke.de</email>
+      <id>felixklauke</id>
+      <name>Felix Klauke</name>
+    </developer>
+  </developers>
+  <distributionManagement>
+    <repository>
+      <id>klauke-enterprises-maven-releases</id>
+      <name>Klauke Enterprises Maven Releases</name>
+      <url>https://repository.klauke-enterprises.com/repository/maven-releases/</url>
+    </repository>
 
-            <!-- SonarQube -->
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${maven.plugin.sonar.version}</version>
-            </plugin>
+    <snapshotRepository>
+      <id>klauke-enterprises-maven-snapshots</id>
+      <name>Klauke Enterprises Maven Snapshots</name>
+      <url>https://repository.klauke-enterprises.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <groupId>de.felixklauke.chiara</groupId>
 
-            <!-- JaCocCo -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${maven.plugin.jacoco.version}</version>
+  <modelVersion>4.0.0</modelVersion>
 
-                <!-- Aggregate the reports in the given sonar repo -->
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPaths}</destFile>
-                    <append>true</append>
-                </configuration>
+  <modules>
+    <module>bukkit</module>
+  </modules>
 
-                <executions>
-                    <!-- Prepare Agent -->
-                    <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
+  <packaging>pom</packaging>
 
-                    <!-- Create reports -->
-                    <execution>
-                        <id>jacoco-site</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+  <properties>
+    <!-- Sonar -->
+    <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
+    <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
+    <maven.plugin.jacoco.version>0.8.4</maven.plugin.jacoco.version>
 
-        </plugins>
-    </build>
+    <!-- Maven -->
+    <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
+    <maven.plugin.release.version>2.5.3</maven.plugin.release.version>
+    <maven.plugin.sonar.version>3.6.0.1398</maven.plugin.sonar.version>
+    <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
+    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.language>java</sonar.language>
+  </properties>
 
-    <developers>
-        <developer>
-            <id>felixklauke</id>
-            <name>Felix Klauke</name>
-            <email>info@felix-klauke.de</email>
-        </developer>
-    </developers>
-
-    <scm>
-        <connection>scm:git:git:https://github.com/FelixKlauke/chiara</connection>
-        <developerConnection>scm:git:git:https://github.com/FelixKlauke/chiara</developerConnection>
-        <url>https://github.com/FelixKlauke/chiara</url>
-      <tag>chiara-parent-1.0.0</tag>
+  <scm>
+    <connection>scm:git:git:https://github.com/FelixKlauke/chiara</connection>
+    <developerConnection>scm:git:git:https://github.com/FelixKlauke/chiara</developerConnection>
+    <tag>chiara-parent-1.0.0</tag>
+    <url>https://github.com/FelixKlauke/chiara</url>
   </scm>
+
+  <version>1.0.0</version>
 
 </project>

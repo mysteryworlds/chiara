@@ -8,446 +8,444 @@ import de.felixklauke.chiara.bukkit.model.PermissionUser;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
 import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import de.felixklauke.chiara.bukkit.util.ReflectionUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.plugin.Plugin;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.plugin.Plugin;
 
 public class PermissionServiceImpl implements PermissionService {
 
-    /**
-     * All currently managed permissions attachments.
-     */
-    private final Map<UUID, PermissionAttachment> permissionAttachments = Maps.newConcurrentMap();
-    private final Plugin plugin;
-    private final PermissionGroupRepository permissionGroupRepository;
-    private final PermissionUserRepository permissionUserRepository;
+  /**
+   * All currently managed permissions attachments.
+   */
+  private final Map<UUID, PermissionAttachment> permissionAttachments = Maps.newConcurrentMap();
+  private final Plugin plugin;
+  private final PermissionGroupRepository permissionGroupRepository;
+  private final PermissionUserRepository permissionUserRepository;
 
-    public PermissionServiceImpl(Plugin plugin, PermissionGroupRepository permissionGroupRepository, PermissionUserRepository permissionUserRepository) {
-        this.plugin = plugin;
-        this.permissionGroupRepository = permissionGroupRepository;
-        this.permissionUserRepository = permissionUserRepository;
+  public PermissionServiceImpl(Plugin plugin, PermissionGroupRepository permissionGroupRepository,
+      PermissionUserRepository permissionUserRepository) {
+    this.plugin = plugin;
+    this.permissionGroupRepository = permissionGroupRepository;
+    this.permissionUserRepository = permissionUserRepository;
+  }
+
+  @Override
+  public void registerPlayer(Player player) {
+
+    UUID uniqueId = player.getUniqueId();
+
+    if (permissionAttachments.containsKey(uniqueId)) {
+      unregisterPlayer(player);
     }
 
-    @Override
-    public void registerPlayer(Player player) {
+    // Add permission attachment
+    PermissionAttachment attachment = player.addAttachment(plugin);
+    permissionAttachments.put(uniqueId, attachment);
 
-        UUID uniqueId = player.getUniqueId();
+    // Calculate permission attachment
+    calculatePermissionAttachment(player);
+  }
 
-        if (permissionAttachments.containsKey(uniqueId)) {
-            unregisterPlayer(player);
-        }
+  @Override
+  public void unregisterPlayer(Player player) {
 
-        // Add permission attachment
-        PermissionAttachment attachment = player.addAttachment(plugin);
-        permissionAttachments.put(uniqueId, attachment);
+    UUID uniqueId = player.getUniqueId();
 
-        // Calculate permission attachment
-        calculatePermissionAttachment(player);
+    if (!permissionAttachments.containsKey(uniqueId)) {
+      return;
     }
 
-    @Override
-    public void unregisterPlayer(Player player) {
+    // Delete permission attachment
+    PermissionAttachment attachment = permissionAttachments.get(uniqueId);
+    player.removeAttachment(attachment);
+    permissionAttachments.remove(uniqueId);
+  }
 
-        UUID uniqueId = player.getUniqueId();
+  @Override
+  public void refreshPlayer(Player player) {
 
-        if (!permissionAttachments.containsKey(uniqueId)) {
-            return;
-        }
-
-        // Delete permission attachment
-        PermissionAttachment attachment = permissionAttachments.get(uniqueId);
-        player.removeAttachment(attachment);
-        permissionAttachments.remove(uniqueId);
+    UUID uniqueId = player.getUniqueId();
+    if (permissionAttachments.containsKey(uniqueId)) {
+      calculatePermissionAttachment(player);
+      return;
     }
 
-    @Override
-    public void refreshPlayer(Player player) {
+    registerPlayer(player);
+  }
 
-        UUID uniqueId = player.getUniqueId();
-        if (permissionAttachments.containsKey(uniqueId)) {
-            calculatePermissionAttachment(player);
-            return;
-        }
+  @Override
+  public void reloadPermissions() {
 
-        registerPlayer(player);
+    permissionGroupRepository.reloadGroups();
+    permissionUserRepository.reloadUsers();
+
+    Bukkit.getOnlinePlayers().forEach(this::refreshPlayer);
+  }
+
+  @Override
+  public void savePermissions() {
+
+    permissionGroupRepository.writeGroups();
+    permissionUserRepository.writeUsers();
+  }
+
+  @Override
+  public List<String> getGroups() {
+
+    return permissionGroupRepository.findGroups()
+        .stream()
+        .map(PermissionGroup::getName)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<String> getGroups(UUID uniqueId) {
+
+    PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
+    if (permissionUser == null) {
+      return Lists.newArrayList();
     }
 
-    @Override
-    public void reloadPermissions() {
+    return permissionUser.getGroups();
+  }
 
-        permissionGroupRepository.reloadGroups();
-        permissionUserRepository.reloadUsers();
+  @Override
+  public void setUserPermission(UUID uniqueId, String permission, boolean value) {
 
-        Bukkit.getOnlinePlayers().forEach(this::refreshPlayer);
+    PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
+    permissionUser.setPermission(permission, value);
+    permissionUserRepository.saveUser(permissionUser);
+
+    refreshPlayer(uniqueId);
+  }
+
+  @Override
+  public void setUserPermission(UUID uniqueId, String world, String permission, boolean value) {
+
+    PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
+    permissionUser.setWorldPermission(world, permission, value);
+    permissionUserRepository.saveUser(permissionUser);
+
+    refreshPlayer(uniqueId);
+  }
+
+  @Override
+  public void unsetUserPermission(UUID uniqueId, String permission) {
+
+    PermissionUser permissionUser = getUser(uniqueId);
+    if (permissionUser == null) {
+      return;
     }
 
-    @Override
-    public void savePermissions() {
+    permissionUser.unsetPermission(permission);
+    permissionUserRepository.saveUser(permissionUser);
 
-        permissionGroupRepository.writeGroups();
-        permissionUserRepository.writeUsers();
+    refreshPlayer(uniqueId);
+  }
+
+  @Override
+  public void unsetUserPermission(UUID uniqueId, String world, String permission) {
+
+    PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
+    if (permissionUser == null) {
+      return;
     }
 
-    @Override
-    public List<String> getGroups() {
+    permissionUser.unsetWorldPermission(world, permission);
+    permissionUserRepository.saveUser(permissionUser);
 
-        return permissionGroupRepository.findGroups()
-                .stream()
-                .map(PermissionGroup::getName)
-                .collect(Collectors.toList());
+    refreshPlayer(uniqueId);
+  }
+
+  @Override
+  public boolean hasGroupPermission(String group, String permission, boolean value) {
+
+    return hasGroupPermission(group, null, permission, value);
+  }
+
+  @Override
+  public boolean hasGroupPermission(String group, String world, String permission, boolean value) {
+
+    Map<String, Boolean> groupPermissions = calculateGroupPermissions(group, world);
+    if (!groupPermissions.containsKey(permission)) {
+      return false;
     }
 
-    @Override
-    public List<String> getGroups(UUID uniqueId) {
+    return groupPermissions.get(permission);
+  }
 
+  @Override
+  public void setGroupPermission(String group, String permission, boolean value) {
+
+    PermissionGroup permissionGroup = getGroupOrCreateGroup(group);
+    permissionGroup.setPermission(permission, value);
+    permissionGroupRepository.saveGroup(permissionGroup);
+
+    refreshGroup(group);
+  }
+
+  @Override
+  public void setGroupPermission(String group, String world, String permission, boolean value) {
+
+    PermissionGroup permissionGroup = getGroup(group);
+    permissionGroup.setWorldPermission(world, permission, value);
+    permissionGroupRepository.saveGroup(permissionGroup);
+
+    refreshGroup(group);
+  }
+
+  @Override
+  public void unsetGroupPermission(String group, String permission) {
+
+    PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
+    if (permissionGroup == null) {
+      return;
+    }
+
+    permissionGroup.unsetPermission(permission);
+    permissionGroupRepository.saveGroup(permissionGroup);
+
+    refreshGroup(group);
+  }
+
+  @Override
+  public void unsetGroupPermission(String group, String world, String permission) {
+
+    PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
+    if (permissionGroup == null) {
+      return;
+    }
+
+    permissionGroup.unsetWorldPermission(world, permission);
+    permissionGroupRepository.saveGroup(permissionGroup);
+
+    refreshGroup(group);
+  }
+
+  @Override
+  public void addUserGroup(UUID uniqueId, String group) {
+
+    PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
+    permissionUser.addGroup(group);
+    permissionUserRepository.saveUser(permissionUser);
+
+    refreshPlayer(uniqueId);
+  }
+
+  @Override
+  public void removeUserGroup(UUID uniqueId, String group) {
+
+    PermissionUser permissionUser = getUser(uniqueId);
+    if (permissionUser == null) {
+      return;
+    }
+
+    permissionUser.removeGroup(group);
+    permissionUserRepository.saveUser(permissionUser);
+
+    refreshPlayer(uniqueId);
+  }
+
+  private void refreshPlayer(UUID uniqueId) {
+
+    Player player = Bukkit.getPlayer(uniqueId);
+    if (player != null) {
+      refreshPlayer(player);
+    }
+  }
+
+  private void refreshGroup(String group) {
+
+    Set<String> childGroups = getChildGroups(group);
+    for (String childGroup : childGroups) {
+
+      for (UUID uniqueId : permissionAttachments.keySet()) {
         PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
-        if (permissionUser == null) {
-            return Lists.newArrayList();
+        List<String> permissionUserGroups = permissionUser.getGroups();
+
+        if (permissionUserGroups.contains(childGroup) || permissionUserGroups.contains(group)) {
+          refreshPlayer(uniqueId);
         }
+      }
+    }
+  }
 
-        return permissionUser.getGroups();
+  private Set<String> getChildGroups(String group) {
+
+    Set<String> childGroups = Sets.newHashSet();
+    List<PermissionGroup> permissionGroups = permissionGroupRepository.findGroups();
+
+    for (PermissionGroup permissionGroup : permissionGroups) {
+
+      List<String> inheritance = permissionGroup.getInheritance();
+      if (!inheritance.contains(group)) {
+        continue;
+      }
+
+      String childName = permissionGroup.getName();
+      Set<String> recursiveChildGroups = getChildGroups(childName);
+      childGroups.addAll(recursiveChildGroups);
     }
 
-    @Override
-    public void setUserPermission(UUID uniqueId, String permission, boolean value) {
+    return childGroups;
+  }
 
-        PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
-        permissionUser.setPermission(permission, value);
-        permissionUserRepository.saveUser(permissionUser);
+  private PermissionGroup getGroupOrCreateGroup(String group) {
 
-        refreshPlayer(uniqueId);
+    PermissionGroup permissionGroup = getGroup(group);
+    if (permissionGroup == null) {
+      permissionGroup = permissionGroupRepository.createGroup(group);
     }
 
-    @Override
-    public void setUserPermission(UUID uniqueId, String world, String permission, boolean value) {
+    return permissionGroup;
+  }
 
-        PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
-        permissionUser.setWorldPermission(world, permission, value);
-        permissionUserRepository.saveUser(permissionUser);
+  private PermissionUser getUserOrCreateUser(UUID uniqueId) {
 
-        refreshPlayer(uniqueId);
+    PermissionUser permissionUser = getUser(uniqueId);
+    if (permissionUser == null) {
+      permissionUser = permissionUserRepository.createUser(uniqueId);
     }
 
-    @Override
-    public void unsetUserPermission(UUID uniqueId, String permission) {
+    return permissionUser;
+  }
 
-        PermissionUser permissionUser = getUser(uniqueId);
-        if (permissionUser == null) {
-            return;
-        }
+  /**
+   * Calculate the permission attachment for the given player.
+   *
+   * @param player The player.
+   */
+  private void calculatePermissionAttachment(Player player) {
 
-        permissionUser.unsetPermission(permission);
-        permissionUserRepository.saveUser(permissionUser);
+    UUID uniqueId = player.getUniqueId();
 
-        refreshPlayer(uniqueId);
+    PermissionAttachment attachment = permissionAttachments.get(uniqueId);
+
+    // Calculate our own permissions
+    Map<String, Boolean> permissions = calculatePermissions(player);
+
+    Map<String, Boolean> attachmentPermissions;
+
+    try {
+      attachmentPermissions = (Map<String, Boolean>) ReflectionUtils
+          .getFieldValue(attachment, "permissions");
+    } catch (IllegalAccessException | NoSuchFieldException e) {
+      throw new IllegalStateException("Couldn't reflect permissions map", e);
     }
 
-    @Override
-    public void unsetUserPermission(UUID uniqueId, String world, String permission) {
+    // Set our permissions into the attachment
+    attachmentPermissions.clear();
+    attachmentPermissions.putAll(permissions);
 
-        PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
-        if (permissionUser == null) {
-            return;
-        }
+    // Recalculate all permissions
+    player.recalculatePermissions();
+  }
 
-        permissionUser.unsetWorldPermission(world, permission);
-        permissionUserRepository.saveUser(permissionUser);
+  /**
+   * Calculate the permissions for the given player.
+   *
+   * @param player The player.
+   * @return The permissions.
+   */
+  private Map<String, Boolean> calculatePermissions(Player player) {
 
-        refreshPlayer(uniqueId);
+    // Load user
+    String worldName = player.getWorld().getName();
+    UUID uniqueId = player.getUniqueId();
+    PermissionUser permissionUser = getUser(uniqueId);
+
+    if (permissionUser == null) {
+      return Maps.newLinkedHashMap();
     }
 
-    @Override
-    public boolean hasGroupPermission(String group, String permission, boolean value) {
+    // The real permissions
+    Map<String, Boolean> permissions = Maps.newLinkedHashMap();
 
-        return hasGroupPermission(group, null, permission, value);
+    // Calculate group permissions
+    List<String> groups = permissionUser.getGroups();
+    for (String group : groups) {
+      Map<String, Boolean> groupPermissions = calculateGroupPermissions(group, worldName);
+      permissions.putAll(groupPermissions);
     }
 
-    @Override
-    public boolean hasGroupPermission(String group, String world, String permission, boolean value) {
+    // User permissions
+    Map<String, Boolean> userPermissions = permissionUser.getPermissions();
+    permissions.putAll(userPermissions);
 
-        Map<String, Boolean> groupPermissions = calculateGroupPermissions(group, world);
-        if (!groupPermissions.containsKey(permission)) {
-            return false;
-        }
+    // User world permissions
+    Map<String, Boolean> userWorldPermissions = permissionUser.getWorldPermissions(worldName);
+    permissions.putAll(userWorldPermissions);
 
-        return groupPermissions.get(permission);
+    return permissions;
+  }
+
+  /**
+   * Calculate the permissions of the given group in the given world.
+   *
+   * @param groupName The name of the group.
+   * @param worldName The name of the world.
+   * @return The permissions of the group.
+   */
+  private Map<String, Boolean> calculateGroupPermissions(String groupName, String worldName) {
+
+    // Get the group
+    PermissionGroup group = getGroup(groupName);
+
+    if (group == null) {
+      return Maps.newLinkedHashMap();
     }
 
-    @Override
-    public void setGroupPermission(String group, String permission, boolean value) {
+    // The real permissions
+    Map<String, Boolean> permissions = Maps.newLinkedHashMap();
 
-        PermissionGroup permissionGroup = getGroupOrCreateGroup(group);
-        permissionGroup.setPermission(permission, value);
-        permissionGroupRepository.saveGroup(permissionGroup);
-
-        refreshGroup(group);
+    // Calculate inherited permissions
+    List<String> inheritance = group.getInheritance();
+    for (String parentGroup : inheritance) {
+      Map<String, Boolean> parentGroupPermissions = calculateGroupPermissions(parentGroup,
+          worldName);
+      permissions.putAll(parentGroupPermissions);
     }
 
-    @Override
-    public void setGroupPermission(String group, String world, String permission, boolean value) {
+    // Group permissions
+    Map<String, Boolean> groupPermissions = group.getPermissions();
+    permissions.putAll(groupPermissions);
 
-        PermissionGroup permissionGroup = getGroup(group);
-        permissionGroup.setWorldPermission(world, permission, value);
-        permissionGroupRepository.saveGroup(permissionGroup);
-
-        refreshGroup(group);
+    // Group world permissions
+    if (worldName == null) {
+      return permissions;
     }
 
-    @Override
-    public void unsetGroupPermission(String group, String permission) {
+    Map<String, Boolean> groupWorldPermissions = group.getWorldPermissions(worldName);
+    permissions.putAll(groupWorldPermissions);
 
-        PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
-        if (permissionGroup == null) {
-            return;
-        }
+    return permissions;
+  }
 
-        permissionGroup.unsetPermission(permission);
-        permissionGroupRepository.saveGroup(permissionGroup);
+  /**
+   * Load the permissions user with the given unique id.
+   *
+   * @param uniqueId The unique id of the user.
+   * @return The user.
+   */
+  private PermissionUser getUser(UUID uniqueId) {
 
-        refreshGroup(group);
-    }
+    return permissionUserRepository.findUser(uniqueId);
+  }
 
-    @Override
-    public void unsetGroupPermission(String group, String world, String permission) {
+  /**
+   * Load the group with the given name.
+   *
+   * @param groupName The name of the group.
+   * @return The group.
+   */
+  private PermissionGroup getGroup(String groupName) {
 
-        PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
-        if (permissionGroup == null) {
-            return;
-        }
-
-        permissionGroup.unsetWorldPermission(world, permission);
-        permissionGroupRepository.saveGroup(permissionGroup);
-
-        refreshGroup(group);
-    }
-
-    @Override
-    public void addUserGroup(UUID uniqueId, String group) {
-
-        PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
-        permissionUser.addGroup(group);
-        permissionUserRepository.saveUser(permissionUser);
-
-        refreshPlayer(uniqueId);
-    }
-
-    @Override
-    public void removeUserGroup(UUID uniqueId, String group) {
-
-        PermissionUser permissionUser = getUser(uniqueId);
-        if (permissionUser == null) {
-            return;
-        }
-
-        permissionUser.removeGroup(group);
-        permissionUserRepository.saveUser(permissionUser);
-
-        refreshPlayer(uniqueId);
-    }
-
-    private void refreshPlayer(UUID uniqueId) {
-
-        Player player = Bukkit.getPlayer(uniqueId);
-        if (player != null) {
-            refreshPlayer(player);
-        }
-    }
-
-    private void refreshGroup(String group) {
-
-        Set<String> childGroups = getChildGroups(group);
-        for (String childGroup : childGroups) {
-
-            for (UUID uniqueId : permissionAttachments.keySet()) {
-                PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
-                List<String> permissionUserGroups = permissionUser.getGroups();
-
-                if (permissionUserGroups.contains(childGroup) || permissionUserGroups.contains(group)) {
-                    refreshPlayer(uniqueId);
-                }
-            }
-        }
-    }
-
-    private Set<String> getChildGroups(String group) {
-
-        Set<String> childGroups = Sets.newHashSet();
-        List<PermissionGroup> permissionGroups = permissionGroupRepository.findGroups();
-
-        for (PermissionGroup permissionGroup : permissionGroups) {
-
-            List<String> inheritance = permissionGroup.getInheritance();
-            if (!inheritance.contains(group)) {
-                continue;
-            }
-
-            String childName = permissionGroup.getName();
-            Set<String> recursiveChildGroups = getChildGroups(childName);
-            childGroups.addAll(recursiveChildGroups);
-        }
-
-        return childGroups;
-    }
-
-    private PermissionGroup getGroupOrCreateGroup(String group) {
-
-        PermissionGroup permissionGroup = getGroup(group);
-        if (permissionGroup == null) {
-            permissionGroup = permissionGroupRepository.createGroup(group);
-        }
-
-        return permissionGroup;
-    }
-
-    private PermissionUser getUserOrCreateUser(UUID uniqueId) {
-
-        PermissionUser permissionUser = getUser(uniqueId);
-        if (permissionUser == null) {
-            permissionUser = permissionUserRepository.createUser(uniqueId);
-        }
-
-        return permissionUser;
-    }
-
-    /**
-     * Calculate the permission attachment for the given player.
-     *
-     * @param player The player.
-     */
-    private void calculatePermissionAttachment(Player player) {
-
-        UUID uniqueId = player.getUniqueId();
-
-        PermissionAttachment attachment = permissionAttachments.get(uniqueId);
-
-        // Calculate our own permissions
-        Map<String, Boolean> permissions = calculatePermissions(player);
-
-        Map<String, Boolean> attachmentPermissions;
-
-        try {
-            attachmentPermissions = (Map<String, Boolean>) ReflectionUtils.getFieldValue(attachment, "permissions");
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new IllegalStateException("Couldn't reflect permissions map", e);
-        }
-
-        // Set our permissions into the attachment
-        attachmentPermissions.clear();
-        attachmentPermissions.putAll(permissions);
-
-        // Recalculate all permissions
-        player.recalculatePermissions();
-    }
-
-    /**
-     * Calculate the permissions for the given player.
-     *
-     * @param player The player.
-     *
-     * @return The permissions.
-     */
-    private Map<String, Boolean> calculatePermissions(Player player) {
-
-        // Load user
-        String worldName = player.getWorld().getName();
-        UUID uniqueId = player.getUniqueId();
-        PermissionUser permissionUser = getUser(uniqueId);
-
-        if (permissionUser == null) {
-            return Maps.newLinkedHashMap();
-        }
-
-        // The real permissions
-        Map<String, Boolean> permissions = Maps.newLinkedHashMap();
-
-        // Calculate group permissions
-        List<String> groups = permissionUser.getGroups();
-        for (String group : groups) {
-            Map<String, Boolean> groupPermissions = calculateGroupPermissions(group, worldName);
-            permissions.putAll(groupPermissions);
-        }
-
-        // User permissions
-        Map<String, Boolean> userPermissions = permissionUser.getPermissions();
-        permissions.putAll(userPermissions);
-
-        // User world permissions
-        Map<String, Boolean> userWorldPermissions = permissionUser.getWorldPermissions(worldName);
-        permissions.putAll(userWorldPermissions);
-
-        return permissions;
-    }
-
-    /**
-     * Calculate the permissions of the given group in the given world.
-     *
-     * @param groupName The name of the group.
-     * @param worldName The name of the world.
-     *
-     * @return The permissions of the group.
-     */
-    private Map<String, Boolean> calculateGroupPermissions(String groupName, String worldName) {
-
-        // Get the group
-        PermissionGroup group = getGroup(groupName);
-
-        if (group == null) {
-            return Maps.newLinkedHashMap();
-        }
-
-        // The real permissions
-        Map<String, Boolean> permissions = Maps.newLinkedHashMap();
-
-        // Calculate inherited permissions
-        List<String> inheritance = group.getInheritance();
-        for (String parentGroup : inheritance) {
-            Map<String, Boolean> parentGroupPermissions = calculateGroupPermissions(parentGroup, worldName);
-            permissions.putAll(parentGroupPermissions);
-        }
-
-        // Group permissions
-        Map<String, Boolean> groupPermissions = group.getPermissions();
-        permissions.putAll(groupPermissions);
-
-        // Group world permissions
-        if (worldName == null) {
-            return permissions;
-        }
-
-        Map<String, Boolean> groupWorldPermissions = group.getWorldPermissions(worldName);
-        permissions.putAll(groupWorldPermissions);
-
-        return permissions;
-    }
-
-    /**
-     * Load the permissions user with the given unique id.
-     *
-     * @param uniqueId The unique id of the user.
-     *
-     * @return The user.
-     */
-    private PermissionUser getUser(UUID uniqueId) {
-
-        return permissionUserRepository.findUser(uniqueId);
-    }
-
-    /**
-     * Load the group with the given name.
-     *
-     * @param groupName The name of the group.
-     *
-     * @return The group.
-     */
-    private PermissionGroup getGroup(String groupName) {
-
-        return permissionGroupRepository.findGroup(groupName);
-    }
+    return permissionGroupRepository.findGroup(groupName);
+  }
 }

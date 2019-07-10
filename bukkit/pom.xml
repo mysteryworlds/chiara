@@ -1,105 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>chiara-parent</artifactId>
-        <groupId>de.felixklauke.chiara</groupId>
-        <version>1.0.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>chiara-bukkit</artifactId>
+  <build>
+    <plugins>
+      <!-- Maven shading -->
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <configuration>
+          <relocations>
+            <relocation>
+              <pattern>org.bstats</pattern>
+              <shadedPattern>de.felixklauke.chiara.bukkit</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+            </configuration>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.2.1</version>
+      </plugin>
+    </plugins>
 
-    <artifactId>chiara-bukkit</artifactId>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources/</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>plugin.yml</include>
+          <include>groups.yml</include>
+          <include>users.yml</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 
-    <properties>
-        <spigot.version>1.14.3-SNAPSHOT</spigot.version>
-    </properties>
+  <dependencies>
 
-    <repositories>
+    <!-- Spigot API -->
+    <dependency>
+      <artifactId>spigot-api</artifactId>
+      <groupId>org.spigotmc</groupId>
+      <scope>provided</scope>
+      <version>${spigot.version}</version>
+    </dependency>
 
-        <!-- Spigot -->
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
+    <!-- Vault -->
+    <dependency>
+      <artifactId>VaultAPI</artifactId>
+      <groupId>com.github.MilkBowl</groupId>
+      <scope>provided</scope>
+      <version>1.7</version>
+    </dependency>
 
-        <!-- Jitpack -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
+    <!-- bStats -->
+    <dependency>
+      <artifactId>bstats-bukkit</artifactId>
+      <groupId>org.bstats</groupId>
+      <scope>compile</scope>
+      <version>1.5</version>
+    </dependency>
+  </dependencies>
 
-        <!-- CodeMC -->
-        <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
-        </repository>
-    </repositories>
+  <modelVersion>4.0.0</modelVersion>
 
-    <dependencies>
+  <parent>
+    <artifactId>chiara-parent</artifactId>
+    <groupId>de.felixklauke.chiara</groupId>
+    <version>1.0.0</version>
+  </parent>
 
-        <!-- Spigot API -->
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}</version>
-            <scope>provided</scope>
-        </dependency>
+  <properties>
+    <spigot.version>1.14.3-SNAPSHOT</spigot.version>
+  </properties>
 
-        <!-- Vault -->
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
+  <repositories>
 
-        <!-- bStats -->
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>1.5</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
+    <!-- Spigot -->
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
 
-    <build>
-        <resources>
-            <resource>
-                <filtering>true</filtering>
-                <directory>${basedir}/src/main/resources/</directory>
-                <includes>
-                    <include>plugin.yml</include>
-                    <include>groups.yml</include>
-                    <include>users.yml</include>
-                </includes>
-            </resource>
-        </resources>
+    <!-- Jitpack -->
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
 
-        <plugins>
-            <!-- Maven shading -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>de.felixklauke.chiara.bukkit</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <!-- CodeMC -->
+    <repository>
+      <id>CodeMC</id>
+      <url>https://repo.codemc.org/repository/maven-public/</url>
+    </repository>
+  </repositories>
 </project>

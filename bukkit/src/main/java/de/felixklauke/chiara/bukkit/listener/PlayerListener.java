@@ -12,37 +12,37 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    private final PermissionService permissionService;
+  private final PermissionService permissionService;
 
-    public PlayerListener(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
+  public PlayerListener(PermissionService permissionService) {
+    this.permissionService = permissionService;
+  }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerLogin(PlayerLoginEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onPlayerLogin(PlayerLoginEvent event) {
 
-        Player player = event.getPlayer();
-        permissionService.registerPlayer(player);
-    }
+    Player player = event.getPlayer();
+    permissionService.registerPlayer(player);
+  }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onPlayerQuit(PlayerQuitEvent event) {
 
-        Player player = event.getPlayer();
-        permissionService.unregisterPlayer(player);
-    }
+    Player player = event.getPlayer();
+    permissionService.unregisterPlayer(player);
+  }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerKick(PlayerKickEvent event) {
+  @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+  public void onPlayerKick(PlayerKickEvent event) {
 
-        Player player = event.getPlayer();
-        permissionService.unregisterPlayer(player);
-    }
+    Player player = event.getPlayer();
+    permissionService.unregisterPlayer(player);
+  }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onWorldChange(PlayerChangedWorldEvent event) {
+  @EventHandler(priority = EventPriority.LOWEST)
+  public void onWorldChange(PlayerChangedWorldEvent event) {
 
-        Player player = event.getPlayer();
-        permissionService.refreshPlayer(player);
-    }
+    Player player = event.getPlayer();
+    permissionService.refreshPlayer(player);
+  }
 }

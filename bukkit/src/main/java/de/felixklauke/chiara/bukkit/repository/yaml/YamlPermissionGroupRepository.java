@@ -3,9 +3,6 @@ package de.felixklauke.chiara.bukkit.repository.yaml;
 import com.google.common.collect.Maps;
 import de.felixklauke.chiara.bukkit.model.PermissionGroup;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,124 +15,124 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 public class YamlPermissionGroupRepository implements PermissionGroupRepository {
 
-    private final Path config;
-    private final Logger logger;
-    private final Map<String, PermissionGroup> permissionGroups = Maps.newHashMap();
+  private final Path config;
+  private final Logger logger;
+  private final Map<String, PermissionGroup> permissionGroups = Maps.newHashMap();
 
-    public YamlPermissionGroupRepository(Path config, Logger logger) {
-        this.config = config;
-        this.logger = logger;
-        readGroups();
+  public YamlPermissionGroupRepository(Path config, Logger logger) {
+    this.config = config;
+    this.logger = logger;
+    readGroups();
+  }
+
+  private void readGroups() {
+    Yaml yaml = new Yaml();
+
+    try (BufferedReader reader = Files.newBufferedReader(config)) {
+      Map map = yaml.loadAs(reader, Map.class);
+      Map<String, Object> groups = (Map<String, Object>) map.get("groups");
+
+      groups.forEach((key, value) -> {
+        Map<String, Object> groupMap = (Map<String, Object>) value;
+        PermissionGroup permissionGroup = groupFromMap(key, groupMap);
+        permissionGroups.put(key, permissionGroup);
+      });
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Error while reading groups.", e);
     }
+  }
 
-    private void readGroups() {
-        Yaml yaml = new Yaml();
+  @Override
+  public PermissionGroup findGroup(String groupName) {
 
-        try (BufferedReader reader = Files.newBufferedReader(config)) {
-            Map map = yaml.loadAs(reader, Map.class);
-            Map<String, Object> groups = (Map<String, Object>) map.get("groups");
+    return permissionGroups.get(groupName);
+  }
 
-            groups.forEach((key, value) -> {
-                Map<String, Object> groupMap = (Map<String, Object>) value;
-                PermissionGroup permissionGroup = groupFromMap(key, groupMap);
-                permissionGroups.put(key, permissionGroup);
-            });
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error while reading groups.", e);
-        }
+  @Override
+  public void writeGroups() {
+    DumperOptions options = new DumperOptions();
+    options.setPrettyFlow(true);
+    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    Yaml yaml = new Yaml(options);
+
+    Map<String, Object> document = new HashMap<>();
+
+    Map<String, Object> groups = new HashMap<>();
+    permissionGroups.forEach((groupName, permissionGroup) -> {
+      Map<String, Object> map = groupToMap(permissionGroup);
+      groups.put(groupName, map);
+    });
+
+    document.put("groups", groups);
+
+    try (BufferedWriter writer = Files.newBufferedWriter(config)) {
+      yaml.dump(document, writer);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Error while writing groups.", e);
     }
+  }
 
-    @Override
-    public PermissionGroup findGroup(String groupName) {
+  @Override
+  public void reloadGroups() {
 
-        return permissionGroups.get(groupName);
-    }
+    permissionGroups.clear();
+    readGroups();
+  }
 
-    @Override
-    public void writeGroups() {
-        DumperOptions options = new DumperOptions();
-        options.setPrettyFlow(true);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        Yaml yaml = new Yaml(options);
+  @Override
+  public List<PermissionGroup> findGroups() {
 
-        Map<String, Object> document = new HashMap<>();
+    return new ArrayList<>(permissionGroups.values());
+  }
 
-        Map<String, Object> groups = new HashMap<>();
-        permissionGroups.forEach((groupName, permissionGroup) -> {
-            Map<String, Object> map = groupToMap(permissionGroup);
-            groups.put(groupName, map);
-        });
+  @Override
+  public PermissionGroup createGroup(String group) {
 
-        document.put("groups", groups);
+    PermissionGroup permissionGroup = new PermissionGroup(group, null, null, null);
+    saveGroup(permissionGroup);
+    return permissionGroup;
+  }
 
-        try (BufferedWriter writer = Files.newBufferedWriter(config)) {
-            yaml.dump(document, writer);
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error while writing groups.", e);
-        }
-    }
+  @Override
+  public void saveGroup(PermissionGroup permissionGroup) {
 
-    @Override
-    public void reloadGroups() {
+    permissionGroups.put(permissionGroup.getName(), permissionGroup);
+  }
 
-        permissionGroups.clear();
-        readGroups();
-    }
+  /**
+   * Convert the given permission group into a map.
+   *
+   * @param permissionGroup The permission group.
+   * @return The map.
+   */
+  private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
 
-    @Override
-    public List<PermissionGroup> findGroups() {
+    Map<String, Object> map = new LinkedHashMap<>();
+    map.put("permissions", permissionGroup.getPermissions());
+    map.put("worlds", permissionGroup.getWorldPermissions());
+    map.put("inheritance", permissionGroup.getInheritance());
+    return map;
+  }
 
-        return new ArrayList<>(permissionGroups.values());
-    }
+  /**
+   * Convert the given map into a group with the given name.
+   *
+   * @param groupName The name of the group.
+   * @param map The map.
+   * @return The group.
+   */
+  private PermissionGroup groupFromMap(String groupName, Map<String, Object> map) {
 
-    @Override
-    public PermissionGroup createGroup(String group) {
-
-        PermissionGroup permissionGroup = new PermissionGroup(group, null, null, null);
-        saveGroup(permissionGroup);
-        return permissionGroup;
-    }
-
-    @Override
-    public void saveGroup(PermissionGroup permissionGroup) {
-
-        permissionGroups.put(permissionGroup.getName(), permissionGroup);
-    }
-
-    /**
-     * Convert the given permission group into a map.
-     *
-     * @param permissionGroup The permission group.
-     *
-     * @return The map.
-     */
-    private Map<String, Object> groupToMap(PermissionGroup permissionGroup) {
-
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put("permissions", permissionGroup.getPermissions());
-        map.put("worlds", permissionGroup.getWorldPermissions());
-        map.put("inheritance", permissionGroup.getInheritance());
-        return map;
-    }
-
-    /**
-     * Convert the given map into a group with the given name.
-     *
-     * @param groupName The name of the group.
-     * @param map       The map.
-     *
-     * @return The group.
-     */
-    private PermissionGroup groupFromMap(String groupName, Map<String, Object> map) {
-
-        PermissionGroup permissionGroup = new PermissionGroup();
-        permissionGroup.setName(groupName);
-        permissionGroup.setPermissions((Map<String, Boolean>) map.get("permissions"));
-        permissionGroup.setWorldPermissions((Map<String, Map<String, Boolean>>) map.get("worlds"));
-        permissionGroup.setInheritance((List<String>) map.get("inheritance"));
-        return permissionGroup;
-    }
+    PermissionGroup permissionGroup = new PermissionGroup();
+    permissionGroup.setName(groupName);
+    permissionGroup.setPermissions((Map<String, Boolean>) map.get("permissions"));
+    permissionGroup.setWorldPermissions((Map<String, Map<String, Boolean>>) map.get("worlds"));
+    permissionGroup.setInheritance((List<String>) map.get("inheritance"));
+    return permissionGroup;
+  }
 }
