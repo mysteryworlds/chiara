@@ -92,6 +92,9 @@ public class ChiaraPlugin extends JavaPlugin {
       getServer().getServicesManager()
           .register(Permission.class, vaultPermissions, this, ServicePriority.Highest);
     }
+
+    getServer().getServicesManager()
+        .register(PermissionService.class, permissionService, this, ServicePriority.Highest);
   }
 
   private void setupMetrics() {
