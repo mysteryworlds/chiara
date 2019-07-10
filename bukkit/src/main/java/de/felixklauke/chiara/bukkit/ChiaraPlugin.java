@@ -18,7 +18,9 @@ import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ChiaraPlugin extends JavaPlugin {
@@ -48,6 +50,8 @@ public class ChiaraPlugin extends JavaPlugin {
   @Override
   public void onEnable() {
 
+    PluginManager pluginManager = getServer().getPluginManager();
+    ServicesManager servicesManager = getServer().getServicesManager();
     Logger logger = getLogger();
 
     // Metrics
@@ -77,7 +81,7 @@ public class ChiaraPlugin extends JavaPlugin {
         .forEach(onlinePlayer -> permissionService.registerPlayer(onlinePlayer));
 
     // Register listener
-    getServer().getPluginManager().registerEvents(new PlayerListener(permissionService), this);
+    pluginManager.registerEvents(new PlayerListener(permissionService), this);
 
     // Register commands
     PermissionsCommand permissionsCommand = new PermissionsCommand(permissionService);
@@ -85,16 +89,14 @@ public class ChiaraPlugin extends JavaPlugin {
     getCommand("permissions").setTabCompleter(permissionsCommand);
 
     // Register services
-    if (getServer().getPluginManager().isPluginEnabled("Vault")) {
+    if (pluginManager.isPluginEnabled("Vault")) {
 
       logger.info("Found Vault. Hooking into permissions API.");
       VaultPermissions vaultPermissions = new VaultPermissions(this, permissionService);
-      getServer().getServicesManager()
-          .register(Permission.class, vaultPermissions, this, ServicePriority.Highest);
+      servicesManager.register(Permission.class, vaultPermissions, this, ServicePriority.Highest);
     }
 
-    getServer().getServicesManager()
-        .register(PermissionService.class, permissionService, this, ServicePriority.Highest);
+    servicesManager.register(PermissionService.class, permissionService, this, ServicePriority.Highest);
   }
 
   private void setupMetrics() {
