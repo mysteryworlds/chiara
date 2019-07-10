@@ -58,8 +58,9 @@ public class ChiaraPlugin extends JavaPlugin {
     setupMetrics();
 
     // Configs
-    Path groupsPath = Paths.get(getDataFolder().getAbsolutePath(), GROUPS_CONFIG_FILE_NAME);
-    Path usersPath = Paths.get(getDataFolder().getAbsolutePath(), USERS_CONFIG_FILE_NAME);
+    String pluginDataFolderPath = getDataFolder().getAbsolutePath();
+    Path groupsPath = Paths.get(pluginDataFolderPath, GROUPS_CONFIG_FILE_NAME);
+    Path usersPath = Paths.get(pluginDataFolderPath, USERS_CONFIG_FILE_NAME);
 
     if (!Files.exists(groupsPath)) {
       logger.info("Can't find groups config. Copying default.");
