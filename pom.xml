@@ -160,6 +160,9 @@
   <packaging>pom</packaging>
 
   <properties>
+    <!-- General -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     <!-- Sonar -->
     <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
     <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
