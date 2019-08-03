@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.yaml.snakeyaml.DumperOptions;
@@ -25,6 +26,10 @@ public class YamlPermissionGroupRepository implements PermissionGroupRepository 
   private final Map<String, PermissionGroup> permissionGroups = Maps.newHashMap();
 
   public YamlPermissionGroupRepository(Path config, Logger logger) {
+
+    Objects.requireNonNull(config, "Config path cannot be null");
+    Objects.requireNonNull(logger, "logger cannot be null");
+
     this.config = config;
     this.logger = logger;
     readGroups();

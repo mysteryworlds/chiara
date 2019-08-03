@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,10 @@ public class YamlPermissionUserRepository implements PermissionUserRepository {
   private final Map<UUID, PermissionUser> permissionUsers = Maps.newHashMap();
 
   public YamlPermissionUserRepository(Path config, Logger logger) {
+
+    Objects.requireNonNull(config, "Config path cannot be null");
+    Objects.requireNonNull(logger, "logger cannot be null");
+
     this.config = config;
     this.logger = logger;
     readUsers();
