@@ -10,6 +10,7 @@ import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
 import de.felixklauke.chiara.bukkit.util.ReflectionUtils;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,6 +39,8 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void registerPlayer(Player player) {
 
+    Objects.requireNonNull(player, "Player cannot be null.");
+
     UUID uniqueId = player.getUniqueId();
 
     if (permissionAttachments.containsKey(uniqueId)) {
@@ -55,6 +58,8 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void unregisterPlayer(Player player) {
 
+    Objects.requireNonNull(player, "Player cannot be null.");
+
     UUID uniqueId = player.getUniqueId();
 
     if (!permissionAttachments.containsKey(uniqueId)) {
@@ -69,6 +74,8 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void refreshPlayer(Player player) {
+
+    Objects.requireNonNull(player, "Player cannot be null.");
 
     UUID uniqueId = player.getUniqueId();
     if (permissionAttachments.containsKey(uniqueId)) {
@@ -107,6 +114,8 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public List<String> getGroups(UUID uniqueId) {
 
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+
     PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
     if (permissionUser == null) {
       return Lists.newArrayList();
@@ -118,6 +127,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void setUserPermission(UUID uniqueId, String permission, boolean value) {
 
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
     permissionUser.setPermission(permission, value);
     permissionUserRepository.saveUser(permissionUser);
@@ -128,6 +140,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void setUserPermission(UUID uniqueId, String world, String permission, boolean value) {
 
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
     permissionUser.setWorldPermission(world, permission, value);
     permissionUserRepository.saveUser(permissionUser);
@@ -137,6 +152,9 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void unsetUserPermission(UUID uniqueId, String permission) {
+
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
 
     PermissionUser permissionUser = getUser(uniqueId);
     if (permissionUser == null) {
@@ -152,6 +170,10 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void unsetUserPermission(UUID uniqueId, String world, String permission) {
 
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+    Objects.requireNonNull(world, "World cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionUser permissionUser = permissionUserRepository.findUser(uniqueId);
     if (permissionUser == null) {
       return;
@@ -166,11 +188,16 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public boolean hasGroupPermission(String group, String permission, boolean value) {
 
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     return hasGroupPermission(group, null, permission, value);
   }
 
   @Override
   public boolean hasGroupPermission(String group, String world, String permission, boolean value) {
+
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
 
     Map<String, Boolean> groupPermissions = calculateGroupPermissions(group, world);
     if (!groupPermissions.containsKey(permission)) {
@@ -183,6 +210,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void setGroupPermission(String group, String permission, boolean value) {
 
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionGroup permissionGroup = getGroupOrCreateGroup(group);
     permissionGroup.setPermission(permission, value);
     permissionGroupRepository.saveGroup(permissionGroup);
@@ -193,6 +223,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void setGroupPermission(String group, String world, String permission, boolean value) {
 
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionGroup permissionGroup = getGroup(group);
     permissionGroup.setWorldPermission(world, permission, value);
     permissionGroupRepository.saveGroup(permissionGroup);
@@ -202,6 +235,9 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void unsetGroupPermission(String group, String permission) {
+
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
 
     PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
     if (permissionGroup == null) {
@@ -217,6 +253,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void unsetGroupPermission(String group, String world, String permission) {
 
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(permission, "Permission cannot be null.");
+
     PermissionGroup permissionGroup = permissionGroupRepository.findGroup(group);
     if (permissionGroup == null) {
       return;
@@ -231,6 +270,9 @@ public class PermissionServiceImpl implements PermissionService {
   @Override
   public void addUserGroup(UUID uniqueId, String group) {
 
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
+
     PermissionUser permissionUser = getUserOrCreateUser(uniqueId);
     permissionUser.addGroup(group);
     permissionUserRepository.saveUser(permissionUser);
@@ -240,6 +282,9 @@ public class PermissionServiceImpl implements PermissionService {
 
   @Override
   public void removeUserGroup(UUID uniqueId, String group) {
+
+    Objects.requireNonNull(group, "Group cannot be null.");
+    Objects.requireNonNull(uniqueId, "UUID cannot be null.");
 
     PermissionUser permissionUser = getUser(uniqueId);
     if (permissionUser == null) {
