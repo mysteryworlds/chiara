@@ -11,6 +11,8 @@ import org.bukkit.plugin.Plugin;
 
 public class VaultPermissions extends Permission {
 
+  private static final boolean SUPERPERMS_SUPPORT = true;
+
   private final Plugin plugin;
   private final PermissionService permissionService;
 
@@ -34,7 +36,7 @@ public class VaultPermissions extends Permission {
   @Override
   public boolean hasSuperPermsCompat() {
 
-    return true;
+    return SUPERPERMS_SUPPORT;
   }
 
   @Override
