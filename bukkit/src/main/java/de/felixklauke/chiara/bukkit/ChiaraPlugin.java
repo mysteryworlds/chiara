@@ -2,9 +2,9 @@ package de.felixklauke.chiara.bukkit;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import de.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import de.felixklauke.chiara.bukkit.listener.PermissionListener;
 import de.felixklauke.chiara.bukkit.module.ChiaraModule;
-import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
 import de.felixklauke.chiara.bukkit.user.PermissionUserRepository;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,7 +98,7 @@ public class ChiaraPlugin extends JavaPlugin {
     Metrics metrics = new Metrics(this);
 
     Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups",
-        () -> permissionGroupRepository.findGroups().size());
+        () -> permissionGroupRepository.findAll().size());
     Metrics.SingleLineChart averageFoodLevelChart = new Metrics.SingleLineChart(
         "average_food_level", () -> {
       OptionalDouble average = Bukkit.getOnlinePlayers()
