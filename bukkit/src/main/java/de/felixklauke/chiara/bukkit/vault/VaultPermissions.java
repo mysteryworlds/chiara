@@ -1,9 +1,13 @@
 package de.felixklauke.chiara.bukkit.vault;
 
-import de.felixklauke.chiara.bukkit.service.PermissionService;
-import de.felixklauke.chiara.bukkit.util.BukkitUtils;
-import java.util.List;
-import java.util.UUID;
+import de.felixklauke.chiara.bukkit.group.PermissionGroup;
+import de.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
+import de.felixklauke.chiara.bukkit.user.PermissionUser;
+import de.felixklauke.chiara.bukkit.user.PermissionUserRepository;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,13 +16,19 @@ import org.bukkit.plugin.Plugin;
 public class VaultPermissions extends Permission {
 
   private static final boolean SUPERPERMS_SUPPORT = true;
+  private static final boolean GROUP_SUPPORT = true;
 
   private final Plugin plugin;
-  private final PermissionService permissionService;
+  private final PermissionGroupRepository permissionGroupRepository;
+  private final PermissionUserRepository permissionUserRepository;
 
-  public VaultPermissions(Plugin plugin, PermissionService permissionService) {
+  @Inject
+  private VaultPermissions(Plugin plugin,
+    PermissionGroupRepository permissionGroupRepository,
+    PermissionUserRepository permissionUserRepository) {
     this.plugin = plugin;
-    this.permissionService = permissionService;
+    this.permissionGroupRepository = permissionGroupRepository;
+    this.permissionUserRepository = permissionUserRepository;
   }
 
   @Override
@@ -53,117 +63,169 @@ public class VaultPermissions extends Permission {
   @Override
   public boolean playerAdd(String world, String player, String permission) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
+   PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
 
     if (world == null) {
-      permissionService.setUserPermission(uniqueId, permission, true);
+      permissionUser.setPermission(permission, true);
       return true;
     }
 
-    permissionService.setUserPermission(uniqueId, world, permission, true);
+    permissionUser.setWorldPermission(permission, world, true);
     return true;
   }
 
   @Override
   public boolean playerRemove(String world, String player, String permission) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
+    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
 
     if (world == null) {
-      permissionService.unsetUserPermission(uniqueId, permission);
+      permissionUser.removePermission(permission);
       return true;
     }
 
-    permissionService.unsetUserPermission(uniqueId, world, permission);
+    permissionUser.removeWorldPermission(permission, world);
     return true;
   }
 
   @Override
   public boolean groupHas(String world, String group, String permission) {
 
-    if (world == null) {
-      return permissionService.hasGroupPermission(group, permission, true);
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
     }
 
-    return permissionService.hasGroupPermission(group, world, permission, true);
+    PermissionGroup permissionGroup = groupOptional.get();
+
+    if (world == null) {
+      return permissionGroup.hasPermission(permission);
+    }
+
+    return permissionGroup.hasWorldPermission(world, permission);
   }
 
   @Override
   public boolean groupAdd(String world, String group, String permission) {
 
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+
+    PermissionGroup permissionGroup = groupOptional.get();
+
     if (world == null) {
-      permissionService.setGroupPermission(group, permission, true);
+      permissionGroup.setPermission(permission, true);
       return true;
     }
 
-    permissionService.setGroupPermission(group, world, permission, true);
+    permissionGroup.setWorldPermission(permission, world, true);
     return true;
   }
 
   @Override
   public boolean groupRemove(String world, String group, String permission) {
 
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+
+    PermissionGroup permissionGroup = groupOptional.get();
+
     if (world == null) {
-      permissionService.unsetGroupPermission(group, permission);
+      permissionGroup.removePermission(permission);
       return true;
     }
 
-    permissionService.unsetGroupPermission(group, world, permission);
+    permissionGroup.removeWorldPermission(permission, world);
     return true;
   }
 
   @Override
   public boolean playerInGroup(String world, String player, String group) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
-    return permissionService.getGroups(uniqueId).contains(group);
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+
+    PermissionGroup permissionGroup = groupOptional.get();
+
+    Optional<PermissionUser> optionalUser = permissionUserRepository.findByName(player);
+    if (optionalUser.isEmpty()) {
+      return false;
+    }
+
+    PermissionUser permissionUser = optionalUser.get();
+
+    return permissionUser.isInGroup(permissionGroup);
   }
 
   @Override
   public boolean playerAddGroup(String world, String player, String group) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
-    permissionService.addUserGroup(uniqueId, group);
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+
+    PermissionGroup permissionGroup = groupOptional.get();
+    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
+
+    permissionUser.addGroup(permissionGroup);
     return true;
   }
 
   @Override
   public boolean playerRemoveGroup(String world, String player, String group) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
-    permissionService.removeUserGroup(uniqueId, group);
+    Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+
+    PermissionGroup permissionGroup = groupOptional.get();
+    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
+
+    permissionUser.removeGroup(permissionGroup);
     return true;
   }
 
   @Override
   public String[] getPlayerGroups(String world, String player) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
-    return permissionService.getGroups(uniqueId).toArray(new String[0]);
+    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
+    Set<String> groups = permissionUser.getPermissionsGroups().stream()
+      .map(PermissionGroup::getName)
+      .collect(Collectors.toSet());
+    return groups.toArray(new String[]{});
   }
 
   @Override
   public String getPrimaryGroup(String world, String player) {
 
-    UUID uniqueId = BukkitUtils.getUniqueIdByPlayerName(player);
-    List<String> groups = permissionService.getGroups(uniqueId);
-
-    if (groups.size() == 0) {
-      return null;
-    }
-
-    return groups.get(0);
+    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
+    Set<PermissionGroup> permissionsGroups = permissionUser.getPermissionsGroups();
+    return permissionsGroups.stream()
+      .findFirst()
+      .orElseThrow()
+      .getName();
   }
 
   @Override
   public String[] getGroups() {
 
-    return permissionService.getGroups().toArray(new String[0]);
+    Set<String> groups = permissionGroupRepository.findAll().stream()
+      .map(PermissionGroup::getName)
+      .collect(Collectors.toSet());
+    return groups.toArray(new String[]{});
   }
 
   @Override
   public boolean hasGroupSupport() {
 
-    return true;
+    return GROUP_SUPPORT;
   }
 }

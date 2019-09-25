@@ -24,7 +24,7 @@ class PlayerListenerTest {
 
   @BeforeEach
   void setUp() {
-    playerListener = new PlayerListener(permissionService);
+    playerListener = new PlayerListener(plugin, permissionService);
   }
 
   @Test

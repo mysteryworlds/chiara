@@ -1,19 +1,17 @@
 package de.felixklauke.chiara.bukkit;
 
-import de.felixklauke.chiara.bukkit.command.PermissionsCommand;
-import de.felixklauke.chiara.bukkit.listener.PlayerListener;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import de.felixklauke.chiara.bukkit.listener.PermissionListener;
+import de.felixklauke.chiara.bukkit.module.ChiaraModule;
 import de.felixklauke.chiara.bukkit.repository.PermissionGroupRepository;
-import de.felixklauke.chiara.bukkit.repository.PermissionUserRepository;
-import de.felixklauke.chiara.bukkit.repository.yaml.YamlPermissionGroupRepository;
-import de.felixklauke.chiara.bukkit.repository.yaml.YamlPermissionUserRepository;
-import de.felixklauke.chiara.bukkit.service.PermissionService;
-import de.felixklauke.chiara.bukkit.service.PermissionServiceImpl;
-import de.felixklauke.chiara.bukkit.vault.VaultPermissions;
+import de.felixklauke.chiara.bukkit.user.PermissionUserRepository;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.OptionalDouble;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import net.milkbowl.vault.permission.Permission;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -28,9 +26,18 @@ public class ChiaraPlugin extends JavaPlugin {
   private static final String GROUPS_CONFIG_FILE_NAME = "groups.yml";
   private static final String USERS_CONFIG_FILE_NAME = "users.yml";
 
-  private PermissionUserRepository userRepository;
-  private PermissionGroupRepository groupRepository;
-  private PermissionService permissionService;
+  @Inject
+  private Logger logger;
+  @Inject
+  private ServicesManager servicesManager;
+  @Inject
+  private PluginManager pluginManager;
+  @Inject
+  private PermissionGroupRepository permissionGroupRepository;
+  @Inject
+  private PermissionUserRepository permissionUserRepository;
+  @Inject
+  private Permission permission;
 
   @Override
   public void onLoad() {
@@ -40,19 +47,15 @@ public class ChiaraPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
 
-    // Unregister all players
-    Bukkit.getOnlinePlayers()
-        .forEach(onlinePlayer -> permissionService.unregisterPlayer(onlinePlayer));
 
-    permissionService.savePermissions();
   }
 
   @Override
   public void onEnable() {
 
-    PluginManager pluginManager = getServer().getPluginManager();
-    ServicesManager servicesManager = getServer().getServicesManager();
-    Logger logger = getLogger();
+    ChiaraModule chiaraModule = ChiaraModule.withPlugin(this);
+    Injector injector = Guice.createInjector(chiaraModule);
+    injector.injectMembers(this);
 
     // Metrics
     setupMetrics();
@@ -73,31 +76,19 @@ public class ChiaraPlugin extends JavaPlugin {
     }
 
     // Init service and repos
-    userRepository = new YamlPermissionUserRepository(usersPath, logger);
-    groupRepository = new YamlPermissionGroupRepository(groupsPath, logger);
-    permissionService = new PermissionServiceImpl(this, groupRepository, userRepository);
 
     // Register all players
-    Bukkit.getOnlinePlayers()
-        .forEach(onlinePlayer -> permissionService.registerPlayer(onlinePlayer));
 
     // Register listener
-    pluginManager.registerEvents(new PlayerListener(permissionService), this);
-
-    // Register commands
-    PermissionsCommand permissionsCommand = new PermissionsCommand(permissionService);
-    getCommand("permissions").setExecutor(permissionsCommand);
-    getCommand("permissions").setTabCompleter(permissionsCommand);
+    PermissionListener permissionListener = new PermissionListener(this, permissionUserRepository);
+    pluginManager.registerEvents(permissionListener, this);
 
     // Register services
     if (pluginManager.isPluginEnabled("Vault")) {
 
       logger.info("Found Vault. Hooking into permissions API.");
-      VaultPermissions vaultPermissions = new VaultPermissions(this, permissionService);
-      servicesManager.register(Permission.class, vaultPermissions, this, ServicePriority.Highest);
+      servicesManager.register(Permission.class, permission, this, ServicePriority.Highest);
     }
-
-    servicesManager.register(PermissionService.class, permissionService, this, ServicePriority.Highest);
   }
 
   private void setupMetrics() {
@@ -107,7 +98,7 @@ public class ChiaraPlugin extends JavaPlugin {
     Metrics metrics = new Metrics(this);
 
     Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups",
-        () -> permissionService.getGroups().size());
+        () -> permissionGroupRepository.findGroups().size());
     Metrics.SingleLineChart averageFoodLevelChart = new Metrics.SingleLineChart(
         "average_food_level", () -> {
       OptionalDouble average = Bukkit.getOnlinePlayers()
