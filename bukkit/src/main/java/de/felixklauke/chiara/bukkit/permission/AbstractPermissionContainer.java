@@ -59,7 +59,7 @@ public abstract class AbstractPermissionContainer implements PermissionContainer
   @Override
   public boolean hasWorldPermission(String world, String permission) {
 
-    Map<String, Boolean> currentWorldPermissions = getEffectiveWorldPermissions(world);
+    Map<String, Boolean> currentWorldPermissions = getWorldBasePermissions(world);
     return currentWorldPermissions.getOrDefault(permission, false);
   }
 }
