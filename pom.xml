@@ -91,7 +91,7 @@
       <artifactId>junit-jupiter-api</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
-      <version>5.4.2</version>
+      <version>5.5.2</version>
     </dependency>
 
     <!-- Junit Jupiter Engine -->
