@@ -153,7 +153,7 @@
     <!-- Maven -->
     <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
     <maven.plugin.release.version>2.5.3</maven.plugin.release.version>
-    <maven.plugin.sonar.version>3.6.0.1398</maven.plugin.sonar.version>
+    <maven.plugin.sonar.version>3.7.0.1746</maven.plugin.sonar.version>
     <maven.plugin.source.version>3.1.0</maven.plugin.source.version>
     <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
