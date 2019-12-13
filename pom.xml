@@ -148,7 +148,7 @@
     <!-- Sonar -->
     <maven.plguin.surefire.version>2.22.2</maven.plguin.surefire.version>
     <maven.plugin.compiler.version>3.8.1</maven.plugin.compiler.version>
-    <maven.plugin.jacoco.version>0.8.4</maven.plugin.jacoco.version>
+    <maven.plugin.jacoco.version>0.8.5</maven.plugin.jacoco.version>
 
     <!-- Maven -->
     <maven.plugin.javadoc.version>3.1.0</maven.plugin.javadoc.version>
