@@ -16,53 +16,46 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
 public class PermissionListener implements Listener {
-
   private final Plugin plugin;
   private final PermissionUserRepository permissionUserRepository;
 
   @Inject
   public PermissionListener(
-    Plugin plugin, PermissionUserRepository permissionUserRepository) {
+    Plugin plugin,
+    PermissionUserRepository permissionUserRepository
+  ) {
     this.plugin = plugin;
     this.permissionUserRepository = permissionUserRepository;
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onPlayerLogin(PlayerLoginEvent event) {
-
-    Player player = event.getPlayer();
-    UUID uniqueId = player.getUniqueId();
-
+    var player = event.getPlayer();
+    var uniqueId = player.getUniqueId();
     Optional<PermissionUser> userOptional = permissionUserRepository.find(uniqueId);
     userOptional.ifPresent(permissionUser -> permissionUser.calculatePermissionAttachment(plugin));
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onPlayerQuit(PlayerQuitEvent event) {
-
-    Player player = event.getPlayer();
-    UUID uniqueId = player.getUniqueId();
-
+    var player = event.getPlayer();
+    var uniqueId = player.getUniqueId();
     Optional<PermissionUser> userOptional = permissionUserRepository.find(uniqueId);
     userOptional.ifPresent(permissionUser -> permissionUser.removePermissionAttachment(plugin));
   }
 
   @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
   public void onPlayerKick(PlayerKickEvent event) {
-
-    Player player = event.getPlayer();
-    UUID uniqueId = player.getUniqueId();
-
+    var player = event.getPlayer();
+    var uniqueId = player.getUniqueId();
     Optional<PermissionUser> userOptional = permissionUserRepository.find(uniqueId);
     userOptional.ifPresent(permissionUser -> permissionUser.removePermissionAttachment(plugin));
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onWorldChange(PlayerChangedWorldEvent event) {
-
-    Player player = event.getPlayer();
-    UUID uniqueId = player.getUniqueId();
-
+    var player = event.getPlayer();
+    var uniqueId = player.getUniqueId();
     Optional<PermissionUser> userOptional = permissionUserRepository.find(uniqueId);
     userOptional.ifPresent(permissionUser -> permissionUser.calculatePermissionAttachment(plugin));
   }

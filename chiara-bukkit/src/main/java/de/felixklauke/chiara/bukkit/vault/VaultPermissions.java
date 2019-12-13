@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class VaultPermissions extends Permission {
-
   private static final boolean SUPERPERMS_SUPPORT = true;
   private static final boolean GROUP_SUPPORT = true;
 
@@ -25,7 +24,8 @@ public class VaultPermissions extends Permission {
   @Inject
   private VaultPermissions(Plugin plugin,
     PermissionGroupRepository permissionGroupRepository,
-    PermissionUserRepository permissionUserRepository) {
+    PermissionUserRepository permissionUserRepository
+  ) {
     this.plugin = plugin;
     this.permissionGroupRepository = permissionGroupRepository;
     this.permissionUserRepository = permissionUserRepository;
@@ -33,25 +33,21 @@ public class VaultPermissions extends Permission {
 
   @Override
   public String getName() {
-
     return plugin.getName();
   }
 
   @Override
   public boolean isEnabled() {
-
     return plugin.isEnabled();
   }
 
   @Override
   public boolean hasSuperPermsCompat() {
-
     return SUPERPERMS_SUPPORT;
   }
 
   @Override
   public boolean playerHas(String world, String player, String permission) {
-
     Player bukkitPlayer = Bukkit.getPlayer(player);
     if (bukkitPlayer == null) {
       return false;
@@ -62,7 +58,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean playerAdd(String world, String player, String permission) {
-
    PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
 
     if (world == null) {
@@ -76,7 +71,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean playerRemove(String world, String player, String permission) {
-
     PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
 
     if (world == null) {
@@ -90,7 +84,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean groupHas(String world, String group, String permission) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -107,7 +100,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean groupAdd(String world, String group, String permission) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -126,7 +118,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean groupRemove(String world, String group, String permission) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -145,7 +136,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean playerInGroup(String world, String player, String group) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -165,7 +155,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean playerAddGroup(String world, String player, String group) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -180,7 +169,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean playerRemoveGroup(String world, String player, String group) {
-
     Optional<PermissionGroup> groupOptional = permissionGroupRepository.find(group);
     if (groupOptional.isEmpty()) {
       return false;
@@ -195,7 +183,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public String[] getPlayerGroups(String world, String player) {
-
     PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
     Set<String> groups = permissionUser.getPermissionsGroups().stream()
       .map(PermissionGroup::getName)
@@ -205,7 +192,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public String getPrimaryGroup(String world, String player) {
-
     PermissionUser permissionUser = permissionUserRepository.findByNameOrCreate(player);
     Set<PermissionGroup> permissionsGroups = permissionUser.getPermissionsGroups();
     return permissionsGroups.stream()
@@ -216,7 +202,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public String[] getGroups() {
-
     Set<String> groups = permissionGroupRepository.findAll().stream()
       .map(PermissionGroup::getName)
       .collect(Collectors.toSet());
@@ -225,7 +210,6 @@ public class VaultPermissions extends Permission {
 
   @Override
   public boolean hasGroupSupport() {
-
     return GROUP_SUPPORT;
   }
 }
