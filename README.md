@@ -1,7 +1,8 @@
-[![Quality Gate Status](https://sonar.klauke-enterprises.com/api/project_badges/measure?project=chiara&metric=alert_status)](https://sonar.klauke-enterprises.com/dashboard?id=chiara)  
-  
-[![Coverage](https://sonar.klauke-enterprises.com/api/project_badges/measure?project=chiara&metric=coverage)](https://sonar.klauke-enterprises.com/dashboard?id=chiara)
-  
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=alert_status)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=coverage)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
+
 # chiara
 Simple but effective bukkit permissions plugin.
 
@@ -18,7 +19,7 @@ In the following you can see a full reference of the groups and users with all a
 - Players Groups / Group Inheritance
 
 ## Users
-Default users.yml: 
+Default users.yml:
 ```yaml
 users:
   f675a756-4b50-4e6e-a6bf-6713e869f83d:
@@ -77,7 +78,7 @@ groups:
 # Commands
 
 There is a general management command:
-  
+
 `/permissions [list|reload]` (Aliases: `perms`, `perm`)
 
 # Permissions
