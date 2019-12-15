@@ -1,5 +1,11 @@
+##############
+### Gradle ###
+##############
+build
+.gradle
+
+################
+### IntelliJ ###
+################
 .idea
 *.iml
-out
-gen
-target
