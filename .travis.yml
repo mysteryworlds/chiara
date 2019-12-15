@@ -1,41 +1,52 @@
-################
-### Language ###
-################
+######################################
+### Configure programming language ###
+######################################
 language: java
 
-###########
-### JDK ###
-###########
+##################################
+### Make sure using Oracle JDK ###
+##################################
 jdk:
   - oraclejdk11
+
+###################################
+### Disable Email notifications ###
+###################################
+notifications:
+  email: false
 
 ###############
 ### Caching ###
 ###############
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
-#####################
-### Notifications ###
-#####################
-notifications:
-  email: false
+#################
+### SonarQube ###
+#################
+addons:
+  sonarcloud:
+    organization: "felixklauke"
+    token:
+      secure: lnrjO//jtZB9G16ULdb3GQ+8Wx3iA6JxavV5M6D59ZdpVxPj4WJqS53qy+lj2Y0latqf7MCj2Ue/a0K0+/HjAnAHxphAlOAdgcZ3PLxh3GZjhVrIF6DEH2HVURJ32baSJdz4iMLTsjxZYD/0i61kU885U7aBfBMpslg/kp8NhiXsnfdqmYFy5bPLvwaya0oER4WtfvT6GxUNRmBeEDVxDwOEcbJmwfp83qsJyRkc7aEo/jbMgwWhTEn7po6fnh4BVxl/uPilxmFD/TE59ieN8A4lgVMizblaP6aQ3sdIHSg8O72+HWVFMm2V9WIVS8PtmIxiciDE72AenWhVT7a5mQMHsUHr5+d+iJua9+W37PC1J6W91/Lx85LkZO0syXbtCySGgWu4ugPFTOIRODbNAlshfqFFsKRz/6/UtIETatkVj3W+p/hoQmeZR1zdfxF+9tyNFKsRVPJGR25wJlGTbkd1GhI7ZQhvz1fzB+FeOt49GXFx7PdIMEfW1ly6CiPYQo0eZbAf7XkLGT6/6016yBmoNKRrfLyLBCquCwHW5yURgwemJdkomBv4qJ721SPUMCAO70PXQSPwMl2I4XOg4y85AzyHyaXSqVDSF2AaMhA1pE8wqNjt6fXLqIUPRUaJZdG4hKZVAzInaOBGSXqg4fcKh9xBaw5hgj/1o9YRqgE=
 
-####################
-### Build script ###
-####################
+###########################
+### Actual Build Script ###
+###########################
 script:
-  - mvn clean compile package install
-  - mvn verify sonar:sonar -Dsonar.host.url=https://sonar.klauke-enterprises.com -Dsonar.projectKey=chiara -Dsonar.projectName=chiara -Dsonar.login=$SONAR_TOKEN
+  - ./gradlew build
+  - ./gradlew --scan -s
+  - ./gradlew codeCoverageReport
+  - ./gradlew sonarqube
 
 ##################
 ### Deployment ###
 ##################
 deploy:
   provider: script
-  script: mvn deploy --settings deploy/maven-settings.xml
+  script: ./gradlew publish
   on:
     branch: master
     tags: true
