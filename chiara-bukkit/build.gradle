@@ -1,0 +1,6 @@
+dependencies {
+    implementation 'org.bstats:bstats-bukkit:1.5'
+    implementation 'com.google.inject:guice:4.2.2'
+    compileOnly 'org.spigotmc:spigot-api:1.14.3-SNAPSHOT'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+}
