@@ -12,7 +12,9 @@ public class BukkitPermissionGroup extends AbstractPermissionContainer implement
   private final List<PermissionGroup> inheritedGroups;
 
   public BukkitPermissionGroup(
-    String name, List<PermissionGroup> inheritedGroups) {
+    String name,
+    List<PermissionGroup> inheritedGroups
+  ) {
     this.name = name;
     this.inheritedGroups = inheritedGroups;
   }
@@ -64,14 +66,12 @@ public class BukkitPermissionGroup extends AbstractPermissionContainer implement
 
   @Override
   public boolean hasWorldPermission(String world, String permission) {
-
     Map<String, Boolean> effectivePermissions = getEffectivePermissions(world);
     return effectivePermissions.getOrDefault(permission, false);
   }
 
   @Override
   public boolean hasPermission(String permission) {
-
     Map<String, Boolean> effectivePermissions = getEffectivePermissions();
     return effectivePermissions.getOrDefault(permission, false);
   }

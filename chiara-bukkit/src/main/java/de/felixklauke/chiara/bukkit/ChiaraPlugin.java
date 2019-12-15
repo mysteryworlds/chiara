@@ -22,7 +22,6 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ChiaraPlugin extends JavaPlugin {
-
   private static final String GROUPS_CONFIG_FILE_NAME = "groups.yml";
   private static final String USERS_CONFIG_FILE_NAME = "users.yml";
 
@@ -40,30 +39,18 @@ public class ChiaraPlugin extends JavaPlugin {
   private Permission permission;
 
   @Override
-  public void onLoad() {
-
-  }
-
-  @Override
-  public void onDisable() {
-
-
-  }
-
-  @Override
   public void onEnable() {
-
-    ChiaraModule chiaraModule = ChiaraModule.withPlugin(this);
-    Injector injector = Guice.createInjector(chiaraModule);
+    var module = ChiaraModule.withPlugin(this);
+    var injector = Guice.createInjector(module);
     injector.injectMembers(this);
 
     // Metrics
     setupMetrics();
 
     // Configs
-    String pluginDataFolderPath = getDataFolder().getAbsolutePath();
-    Path groupsPath = Paths.get(pluginDataFolderPath, GROUPS_CONFIG_FILE_NAME);
-    Path usersPath = Paths.get(pluginDataFolderPath, USERS_CONFIG_FILE_NAME);
+    var pluginDataFolderPath = getDataFolder().getAbsolutePath();
+    var groupsPath = Paths.get(pluginDataFolderPath, GROUPS_CONFIG_FILE_NAME);
+    var usersPath = Paths.get(pluginDataFolderPath, USERS_CONFIG_FILE_NAME);
 
     if (!Files.exists(groupsPath)) {
       logger.info("Can't find groups config. Copying default.");
@@ -80,7 +67,7 @@ public class ChiaraPlugin extends JavaPlugin {
     // Register all players
 
     // Register listener
-    PermissionListener permissionListener = new PermissionListener(this, permissionUserRepository);
+    var permissionListener = new PermissionListener(this, permissionUserRepository);
     pluginManager.registerEvents(permissionListener, this);
 
     // Register services
@@ -92,14 +79,12 @@ public class ChiaraPlugin extends JavaPlugin {
   }
 
   private void setupMetrics() {
-
     getLogger().info("Setting up Metrics.");
 
-    Metrics metrics = new Metrics(this);
-
-    Metrics.SingleLineChart groupsChart = new Metrics.SingleLineChart("groups",
+    var metrics = new Metrics(this);
+    var groupsChart = new Metrics.SingleLineChart("groups",
         () -> permissionGroupRepository.findAll().size());
-    Metrics.SingleLineChart averageFoodLevelChart = new Metrics.SingleLineChart(
+    var averageFoodLevelChart = new Metrics.SingleLineChart(
         "average_food_level", () -> {
       OptionalDouble average = Bukkit.getOnlinePlayers()
           .stream()

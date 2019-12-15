@@ -11,15 +11,19 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 
 public class ChiaraModule extends AbstractModule {
-
   private final Plugin plugin;
   private final Server server;
   private final PluginManager pluginManager;
   private final ServicesManager servicesManager;
   private final Logger logger;
 
-  private ChiaraModule(Plugin plugin, Server server, PluginManager pluginManager,
-    ServicesManager servicesManager, Logger logger) {
+  private ChiaraModule(
+    Plugin plugin,
+    Server server,
+    PluginManager pluginManager,
+    ServicesManager servicesManager,
+    Logger logger
+  ) {
     this.plugin = plugin;
     this.server = server;
     this.pluginManager = pluginManager;
@@ -29,18 +33,15 @@ public class ChiaraModule extends AbstractModule {
 
   public static ChiaraModule withPlugin(Plugin plugin) {
     Preconditions.checkNotNull(plugin, "Plugin should not be null");
-
-    Server server = plugin.getServer();
-    PluginManager pluginManager = server.getPluginManager();
-    ServicesManager servicesManager = server.getServicesManager();
-    Logger logger = plugin.getLogger();
-
+    var server = plugin.getServer();
+    var pluginManager = server.getPluginManager();
+    var servicesManager = server.getServicesManager();
+    var logger = plugin.getLogger();
     return new ChiaraModule(plugin, server, pluginManager, servicesManager, logger);
   }
 
   @Override
   protected void configure() {
-
     bind(Plugin.class).toInstance(plugin);
     bind(Server.class).toInstance(server);
     bind(PluginManager.class).toInstance(pluginManager);

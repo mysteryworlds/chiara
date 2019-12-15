@@ -15,34 +15,31 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
 public class BukkitPermissionUser extends AbstractPermissionContainer implements PermissionUser {
-
   private AtomicReference<PermissionAttachment> attachmentReference = new AtomicReference<>();
   private final Set<PermissionGroup> permissionGroups;
   private final UUID uniqueId;
 
   private BukkitPermissionUser(
     Set<PermissionGroup> permissionGroups,
-    UUID uniqueId) {
+    UUID uniqueId
+  ) {
     this.permissionGroups = permissionGroups;
     this.uniqueId = uniqueId;
   }
 
   @Override
   public UUID getUniqueId() {
-
     return uniqueId;
   }
 
   @Override
   public Set<PermissionGroup> getPermissionsGroups() {
-
     return ImmutableSet.copyOf(permissionGroups);
   }
 
   @Override
   public void addGroup(PermissionGroup group) {
     Preconditions.checkNotNull(group, "Group should not be null");
-
     permissionGroups.add(group);
   }
 
@@ -142,7 +139,6 @@ public class BukkitPermissionUser extends AbstractPermissionContainer implements
 
   @Override
   public boolean hasPermission(String permission) {
-
     Player player = Bukkit.getPlayer(uniqueId);
     if (player == null) {
       return getEffectivePermissions().get(permission);
