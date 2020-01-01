@@ -5,13 +5,13 @@ name: Chiara
 version: ${project.version}
 
 # The main class of the plugin
-main: de.felixklauke.chiara.bukkit.ChiaraPlugin
+main: com.felixklauke.chiara.bukkit.ChiaraPlugin
 
 # Human readable description
 description: Hassle free and stupid simple permissions plugin
 
 # Implemented against api version delivered by maven
-api-version: "1.14"
+api-version: "1.15"
 
 # Author
 author: Felix Klauke <info@felix-klauke.com>
