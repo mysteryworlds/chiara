@@ -72,7 +72,7 @@ final class PermissionUserTest {
     assertFalse(hasPermission);
 
     permissionUser
-      .setPermissionStatus(TEST_PERMISSION.name(), PermissionStatus.ALLOWED);
+      .setPermissionStatus(TEST_PERMISSION, PermissionStatus.ALLOWED);
     hasPermission = permissionUser.hasPermission(TEST_PERMISSION.name());
     assertTrue(hasPermission);
   }
@@ -83,7 +83,7 @@ final class PermissionUserTest {
       .hasPermission(TEST_PERMISSION.name(), TEST_WORLD);
     assertFalse(hasPermission);
 
-    permissionUser.setWorldPermissionStatus(TEST_PERMISSION.name(),
+    permissionUser.setWorldPermissionStatus(TEST_PERMISSION,
       PermissionStatus.ALLOWED, TEST_WORLD);
     hasPermission = permissionUser
       .hasPermission(TEST_PERMISSION.name(), TEST_WORLD);

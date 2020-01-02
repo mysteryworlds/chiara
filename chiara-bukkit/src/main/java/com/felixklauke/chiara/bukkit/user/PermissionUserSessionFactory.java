@@ -11,7 +11,7 @@ public final class PermissionUserSessionFactory {
   private final Plugin plugin;
 
   @Inject
-  private PermissionUserSessionFactory(Plugin plugin) {
+  PermissionUserSessionFactory(Plugin plugin) {
     this.plugin = plugin;
   }
 

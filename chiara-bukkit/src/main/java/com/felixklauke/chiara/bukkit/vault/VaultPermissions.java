@@ -93,7 +93,8 @@ public final class VaultPermissions extends Permission {
   ) {
     var userId = findPlayerUniqueId(player);
     return userRepository.findUser(userId)
-      .map(permissionUser -> permissionUser.setPermissionStatus(permission,
+      .map(permissionUser -> permissionUser.setPermissionStatus(
+        com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
         status))
       .orElse(false);
   }
@@ -106,7 +107,7 @@ public final class VaultPermissions extends Permission {
   ) {
     var userId = findPlayerUniqueId(player);
     return userRepository.findUser(userId)
-      .map(permissionUser -> permissionUser.setWorldPermissionStatus(permission,
+      .map(permissionUser -> permissionUser.setWorldPermissionStatus(com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
         status, world))
       .orElse(false);
   }
@@ -150,7 +151,7 @@ public final class VaultPermissions extends Permission {
   ) {
     return groupRepository.findGroup(group)
       .map(permissionGroup -> permissionGroup.setPermissionStatus(
-        permission,
+        com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
         status
       ))
       .orElse(false);
@@ -164,7 +165,7 @@ public final class VaultPermissions extends Permission {
   ) {
     return groupRepository.findGroup(group)
       .map(permissionGroup -> permissionGroup.setWorldPermissionStatus(
-        permission,
+        com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
         status, world
       ))
       .orElse(false);

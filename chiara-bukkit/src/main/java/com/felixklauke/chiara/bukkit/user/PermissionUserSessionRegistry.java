@@ -1,8 +1,8 @@
 package com.felixklauke.chiara.bukkit.user;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -11,7 +11,13 @@ import javax.inject.Singleton;
 
 @Singleton
 public final class PermissionUserSessionRegistry {
-  private final Set<PermissionUserSession> sessions = new HashSet<>();
+  private final Set<PermissionUserSession> sessions;
+
+  private PermissionUserSessionRegistry(
+    Set<PermissionUserSession> sessions
+  ) {
+    this.sessions = sessions;
+  }
 
   public Optional<PermissionUserSession> findSession(UUID userId) {
     Preconditions.checkNotNull(userId);
@@ -40,5 +46,9 @@ public final class PermissionUserSessionRegistry {
 
   public void clear() {
     sessions.clear();
+  }
+
+  public static PermissionUserSessionRegistry empty() {
+    return new PermissionUserSessionRegistry(Sets.newHashSet());
   }
 }

@@ -3,6 +3,7 @@ package com.felixklauke.chiara.bukkit.user;
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.felixklauke.chiara.bukkit.permission.Permission;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
@@ -11,11 +12,8 @@ import java.util.Set;
 import java.util.UUID;
 import org.bukkit.plugin.PluginManager;
 
-public final class PermissionUser {
+public final class PermissionUser extends PermissionEntity {
   private final UUID id;
-  private final PermissionTable permissions;
-  private final GroupTable groups;
-  private final WorldPermissionTable worldPermissions;
   private final PluginManager pluginManager;
 
   PermissionUser(
@@ -25,10 +23,8 @@ public final class PermissionUser {
     WorldPermissionTable worldPermissions,
     PluginManager pluginManager
   ) {
+    super(permissions, groups, worldPermissions);
     this.id = id;
-    this.permissions = permissions;
-    this.groups = groups;
-    this.worldPermissions = worldPermissions;
     this.pluginManager = pluginManager;
   }
 
@@ -36,77 +32,34 @@ public final class PermissionUser {
     return id;
   }
 
-  public PermissionTable calculateEffectivePermissions() {
-    var groupPermissions = groups.calculateEffectivePermissions();
-    return groupPermissions.merge(permissions);
-  }
-
-  public PermissionTable calculateEffectivePermissions(String world) {
-    Preconditions.checkNotNull(world);
-    var groupPermissions = groups.calculateEffectivePermissions(world);
-    var worldPermissions = this.worldPermissions
-      .calculateWorldPermissions(world);
-    return groupPermissions.merge(permissions)
-      .merge(worldPermissions);
-  }
-
-  public Set<PermissionGroup> groups() {
-    return groups.groups();
-  }
-
-  public boolean addGroup(PermissionGroup permissionGroup) {
-    Preconditions.checkNotNull(permissionGroup);
-    return groups.add(permissionGroup);
-  }
-
-  public boolean removeGroup(PermissionGroup permissionGroup) {
-    Preconditions.checkNotNull(permissionGroup);
-    return groups.remove(permissionGroup);
-  }
-
-  public boolean hasPermission(String permission) {
-    Preconditions.checkNotNull(permission);
-    var perm = Permission.of(permission);
-    return calculateEffectivePermissions().statusOf(perm).booleanValue();
-  }
-
-  public boolean hasPermission(String permission, String world) {
-    Preconditions.checkNotNull(permission);
-    Preconditions.checkNotNull(world);
-    var perm = Permission.of(permission);
-    return calculateEffectivePermissions(world).statusOf(perm).booleanValue();
-  }
-
+  @Override
   public boolean setPermissionStatus(
-    String permission,
+    Permission permission,
     PermissionStatus status
   ) {
     Preconditions.checkNotNull(permission);
     Preconditions.checkNotNull(status);
-    var perm = Permission.of(permission);
-    var permissionChange = callPermissionChangeEvent(perm, status);
+    var permissionChange = callPermissionChangeEvent(permission, status);
     if (permissionChange.isCancelled()) {
       return false;
     }
-    permissions.setStatus(perm, status);
-    return true;
+    return super.setPermissionStatus(permission, status);
   }
 
+  @Override
   public boolean setWorldPermissionStatus(
-    String permission,
+    Permission permission,
     PermissionStatus status,
     String world
   ) {
     Preconditions.checkNotNull(permission);
     Preconditions.checkNotNull(status);
     Preconditions.checkNotNull(world);
-    var perm = Permission.of(permission);
-    var permissionChange = callPermissionChangeEvent(perm, status);
+    var permissionChange = callPermissionChangeEvent(permission, status);
     if (permissionChange.isCancelled()) {
       return false;
     }
-    worldPermissions.setStatus(perm, status, world);
-    return true;
+    return super.setWorldPermissionStatus(permission, status, world);
   }
 
   private PermissionUserChangeEvent callPermissionChangeEvent(

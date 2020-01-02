@@ -78,7 +78,7 @@ class PermissionGroupTest {
     assertFalse(hasPermission);
 
     permissionGroup
-      .setPermissionStatus(TEST_PERMISSION.name(), PermissionStatus.ALLOWED);
+      .setPermissionStatus(TEST_PERMISSION, PermissionStatus.ALLOWED);
     hasPermission = permissionGroup.hasPermission(TEST_PERMISSION.name());
     assertTrue(hasPermission);
   }
@@ -89,7 +89,7 @@ class PermissionGroupTest {
       .hasPermission(TEST_PERMISSION.name(), TEST_WORLD);
     assertFalse(hasPermission);
 
-    permissionGroup.setWorldPermissionStatus(TEST_PERMISSION.name(),
+    permissionGroup.setWorldPermissionStatus(TEST_PERMISSION,
       PermissionStatus.ALLOWED, TEST_WORLD);
     hasPermission = permissionGroup
       .hasPermission(TEST_PERMISSION.name(), TEST_WORLD);
@@ -99,7 +99,7 @@ class PermissionGroupTest {
   @Test
   void testPermissionGroupOverride() {
     permissionGroup
-      .setPermissionStatus(TEST_PERMISSION.name(), PermissionStatus.DECLINED);
+      .setPermissionStatus(TEST_PERMISSION, PermissionStatus.DECLINED);
 
     var overriddenGroup = new PermissionGroup(
       "TestGroup2",
