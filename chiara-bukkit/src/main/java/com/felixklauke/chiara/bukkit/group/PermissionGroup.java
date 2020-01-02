@@ -5,24 +5,27 @@ import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
-import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 public final class PermissionGroup {
   private final String name;
   private final PermissionTable permissions;
   private final GroupTable inheritedGroups;
   private final WorldPermissionTable worldPermissions;
+  private final PluginManager pluginManager;
 
   private PermissionGroup(
     String name,
     PermissionTable permissions,
     GroupTable inheritedGroups,
-    WorldPermissionTable worldPermissions
+    WorldPermissionTable worldPermissions,
+    PluginManager pluginManager
   ) {
     this.name = name;
     this.permissions = permissions;
     this.inheritedGroups = inheritedGroups;
     this.worldPermissions = worldPermissions;
+    this.pluginManager = pluginManager;
   }
 
   public String name() {
@@ -93,7 +96,7 @@ public final class PermissionGroup {
       perm,
       status
     );
-    Bukkit.getPluginManager().callEvent(permissionChange);
+    pluginManager.callEvent(permissionChange);
     return permissionChange;
   }
 }

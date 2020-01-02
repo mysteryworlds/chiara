@@ -12,23 +12,27 @@ import com.google.common.base.Preconditions;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 public final class PermissionUser {
   private final UUID id;
   private final PermissionTable permissions;
   private final GroupTable groups;
   private final WorldPermissionTable worldPermissions;
+  private final PluginManager pluginManager;
 
   private PermissionUser(
     UUID id,
     PermissionTable permissions,
     GroupTable groups,
-    WorldPermissionTable worldPermissions
+    WorldPermissionTable worldPermissions,
+    PluginManager pluginManager
   ) {
     this.id = id;
     this.permissions = permissions;
     this.groups = groups;
     this.worldPermissions = worldPermissions;
+    this.pluginManager = pluginManager;
   }
 
   public UUID id() {
@@ -100,7 +104,6 @@ public final class PermissionUser {
     Preconditions.checkNotNull(world);
     var perm = Permission.of(permission);
     var permissionChange = callPermissionChangeEvent(perm, status);
-    Bukkit.getPluginManager().callEvent(permissionChange);
     if (permissionChange.isCancelled()) {
       return false;
     }
@@ -117,7 +120,7 @@ public final class PermissionUser {
       perm,
       status
     );
-    Bukkit.getPluginManager().callEvent(permissionChange);
+    pluginManager.callEvent(permissionChange);
     return permissionChange;
   }
 }
