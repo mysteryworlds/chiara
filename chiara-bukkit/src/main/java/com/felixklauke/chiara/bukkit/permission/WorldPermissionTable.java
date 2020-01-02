@@ -3,6 +3,9 @@ package com.felixklauke.chiara.bukkit.permission;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public final class WorldPermissionTable {
   private final Map<String, PermissionTable> worldPermissions;
@@ -18,6 +21,18 @@ public final class WorldPermissionTable {
   ) {
     Preconditions.checkNotNull(worldPermissions);
     return new WorldPermissionTable(Maps.newHashMap(worldPermissions));
+  }
+
+  public static WorldPermissionTable withMapWorldPermissions(
+    Map<String, Map<Permission, PermissionStatus>> worldPermissions
+  ) {
+    Preconditions.checkNotNull(worldPermissions);
+    var permissionTables = worldPermissions.entrySet().stream()
+      .collect(Collectors.toMap(
+        Entry::getKey,
+        value -> PermissionTable.withPermissions(value.getValue())
+      ));
+    return new WorldPermissionTable(permissionTables);
   }
 
   public static WorldPermissionTable empty() {

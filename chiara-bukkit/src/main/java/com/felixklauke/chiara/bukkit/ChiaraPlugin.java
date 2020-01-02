@@ -1,5 +1,6 @@
 package com.felixklauke.chiara.bukkit;
 
+import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.user.PermissionUserRepository;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSession;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionFactory;
@@ -15,7 +16,9 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ChiaraPlugin extends JavaPlugin {
+public final class ChiaraPlugin extends JavaPlugin {
+  @Inject
+  private PermissionGroupRepository groupRepository;
   @Inject
   private PermissionUserRepository userRepository;
   @Inject
@@ -34,10 +37,19 @@ public class ChiaraPlugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    loadGroups();
     setupAndStartDependencyInjection();
     registerListeners();
     registerVaultPermission();
     startUserSessions();
+  }
+
+  private void loadGroups() {
+    groupRepository.load();
+  }
+
+  private void loadUsers() {
+    userRepository.load();
   }
 
   private void setupAndStartDependencyInjection() {
@@ -50,8 +62,12 @@ public class ChiaraPlugin extends JavaPlugin {
   }
 
   private void registerVaultPermission() {
-    servicesManager
-      .register(Permission.class, vaultPermissions, this, ServicePriority.High);
+    servicesManager.register(
+      Permission.class,
+      vaultPermissions,
+      this,
+      ServicePriority.High
+    );
   }
 
   private void startUserSessions() {
@@ -67,6 +83,16 @@ public class ChiaraPlugin extends JavaPlugin {
   @Override
   public void onDisable() {
     closeUserSessions();
+    saveUsers();
+    saveGroups();
+  }
+
+  private void saveUsers() {
+    userRepository.save();
+  }
+
+  private void saveGroups() {
+    groupRepository.save();
   }
 
   private void closeUserSessions() {

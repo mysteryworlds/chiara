@@ -179,27 +179,11 @@ public final class VaultPermissions extends Permission {
 
   @Override
   public boolean playerAddGroup(String world, String player, String group) {
-    var id = findPlayerUniqueId(player);
     var groupOptional = groupRepository.findGroup(group);
     if (groupOptional.isEmpty()) {
       return false;
     }
-    var userOptional = userRepository.findUser(id);
-    if (userOptional.isEmpty()) {
-      return false;
-    }
-    var permissionUser = userOptional.get();
-    var permissionGroup = groupOptional.get();
-    return permissionUser.removeGroup(permissionGroup);
-  }
-
-  @Override
-  public boolean playerRemoveGroup(String world, String player, String group) {
     var id = findPlayerUniqueId(player);
-    var groupOptional = groupRepository.findGroup(group);
-    if (groupOptional.isEmpty()) {
-      return false;
-    }
     var userOptional = userRepository.findUser(id);
     if (userOptional.isEmpty()) {
       return false;
@@ -207,6 +191,22 @@ public final class VaultPermissions extends Permission {
     var permissionUser = userOptional.get();
     var permissionGroup = groupOptional.get();
     return permissionUser.addGroup(permissionGroup);
+  }
+
+  @Override
+  public boolean playerRemoveGroup(String world, String player, String group) {
+    var groupOptional = groupRepository.findGroup(group);
+    if (groupOptional.isEmpty()) {
+      return false;
+    }
+    var id = findPlayerUniqueId(player);
+    var userOptional = userRepository.findUser(id);
+    if (userOptional.isEmpty()) {
+      return false;
+    }
+    var permissionUser = userOptional.get();
+    var permissionGroup = groupOptional.get();
+    return permissionUser.removeGroup(permissionGroup);
   }
 
   @Override
