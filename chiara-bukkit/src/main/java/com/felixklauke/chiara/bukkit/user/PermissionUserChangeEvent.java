@@ -31,6 +31,10 @@ public final class PermissionUserChangeEvent extends
     return new PermissionUserChangeEvent(user, permission, permissionStatus);
   }
 
+  public static HandlerList getHandlerList() {
+    return HANDLER_LIST;
+  }
+
   public PermissionUser user() {
     return user;
   }
@@ -38,9 +42,5 @@ public final class PermissionUserChangeEvent extends
   @Override
   public HandlerList getHandlers() {
     return getHandlerList();
-  }
-
-  public static HandlerList getHandlerList() {
-    return HANDLER_LIST;
   }
 }

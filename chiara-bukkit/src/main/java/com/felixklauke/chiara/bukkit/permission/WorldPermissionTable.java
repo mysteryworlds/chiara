@@ -1,6 +1,7 @@
 package com.felixklauke.chiara.bukkit.permission;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import java.util.Map;
 
 public final class WorldPermissionTable {
@@ -16,7 +17,11 @@ public final class WorldPermissionTable {
     Map<String, PermissionTable> worldPermissions
   ) {
     Preconditions.checkNotNull(worldPermissions);
-    return new WorldPermissionTable(worldPermissions);
+    return new WorldPermissionTable(Maps.newHashMap(worldPermissions));
+  }
+
+  public static WorldPermissionTable empty() {
+    return withWorldPermissions(Maps.newHashMap());
   }
 
   public PermissionTable calculateWorldPermissions(String worldName) {

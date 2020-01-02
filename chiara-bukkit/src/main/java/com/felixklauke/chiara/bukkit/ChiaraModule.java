@@ -14,15 +14,16 @@ public final class ChiaraModule extends AbstractModule {
     this.plugin = plugin;
   }
 
-  @Override
-  protected void configure() {
-    bind(Plugin.class).toInstance(plugin);
-    bind(ServicesManager.class).toInstance(plugin.getServer().getServicesManager());
-    bind(Permission.class).to(VaultPermissions.class);
-  }
-
   public static ChiaraModule withPlugin(Plugin plugin) {
     Preconditions.checkNotNull(plugin);
     return new ChiaraModule(plugin);
+  }
+
+  @Override
+  protected void configure() {
+    bind(Plugin.class).toInstance(plugin);
+    bind(ServicesManager.class)
+      .toInstance(plugin.getServer().getServicesManager());
+    bind(Permission.class).to(VaultPermissions.class);
   }
 }

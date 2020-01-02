@@ -1,9 +1,14 @@
 package com.felixklauke.chiara.bukkit.permission;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
+import org.bukkit.permissions.Permissible;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +38,8 @@ final class PermissionTableTest {
   @Test
   void testStatusOf() {
     var permissionTable = PermissionTable.withPermissions(Map.of(
-          testPermissionAllowed, PermissionStatus.ALLOWED,
-          testPermissionDeclined, PermissionStatus.DECLINED
+      testPermissionAllowed, PermissionStatus.ALLOWED,
+      testPermissionDeclined, PermissionStatus.DECLINED
     ));
 
     assertEquals(PermissionStatus.ALLOWED, permissionTable.statusOf(
@@ -50,8 +55,8 @@ final class PermissionTableTest {
 
   @Test
   void testSetStatus() {
-    var permissionTable = PermissionTable.withPermissions(Map.of(
-      testPermissionAllowed, PermissionStatus.ALLOWED
+    var permissionTable = PermissionTable.withPermissions(List.of(
+      testPermissionAllowed
     ));
 
     permissionTable.setStatus(testPermissionAllowed, PermissionStatus.DECLINED);
@@ -120,5 +125,28 @@ final class PermissionTableTest {
     assertEquals(PermissionStatus.ALLOWED, mergedTable.statusOf(
       testPermissionAllowed
     ));
+  }
+
+  @Test
+  void testApply() {
+    var permissionTable = PermissionTable.withPermissions(List.of(
+      testPermissionAllowed
+    ));
+    var plugin = mock(Plugin.class);
+    when(plugin.isEnabled()).thenReturn(true);
+    var permissible = mock(Permissible.class);
+    PermissionAttachment attachment = new PermissionAttachment(
+      plugin,
+      permissible
+    );
+    permissionTable.apply(attachment);
+  }
+
+  @Test
+  void statusOf() {
+  }
+
+  @Test
+  void withPermissions() {
   }
 }

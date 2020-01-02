@@ -18,6 +18,10 @@ public final class GroupTable {
     return new GroupTable(Lists.newArrayList(groups));
   }
 
+  public static GroupTable empty() {
+    return withGroups(Lists.newArrayList());
+  }
+
   public PermissionTable calculateEffectivePermissions() {
     var permissionTable = PermissionTable.empty();
     for (var group : groups) {
@@ -30,7 +34,8 @@ public final class GroupTable {
   public PermissionTable calculateEffectivePermissions(String world) {
     var permissionTable = PermissionTable.empty();
     for (var group : groups) {
-      PermissionTable groupPermissions = group.calculateEffectivePermissions(world);
+      PermissionTable groupPermissions = group
+        .calculateEffectivePermissions(world);
       permissionTable = permissionTable.merge(groupPermissions);
     }
     return permissionTable;

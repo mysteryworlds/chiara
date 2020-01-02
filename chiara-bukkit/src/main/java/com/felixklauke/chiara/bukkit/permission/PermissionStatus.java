@@ -11,11 +11,11 @@ public enum PermissionStatus {
     this.booleanValue = booleanValue;
   }
 
-  public boolean booleanValue() {
-    return booleanValue;
-  }
-
   public static PermissionStatus of(boolean booleanValue) {
     return booleanValue ? ALLOWED : DECLINED;
+  }
+
+  public boolean booleanValue() {
+    return booleanValue;
   }
 }

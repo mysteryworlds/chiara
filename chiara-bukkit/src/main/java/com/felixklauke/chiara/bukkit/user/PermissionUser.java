@@ -2,16 +2,13 @@ package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
-import com.felixklauke.chiara.bukkit.group.PermissionGroupChangeEvent;
 import com.felixklauke.chiara.bukkit.permission.Permission;
-import com.felixklauke.chiara.bukkit.permission.PermissionChangeEvent;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
 import java.util.Set;
 import java.util.UUID;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 public final class PermissionUser {
@@ -47,7 +44,8 @@ public final class PermissionUser {
   public PermissionTable calculateEffectivePermissions(String world) {
     Preconditions.checkNotNull(world);
     var groupPermissions = groups.calculateEffectivePermissions(world);
-    var worldPermissions = this.worldPermissions.calculateWorldPermissions(world);
+    var worldPermissions = this.worldPermissions
+      .calculateWorldPermissions(world);
     return groupPermissions.merge(permissions)
       .merge(worldPermissions);
   }

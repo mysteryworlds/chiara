@@ -14,6 +14,24 @@ public final class PermissionTable {
     this.permissions = permissions;
   }
 
+  public static PermissionTable withPermissions(List<Permission> permissions) {
+    Preconditions.checkNotNull(permissions);
+    var permissionMap = permissions.parallelStream()
+      .collect(Collectors.toMap(key -> key, value -> PermissionStatus.ALLOWED));
+    return PermissionTable.withPermissions(permissionMap);
+  }
+
+  public static PermissionTable withPermissions(
+    Map<Permission, PermissionStatus> permissions
+  ) {
+    Preconditions.checkNotNull(permissions);
+    return new PermissionTable(Maps.newHashMap(permissions));
+  }
+
+  public static PermissionTable empty() {
+    return withPermissions(Maps.newHashMap());
+  }
+
   /**
    * Get the status of the given permission.
    *
@@ -42,7 +60,7 @@ public final class PermissionTable {
    * Update the status of a permission.
    *
    * @param permission Permission.
-   * @param status Permission status.
+   * @param status     Permission status.
    */
   public void setStatus(Permission permission, PermissionStatus status) {
     Preconditions.checkNotNull(permission);
@@ -58,27 +76,10 @@ public final class PermissionTable {
     permissions.remove(permission);
   }
 
-  public static PermissionTable withPermissions(List<Permission> permissions) {
-    Preconditions.checkNotNull(permissions);
-    var permissionMap = permissions.parallelStream()
-      .collect(Collectors.toMap(key -> key, value -> PermissionStatus.ALLOWED));
-    return PermissionTable.withPermissions(permissionMap);
-  }
-
-  public static PermissionTable withPermissions(
-    Map<Permission, PermissionStatus> permissions
-  ) {
-    Preconditions.checkNotNull(permissions);
-    return new PermissionTable(Maps.newHashMap(permissions));
-  }
-
-  public static PermissionTable empty() {
-    return withPermissions(Maps.newHashMap());
-  }
-
   public void apply(PermissionAttachment permissionAttachment) {
     Preconditions.checkNotNull(permissionAttachment);
-    Map<String, Boolean> permissionsMap = tryExtractPermissionsMap(permissionAttachment);
+    Map<String, Boolean> permissionsMap = tryExtractPermissionsMap(
+      permissionAttachment);
     clonePermissions(permissionsMap);
   }
 
@@ -95,10 +96,15 @@ public final class PermissionTable {
     try {
       var permissionsField = permissionAttachment.getClass()
         .getDeclaredField("permissions");
+      permissionsField.setAccessible(true);
       return (Map<String, Boolean>) permissionsField.get(permissionAttachment);
     } catch (NoSuchFieldException | IllegalAccessException e) {
       e.printStackTrace();
       return Maps.newHashMap();
     }
+  }
+
+  public boolean isEmpty() {
+    return permissions.isEmpty();
   }
 }

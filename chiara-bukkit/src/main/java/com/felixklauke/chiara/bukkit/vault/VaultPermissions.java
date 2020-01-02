@@ -12,6 +12,8 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.Plugin;
 
 public final class VaultPermissions extends Permission {
+  private static final boolean SUPER_PERMS_SUPPORT = true;
+  private static final boolean GROUP_SUPPORT = true;
   private final Plugin plugin;
   private final PermissionGroupRepository groupRepository;
   private final PermissionUserRepository userRepository;
@@ -36,8 +38,6 @@ public final class VaultPermissions extends Permission {
   public boolean isEnabled() {
     return plugin.isEnabled();
   }
-
-  private static final boolean SUPER_PERMS_SUPPORT = true;
 
   @Override
   public boolean hasSuperPermsCompat() {
@@ -72,7 +72,8 @@ public final class VaultPermissions extends Permission {
     if (world == null) {
       return setPlayerPermission(player, permission, PermissionStatus.ALLOWED);
     }
-    return setPlayerWorldPermission(player, permission, world, PermissionStatus.ALLOWED);
+    return setPlayerWorldPermission(player, permission, world,
+      PermissionStatus.ALLOWED);
   }
 
   @Override
@@ -80,7 +81,8 @@ public final class VaultPermissions extends Permission {
     if (world == null) {
       return setPlayerPermission(player, permission, PermissionStatus.NOT_SET);
     }
-    return setPlayerWorldPermission(player, permission, world, PermissionStatus.NOT_SET);
+    return setPlayerWorldPermission(player, permission, world,
+      PermissionStatus.NOT_SET);
   }
 
   private boolean setPlayerPermission(
@@ -119,14 +121,14 @@ public final class VaultPermissions extends Permission {
   private boolean groupHas(String group, String permission) {
     var groupOptional = groupRepository.findGroup(group);
     return groupOptional
-      .map(permissionGroup -> permissionGroup.hasPermissions(permission))
+      .map(permissionGroup -> permissionGroup.hasPermission(permission))
       .orElse(false);
   }
 
   private boolean groupHasWorld(String group, String permission, String world) {
     var groupOptional = groupRepository.findGroup(group);
     return groupOptional
-      .map(permissionGroup -> permissionGroup.hasPermissions(permission, world))
+      .map(permissionGroup -> permissionGroup.hasPermission(permission, world))
       .orElse(false);
   }
 
@@ -227,8 +229,6 @@ public final class VaultPermissions extends Permission {
       .map(PermissionGroup::name)
       .toArray(String[]::new);
   }
-
-  private static final boolean GROUP_SUPPORT = true;
 
   @Override
   public boolean hasGroupSupport() {

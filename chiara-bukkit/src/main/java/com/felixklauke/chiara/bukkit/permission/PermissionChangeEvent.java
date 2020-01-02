@@ -5,9 +5,9 @@ import org.bukkit.event.Event;
 
 public abstract class PermissionChangeEvent extends Event implements
   Cancellable {
-  private boolean cancelled;
   private final Permission permission;
   private final PermissionStatus permissionStatus;
+  private boolean cancelled;
 
   protected PermissionChangeEvent(
     Permission permission,

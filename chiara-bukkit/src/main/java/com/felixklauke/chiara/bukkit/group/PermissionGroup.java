@@ -14,7 +14,7 @@ public final class PermissionGroup {
   private final WorldPermissionTable worldPermissions;
   private final PluginManager pluginManager;
 
-  private PermissionGroup(
+  PermissionGroup(
     String name,
     PermissionTable permissions,
     GroupTable inheritedGroups,
@@ -40,17 +40,18 @@ public final class PermissionGroup {
   public PermissionTable calculateEffectivePermissions(String world) {
     Preconditions.checkNotNull(world);
     var groupPermissions = inheritedGroups.calculateEffectivePermissions(world);
-    var worldPermissions = this.worldPermissions.calculateWorldPermissions(world);
+    var worldPermissions = this.worldPermissions
+      .calculateWorldPermissions(world);
     return groupPermissions.merge(permissions)
       .merge(worldPermissions);
   }
 
-  public boolean hasPermissions(String permission) {
+  public boolean hasPermission(String permission) {
     var perm = Permission.of(permission);
     return calculateEffectivePermissions().statusOf(perm).booleanValue();
   }
 
-  public boolean hasPermissions(String permission, String world) {
+  public boolean hasPermission(String permission, String world) {
     var perm = Permission.of(permission);
     return calculateEffectivePermissions(world).statusOf(perm).booleanValue();
   }

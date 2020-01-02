@@ -30,6 +30,10 @@ public final class PermissionGroupChangeEvent extends PermissionChangeEvent {
     return new PermissionGroupChangeEvent(group, permission, permissionStatus);
   }
 
+  public static HandlerList getHandlerList() {
+    return HANDLER_LIST;
+  }
+
   public PermissionGroup group() {
     return group;
   }
@@ -37,9 +41,5 @@ public final class PermissionGroupChangeEvent extends PermissionChangeEvent {
   @Override
   public HandlerList getHandlers() {
     return getHandlerList();
-  }
-
-  public static HandlerList getHandlerList() {
-    return HANDLER_LIST;
   }
 }

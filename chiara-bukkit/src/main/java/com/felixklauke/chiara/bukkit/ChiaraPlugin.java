@@ -38,7 +38,8 @@ public class ChiaraPlugin extends JavaPlugin {
   }
 
   private void registerVaultPermission() {
-    servicesManager.register(Permission.class, vaultPermissions, this, ServicePriority.High);
+    servicesManager
+      .register(Permission.class, vaultPermissions, this, ServicePriority.High);
   }
 
   private void startUserSessions() {

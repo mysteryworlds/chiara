@@ -10,13 +10,13 @@ public final class Permission {
     this.name = name;
   }
 
-  public String name() {
-    return name;
-  }
-
   public static Permission of(String name) {
     Preconditions.checkNotNull(name);
     return new Permission(name);
+  }
+
+  public String name() {
+    return name;
   }
 
   @Override
