@@ -21,7 +21,7 @@
   <module name="TreeWalker">
     <module name="MethodLength">
       <property name="tokens" value="METHOD_DEF"/>
-      <property name="max" value="10"/>
+      <property name="max" value="15"/>
       <property name="countEmpty" value="true"/>
     </module>
     <module name="OuterTypeFilename"/>

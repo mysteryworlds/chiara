@@ -18,7 +18,7 @@ public final class PermissionUser {
   private final WorldPermissionTable worldPermissions;
   private final PluginManager pluginManager;
 
-  private PermissionUser(
+  PermissionUser(
     UUID id,
     PermissionTable permissions,
     GroupTable groups,
@@ -64,13 +64,13 @@ public final class PermissionUser {
     return groups.remove(permissionGroup);
   }
 
-  public boolean hasPermissions(String permission) {
+  public boolean hasPermission(String permission) {
     Preconditions.checkNotNull(permission);
     var perm = Permission.of(permission);
     return calculateEffectivePermissions().statusOf(perm).booleanValue();
   }
 
-  public boolean hasPermissions(String permission, String world) {
+  public boolean hasPermission(String permission, String world) {
     Preconditions.checkNotNull(permission);
     Preconditions.checkNotNull(world);
     var perm = Permission.of(permission);

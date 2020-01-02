@@ -3,8 +3,9 @@ package com.felixklauke.chiara.bukkit.vault;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
-import com.felixklauke.chiara.bukkit.user.PermissionUserNotFoundException;
+import com.felixklauke.chiara.bukkit.user.PermissionUser;
 import com.felixklauke.chiara.bukkit.user.PermissionUserRepository;
+import com.google.common.collect.Sets;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -56,14 +57,14 @@ public final class VaultPermissions extends Permission {
   private boolean playerHas(UUID userId, String permission) {
     var userOptional = userRepository.findUser(userId);
     return userOptional
-      .map(permissionUser -> permissionUser.hasPermissions(permission))
+      .map(permissionUser -> permissionUser.hasPermission(permission))
       .orElse(false);
   }
 
   private boolean playerHasWorld(UUID userId, String permission, String world) {
     var userOptional = userRepository.findUser(userId);
     return userOptional
-      .map(permissionUser -> permissionUser.hasPermissions(permission, world))
+      .map(permissionUser -> permissionUser.hasPermission(permission, world))
       .orElse(false);
   }
 
@@ -210,9 +211,8 @@ public final class VaultPermissions extends Permission {
   @Override
   public String[] getPlayerGroups(String world, String player) {
     return userRepository.findUser(findPlayerUniqueId(player))
-      .orElseThrow(
-        () -> PermissionUserNotFoundException.withMessage("User not found")
-      ).groups()
+      .map(PermissionUser::groups)
+      .orElse(Sets.newHashSet())
       .stream()
       .map(PermissionGroup::name)
       .toArray(String[]::new);
