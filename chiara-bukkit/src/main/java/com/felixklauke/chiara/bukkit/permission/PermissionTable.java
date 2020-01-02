@@ -77,7 +77,28 @@ public final class PermissionTable {
   }
 
   public void apply(PermissionAttachment permissionAttachment) {
+    Preconditions.checkNotNull(permissionAttachment);
+    Map<String, Boolean> permissionsMap = tryExtractPermissionsMap(permissionAttachment);
+    clonePermissions(permissionsMap);
+  }
 
+  private void clonePermissions(Map<String, Boolean> permissionsMap) {
+    permissionsMap.clear();
+    permissions.forEach((permission, status) ->
+      permissionsMap.put(permission.name(), status.booleanValue())
+    );
+  }
 
+  private Map<String, Boolean> tryExtractPermissionsMap(
+    PermissionAttachment permissionAttachment
+  ) {
+    try {
+      var permissionsField = permissionAttachment.getClass()
+        .getDeclaredField("permissions");
+      return (Map<String, Boolean>) permissionsField.get(permissionAttachment);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      e.printStackTrace();
+      return Maps.newHashMap();
+    }
   }
 }

@@ -5,6 +5,7 @@ import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
+import org.bukkit.Bukkit;
 
 public final class PermissionGroup {
   private final String name;
@@ -58,6 +59,10 @@ public final class PermissionGroup {
     Preconditions.checkNotNull(permission);
     Preconditions.checkNotNull(status);
     var perm = Permission.of(permission);
+    var permissionChange = callPermissionChangeEvent(perm, status);
+    if (permissionChange.isCancelled()) {
+      return false;
+    }
     permissions.setStatus(perm, status);
     return true;
   }
@@ -71,7 +76,24 @@ public final class PermissionGroup {
     Preconditions.checkNotNull(status);
     Preconditions.checkNotNull(world);
     var perm = Permission.of(permission);
+    var permissionChange = callPermissionChangeEvent(perm, status);
+    if (permissionChange.isCancelled()) {
+      return false;
+    }
     worldPermissions.setStatus(perm, status, world);
     return true;
+  }
+
+  private PermissionGroupChangeEvent callPermissionChangeEvent(
+    Permission perm,
+    PermissionStatus status
+  ) {
+    var permissionChange = PermissionGroupChangeEvent.of(
+      this,
+      perm,
+      status
+    );
+    Bukkit.getPluginManager().callEvent(permissionChange);
+    return permissionChange;
   }
 }

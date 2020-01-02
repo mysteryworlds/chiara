@@ -20,7 +20,7 @@ author: Felix Klauke <info@felix-klauke.com>
 softdepend:
   - Vault
 
-  # The logger prefix
+# The logger prefix
 prefix: Chiara
 
 # My homepage

@@ -2,13 +2,16 @@ package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
+import com.felixklauke.chiara.bukkit.group.PermissionGroupChangeEvent;
 import com.felixklauke.chiara.bukkit.permission.Permission;
+import com.felixklauke.chiara.bukkit.permission.PermissionChangeEvent;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
 import java.util.Set;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 
 public final class PermissionUser {
   private final UUID id;
@@ -79,6 +82,10 @@ public final class PermissionUser {
     Preconditions.checkNotNull(permission);
     Preconditions.checkNotNull(status);
     var perm = Permission.of(permission);
+    var permissionChange = callPermissionChangeEvent(perm, status);
+    if (permissionChange.isCancelled()) {
+      return false;
+    }
     permissions.setStatus(perm, status);
     return true;
   }
@@ -92,7 +99,25 @@ public final class PermissionUser {
     Preconditions.checkNotNull(status);
     Preconditions.checkNotNull(world);
     var perm = Permission.of(permission);
+    var permissionChange = callPermissionChangeEvent(perm, status);
+    Bukkit.getPluginManager().callEvent(permissionChange);
+    if (permissionChange.isCancelled()) {
+      return false;
+    }
     worldPermissions.setStatus(perm, status, world);
     return true;
+  }
+
+  private PermissionUserChangeEvent callPermissionChangeEvent(
+    Permission perm,
+    PermissionStatus status
+  ) {
+    var permissionChange = PermissionUserChangeEvent.of(
+      this,
+      perm,
+      status
+    );
+    Bukkit.getPluginManager().callEvent(permissionChange);
+    return permissionChange;
   }
 }
