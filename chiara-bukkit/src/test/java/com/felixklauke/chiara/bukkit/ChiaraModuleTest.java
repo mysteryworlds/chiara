@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ChiaraModuleTest {
+final class ChiaraModuleTest {
   @Mock
   private Plugin plugin;
   @Mock

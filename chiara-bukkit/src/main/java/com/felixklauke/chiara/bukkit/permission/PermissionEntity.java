@@ -5,7 +5,7 @@ import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.google.common.base.Preconditions;
 import java.util.Set;
 
-public abstract class PermissionEntity {
+public class PermissionEntity {
   private final PermissionTable permissions;
   private final GroupTable groups;
   private final WorldPermissionTable worldPermissions;

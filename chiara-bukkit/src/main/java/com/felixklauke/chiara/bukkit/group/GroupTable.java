@@ -52,4 +52,8 @@ public final class GroupTable {
   public boolean remove(PermissionGroup permissionGroup) {
     return groups.remove(permissionGroup);
   }
+
+  public int count() {
+    return groups.size();
+  }
 }

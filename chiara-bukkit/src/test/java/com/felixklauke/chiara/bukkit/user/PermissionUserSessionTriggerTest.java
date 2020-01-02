@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
-import java.util.Optional;
 import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,7 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PermissionUserSessionTriggerTest {
+final class PermissionUserSessionTriggerTest {
   @Mock
   private PermissionUserRepository userRepository;
   @Mock

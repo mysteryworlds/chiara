@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PermissionGroupTest {
+final class PermissionGroupTest {
   private static final Permission TEST_PERMISSION = Permission
     .of("test-permission");
   private static final String TEST_GROUP_NAME = "TestGroup";
