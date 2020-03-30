@@ -1,6 +1,7 @@
 package com.felixklauke.chiara.bukkit.group;
 
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -55,5 +56,12 @@ public final class GroupTable {
 
   public int count() {
     return groups.size();
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+      .add("groups", groups)
+      .toString();
   }
 }

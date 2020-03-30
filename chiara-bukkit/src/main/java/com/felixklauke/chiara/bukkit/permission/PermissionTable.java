@@ -1,9 +1,11 @@
 package com.felixklauke.chiara.bukkit.permission;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -19,6 +21,17 @@ public final class PermissionTable {
     var permissionMap = permissions.parallelStream()
       .collect(Collectors.toMap(key -> key, value -> PermissionStatus.ALLOWED));
     return PermissionTable.withPermissions(permissionMap);
+  }
+
+  public static PermissionTable withBoolPermissions(
+    Map<String, Boolean> permissions
+  ) {
+    var mappedPermissions = permissions.entrySet().stream()
+      .collect(Collectors.toMap(
+        entry -> Permission.of(entry.getKey()),
+        entry -> PermissionStatus.of(entry.getValue())
+      ));
+    return withPermissions(mappedPermissions);
   }
 
   public static PermissionTable withPermissions(
@@ -106,5 +119,12 @@ public final class PermissionTable {
 
   public boolean isEmpty() {
     return permissions.isEmpty();
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+      .add("permissions", permissions)
+      .toString();
   }
 }

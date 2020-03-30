@@ -1,5 +1,6 @@
 package com.felixklauke.chiara.bukkit.permission;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.Map;
@@ -58,5 +59,12 @@ public final class WorldPermissionTable {
       worldPermissions.put(world, permissionTable);
     }
     permissionTable.setStatus(perm, status);
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+      .add("worldPermissions", worldPermissions)
+      .toString();
   }
 }

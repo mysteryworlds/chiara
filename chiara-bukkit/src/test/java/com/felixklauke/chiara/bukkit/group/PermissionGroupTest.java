@@ -31,18 +31,19 @@ final class PermissionGroupTest {
   private PermissionGroup permissionGroup;
   private GroupTable groups;
   private WorldPermissionTable worldPermissions;
+  private PermissionGroupFactory groupFactory;
 
   @BeforeEach
   void setUp() {
     permissionTable = PermissionTable.empty();
     groups = GroupTable.empty();
     worldPermissions = WorldPermissionTable.empty();
-    permissionGroup = new PermissionGroup(
+    groupFactory = new PermissionGroupFactory(pluginManager);
+    permissionGroup = groupFactory.createGroup(
       "TestGroup",
       permissionTable,
       groups,
-      worldPermissions,
-      pluginManager
+      worldPermissions
     );
   }
 
@@ -101,13 +102,12 @@ final class PermissionGroupTest {
     permissionGroup
       .setPermissionStatus(TEST_PERMISSION, PermissionStatus.DECLINED);
 
-    var overriddenGroup = new PermissionGroup(
+    var overriddenGroup = groupFactory.createGroup(
       "TestGroup2",
       PermissionTable
         .withPermissions(Map.of(TEST_PERMISSION, PermissionStatus.ALLOWED)),
       GroupTable.withGroups(List.of(permissionGroup)),
-      WorldPermissionTable.empty(),
-      pluginManager
+      WorldPermissionTable.empty()
     );
     var hasPermission = overriddenGroup.hasPermission(TEST_PERMISSION.name());
     assertTrue(hasPermission);

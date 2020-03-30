@@ -2,6 +2,7 @@ package com.felixklauke.chiara.bukkit.permission;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.Set;
 
@@ -78,5 +79,14 @@ public class PermissionEntity {
     Preconditions.checkNotNull(world);
     worldPermissions.setStatus(permission, status, world);
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+      .add("permissions", permissions)
+      .add("groups", groups)
+      .add("worldPermissions", worldPermissions)
+      .toString();
   }
 }

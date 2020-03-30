@@ -5,6 +5,7 @@ import com.felixklauke.chiara.bukkit.permission.PermissionEntity;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import org.bukkit.plugin.PluginManager;
 
@@ -69,5 +70,13 @@ public final class PermissionGroup extends PermissionEntity {
     );
     pluginManager.callEvent(permissionChange);
     return permissionChange;
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+      .add("name", name)
+      .add("pluginManager", pluginManager)
+      .toString();
   }
 }

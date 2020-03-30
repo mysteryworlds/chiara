@@ -45,6 +45,7 @@ public final class PermissionUserSessionRegistry {
   }
 
   public void clear() {
+    sessions.forEach(PermissionUserSession::close);
     sessions.clear();
   }
 

@@ -97,7 +97,6 @@ public final class ChiaraPlugin extends JavaPlugin {
   }
 
   private void closeUserSessions() {
-    sessionRegistry.findAll().forEach(PermissionUserSession::close);
     sessionRegistry.clear();
   }
 }
