@@ -49,8 +49,6 @@ allprojects {
   }
 
   checkstyle {
-    maxWarnings = 0
-    ignoreFailures = false
     toolVersion '8.27'
     checkstyleTest.enabled = false
   }
