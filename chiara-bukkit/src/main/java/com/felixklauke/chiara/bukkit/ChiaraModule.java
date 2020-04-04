@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import javax.inject.Singleton;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 
 public final class ChiaraModule extends AbstractModule {
@@ -31,6 +32,7 @@ public final class ChiaraModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(Plugin.class).toInstance(plugin);
+    bind(PluginManager.class).toInstance(plugin.getServer().getPluginManager());
     bind(ServicesManager.class).toInstance(plugin.getServer().getServicesManager());
     bind(Permission.class).to(VaultPermissions.class);
   }
