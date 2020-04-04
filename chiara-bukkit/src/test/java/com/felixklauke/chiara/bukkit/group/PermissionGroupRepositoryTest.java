@@ -31,7 +31,7 @@ class PermissionGroupRepositoryTest {
   }
 
   @Test
-  void load() {
+  void testLoad() {
     groupRepository.load();
     var groups = groupRepository.findAll();
   }

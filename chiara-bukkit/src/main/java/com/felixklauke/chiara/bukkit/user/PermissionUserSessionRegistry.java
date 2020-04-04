@@ -19,6 +19,10 @@ public final class PermissionUserSessionRegistry {
     this.sessions = sessions;
   }
 
+  public static PermissionUserSessionRegistry empty() {
+    return new PermissionUserSessionRegistry(Sets.newHashSet());
+  }
+
   public Optional<PermissionUserSession> findSession(UUID userId) {
     Preconditions.checkNotNull(userId);
     return sessions.stream()
@@ -47,9 +51,5 @@ public final class PermissionUserSessionRegistry {
   public void clear() {
     sessions.forEach(PermissionUserSession::close);
     sessions.clear();
-  }
-
-  public static PermissionUserSessionRegistry empty() {
-    return new PermissionUserSessionRegistry(Sets.newHashSet());
   }
 }

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
-import com.felixklauke.chiara.bukkit.group.PermissionGroupChangeEvent;
+import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import java.util.UUID;

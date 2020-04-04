@@ -21,6 +21,14 @@ public class PermissionEntity {
     this.worldPermissions = worldPermissions;
   }
 
+  public PermissionTable basePermissions() {
+    return permissions;
+  }
+
+  public WorldPermissionTable worldPermissions() {
+    return worldPermissions;
+  }
+
   public Set<PermissionGroup> groups() {
     return groups.groups();
   }

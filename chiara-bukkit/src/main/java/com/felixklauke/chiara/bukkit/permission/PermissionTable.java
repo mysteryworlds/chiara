@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -126,5 +125,13 @@ public final class PermissionTable {
     return MoreObjects.toStringHelper(this)
       .add("permissions", permissions)
       .toString();
+  }
+
+  public Map<String, Boolean> asMap() {
+    return permissions.entrySet().stream()
+      .collect(Collectors.toMap(
+        entry -> entry.getKey().name(),
+        entry -> entry.getValue().booleanValue()
+      ));
   }
 }

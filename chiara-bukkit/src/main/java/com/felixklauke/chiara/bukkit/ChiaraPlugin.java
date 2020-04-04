@@ -2,7 +2,6 @@ package com.felixklauke.chiara.bukkit;
 
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.user.PermissionUserRepository;
-import com.felixklauke.chiara.bukkit.user.PermissionUserSession;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionFactory;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionRegistry;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionTrigger;

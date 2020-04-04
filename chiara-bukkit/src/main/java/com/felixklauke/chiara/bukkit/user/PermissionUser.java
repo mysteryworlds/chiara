@@ -1,14 +1,13 @@
 package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
-import com.felixklauke.chiara.bukkit.group.PermissionGroup;
+import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.permission.Permission;
 import com.felixklauke.chiara.bukkit.permission.PermissionEntity;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
-import java.util.Set;
 import java.util.UUID;
 import org.bukkit.plugin.PluginManager;
 

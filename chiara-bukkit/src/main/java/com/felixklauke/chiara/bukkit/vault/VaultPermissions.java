@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.UUID;
 import javax.inject.Inject;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 public final class VaultPermissions extends Permission {
@@ -107,7 +108,8 @@ public final class VaultPermissions extends Permission {
   ) {
     var userId = findPlayerUniqueId(player);
     return userRepository.findUser(userId)
-      .map(permissionUser -> permissionUser.setWorldPermissionStatus(com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
+      .map(permissionUser -> permissionUser.setWorldPermissionStatus(
+        com.felixklauke.chiara.bukkit.permission.Permission.of(permission),
         status, world))
       .orElse(false);
   }
@@ -237,6 +239,6 @@ public final class VaultPermissions extends Permission {
   }
 
   private UUID findPlayerUniqueId(String player) {
-    return UUID.randomUUID();
+    return Bukkit.getOfflinePlayer(player).getUniqueId();
   }
 }

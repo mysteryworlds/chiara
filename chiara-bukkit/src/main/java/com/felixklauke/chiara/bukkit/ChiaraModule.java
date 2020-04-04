@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import com.felixklauke.chiara.bukkit.group.GroupConfig;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionRegistry;
+import com.felixklauke.chiara.bukkit.user.UserConfig;
 import com.felixklauke.chiara.bukkit.vault.VaultPermissions;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -18,6 +19,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 
 public final class ChiaraModule extends AbstractModule {
+  private static final String GROUP_CONFIG = "groups.yml";
+  private static final String USERS_CONFIG = "users.yml";
   private final Plugin plugin;
 
   private ChiaraModule(Plugin plugin) {
@@ -33,17 +36,23 @@ public final class ChiaraModule extends AbstractModule {
   protected void configure() {
     bind(Plugin.class).toInstance(plugin);
     bind(PluginManager.class).toInstance(plugin.getServer().getPluginManager());
-    bind(ServicesManager.class).toInstance(plugin.getServer().getServicesManager());
+    bind(ServicesManager.class)
+      .toInstance(plugin.getServer().getServicesManager());
     bind(Permission.class).to(VaultPermissions.class);
   }
-
-  private static final String GROUP_CONFIG = "groups.yml";
 
   @Provides
   @Singleton
   @GroupConfig
   Path provideGroupPath() {
     return Paths.get(plugin.getDataFolder().getPath(), GROUP_CONFIG);
+  }
+
+  @Provides
+  @Singleton
+  @UserConfig
+  Path provideUsersPath() {
+    return Paths.get(plugin.getDataFolder().getPath(), USERS_CONFIG);
   }
 
   @Provides

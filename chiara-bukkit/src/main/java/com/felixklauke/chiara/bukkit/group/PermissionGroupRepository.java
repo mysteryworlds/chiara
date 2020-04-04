@@ -1,6 +1,5 @@
 package com.felixklauke.chiara.bukkit.group;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,12 +52,28 @@ public final class PermissionGroupRepository {
   }
 
   public void save() {
+    var groupConfig = writeGroupConfig();
+    try {
+      var content = objectMapper.writeValueAsString(groupConfig);
+      Files.writeString(configPath, content);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private PermissionGroupConfig writeGroupConfig() {
+    var configEntries = groups.values().stream().collect(Collectors.toMap(
+      PermissionGroup::name,
+      PermissionGroupConfigEntry::fromGroup
+    ));
+    return PermissionGroupConfig.withEntries(configEntries);
   }
 
   public void load() {
     try {
       var content = Files.readString(configPath);
-      var groupConfig = objectMapper.readValue(content, PermissionGroupConfig.class);
+      var groupConfig = objectMapper
+        .readValue(content, PermissionGroupConfig.class);
       readGroups(groupConfig);
     } catch (IOException e) {
       e.printStackTrace();
@@ -79,23 +93,26 @@ public final class PermissionGroupRepository {
     Map<String, PermissionGroupConfigEntry> groups
   ) {
     var configEntry = groups.get(group);
-    var permissions = PermissionTable
-      .withBoolPermissions(configEntry.permissions());
-    var mappedGroups = configEntry.inheritance()
-      .stream()
-      .map(groupName -> readGroup(groupName, groups))
-      .collect(Collectors.toList());
-    var mappedWorldPermissions = configEntry.worlds().entrySet().stream()
-      .collect(Collectors.toMap(
-        Entry::getKey,
-        entry -> PermissionTable.withBoolPermissions(entry.getValue())
-      ));
+    var permissions = PermissionTable.withBoolPermissions(
+      configEntry.permissions()
+    );
+    var mappedGroups = readInheritance(configEntry, groups);
     return groupFactory.createGroup(
       group,
       permissions,
       GroupTable.withGroups(mappedGroups),
-      WorldPermissionTable.withWorldPermissions(mappedWorldPermissions)
+      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.worlds())
     );
+  }
+
+  private List<PermissionGroup> readInheritance(
+    PermissionGroupConfigEntry configEntry,
+    Map<String, PermissionGroupConfigEntry> groups
+  ) {
+    return configEntry.inheritance()
+      .stream()
+      .map(groupName -> readGroup(groupName, groups))
+      .collect(Collectors.toList());
   }
 
   public static final class PermissionGroupConfig {
@@ -104,8 +121,15 @@ public final class PermissionGroupRepository {
     public PermissionGroupConfig() {
     }
 
-    public PermissionGroupConfig(Map<String, PermissionGroupConfigEntry> groups) {
+    public PermissionGroupConfig(
+      Map<String, PermissionGroupConfigEntry> groups) {
       this.groups = groups;
+    }
+
+    public static PermissionGroupConfig withEntries(
+      Map<String, PermissionGroupConfigEntry> entries
+    ) {
+      return new PermissionGroupConfig(entries);
     }
 
     public Map<String, PermissionGroupConfigEntry> getGroups() {
@@ -134,6 +158,15 @@ public final class PermissionGroupRepository {
       this.permissions = permissions;
       this.worlds = worlds;
       this.inheritance = inheritance;
+    }
+
+    public static PermissionGroupConfigEntry fromGroup(PermissionGroup group) {
+      return new PermissionGroupConfigEntry(
+        group.basePermissions().asMap(),
+        group.worldPermissions().asMap(),
+        group.groups().stream().map(PermissionGroup::name)
+          .collect(Collectors.toList())
+      );
     }
 
     public void setInheritance(List<String> inheritance) {
