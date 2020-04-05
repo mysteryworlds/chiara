@@ -37,9 +37,9 @@ public final class ChiaraPlugin extends JavaPlugin {
   @Override
   public void onEnable() {
     saveDefaultResources();
+    setupAndStartDependencyInjection();
     loadGroups();
     loadUsers();
-    setupAndStartDependencyInjection();
     registerListeners();
     registerVaultPermission();
     startUserSessions();
