@@ -119,7 +119,7 @@ public final class PermissionUserRepository {
   }
 
   public static final class PermissionUserConfig {
-    private Map<UUID, PermissionUserConfigEntry> users;
+    private Map<UUID, PermissionUserConfigEntry> users = new HashMap<>();
 
     public PermissionUserConfig() {
     }
