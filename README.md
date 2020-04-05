@@ -6,19 +6,34 @@
 # chiara
 Simple but effective bukkit permissions plugin.
 
-# Build Status
+## Description
+The intention of chiara is a provide a very simple and comprehensive concept of permissions. It is heavily
+inspired by [PermissionsBukkit](https://github.com/SpaceManiac/PermissionsBukkit) in terms of
+configuration and simplicity. This plugin is meant to be used for small servers where all data can
+be held in memory easily.
+
+## Information
+- [Website](https://www.mysteryworlds.com)
+- [Issue Tracker](https://github.com/FelixKlauke/chiara/issues)
+- [Wiki](https://github.com/FelixKlauke/chiara/wiki)
+- [License](LICENSE)
+
+## Contributing
+If you are interested in contributing, please read the [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Build Status
 |             | Build Status                                                                                                            |
 |-------------|-------------------------------------------------------------------------------------------------------------------------|
-| Master      | [![Build Status](https://travis-ci.com/FelixKlauke/chiara.svg?branch=master)](https://travis-ci.com/FelixKlauke/chiara) |
+| Master      | ![Java CI with Gradle](https://github.com/FelixKlauke/chiara/workflows/Java%20CI%20with%20Gradle/badge.svg) |
 
-# Configuration
+## Configuration
 
 In the following you can see a full reference of the groups and users with all available entry types:
 - Player / Group Permissions
 - World Permissions
 - Players Groups / Group Inheritance
 
-## Users
+### Users
 Default users.yml:
 ```yaml
 users:
@@ -45,7 +60,7 @@ users:
       - builder
 ```
 
-## Groups
+### Groups
 Default groups.yml:
 ```yaml
 groups:
@@ -75,13 +90,13 @@ groups:
         command.gamemode: false
 ```
 
-# Commands
+## Commands
 
 There is a general management command:
 
 `/permissions [list|reload]` (Aliases: `perms`, `perm`)
 
-# Permissions
+## Permissions
 ```yaml
 permissions:
 
@@ -146,3 +161,6 @@ permissions:
   chiara.command.permissions.user.group.list:
     description: Permission to list a users groups.
 ```
+
+## Developers
+- [Felix Klauke](https://github.com/felixklauke)
