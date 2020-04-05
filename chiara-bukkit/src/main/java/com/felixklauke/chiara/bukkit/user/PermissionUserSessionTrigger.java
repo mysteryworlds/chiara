@@ -1,6 +1,7 @@
 package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.PermissionGroupChangeEvent;
+import javax.inject.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -11,7 +12,8 @@ public final class PermissionUserSessionTrigger implements Listener {
   private final PermissionUserSessionFactory sessionFactory;
   private final PermissionUserSessionRegistry sessionRegistry;
 
-  public PermissionUserSessionTrigger(
+  @Inject
+  private PermissionUserSessionTrigger(
     PermissionUserRepository userRepository,
     PermissionUserSessionFactory sessionFactory,
     PermissionUserSessionRegistry sessionRegistry
