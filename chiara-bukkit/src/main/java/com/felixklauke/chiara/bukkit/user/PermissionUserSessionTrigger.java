@@ -13,7 +13,7 @@ public final class PermissionUserSessionTrigger implements Listener {
   private final PermissionUserSessionRegistry sessionRegistry;
 
   @Inject
-  private PermissionUserSessionTrigger(
+  PermissionUserSessionTrigger(
     PermissionUserRepository userRepository,
     PermissionUserSessionFactory sessionFactory,
     PermissionUserSessionRegistry sessionRegistry
