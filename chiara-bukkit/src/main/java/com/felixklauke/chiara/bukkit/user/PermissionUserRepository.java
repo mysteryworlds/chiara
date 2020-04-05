@@ -121,6 +121,9 @@ public final class PermissionUserRepository {
   public static final class PermissionUserConfig {
     private Map<UUID, PermissionUserConfigEntry> users;
 
+    public PermissionUserConfig() {
+    }
+
     public PermissionUserConfig(Map<UUID, PermissionUserConfigEntry> users) {
       this.users = users;
     }
