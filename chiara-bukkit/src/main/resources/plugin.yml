@@ -2,7 +2,7 @@
 name: Chiara
 
 # Current version delivered via maven
-version: ${project.version}
+version: 3.0.0
 
 # The main class of the plugin
 main: com.felixklauke.chiara.bukkit.ChiaraPlugin
