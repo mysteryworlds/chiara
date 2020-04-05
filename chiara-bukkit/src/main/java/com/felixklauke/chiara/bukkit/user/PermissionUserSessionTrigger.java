@@ -4,6 +4,7 @@ import com.felixklauke.chiara.bukkit.group.PermissionGroupChangeEvent;
 import javax.inject.Inject;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -21,6 +22,14 @@ public final class PermissionUserSessionTrigger implements Listener {
     this.userRepository = userRepository;
     this.sessionFactory = sessionFactory;
     this.sessionRegistry = sessionRegistry;
+  }
+
+  @EventHandler
+  public void onWorldChange(PlayerChangedWorldEvent worldChange) {
+    System.out.println(worldChange);
+    var player = worldChange.getPlayer();
+    var session = sessionRegistry.findSession(player.getUniqueId());
+    session.ifPresent(PermissionUserSession::recalculatePermissions);
   }
 
   @EventHandler

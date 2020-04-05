@@ -25,3 +25,8 @@ prefix: Chiara
 
 # My homepage
 website: https://www.felix-klauke.com
+
+commands:
+  permission:
+    aliases:
+      - perm

@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.WorldCreator;
 import org.bukkit.permissions.PermissionAttachment;
 
 public final class PermissionTable {

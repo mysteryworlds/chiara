@@ -22,6 +22,8 @@ public final class PermissionUserSessionFactory {
     Preconditions.checkNotNull(player);
     Preconditions.checkNotNull(user);
     var permissionAttachment = player.addAttachment(plugin);
-    return PermissionUserSession.of(player, user, permissionAttachment);
+    var session = PermissionUserSession.of(player, user, permissionAttachment);
+    session.recalculatePermissions();
+    return session;
   }
 }
