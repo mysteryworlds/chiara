@@ -4,6 +4,7 @@ import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -12,15 +13,6 @@ public final class GroupTable {
 
   private GroupTable(List<PermissionGroup> groups) {
     this.groups = groups;
-  }
-
-  public static GroupTable withGroups(List<PermissionGroup> groups) {
-    Preconditions.checkNotNull(groups);
-    return new GroupTable(Lists.newArrayList(groups));
-  }
-
-  public static GroupTable empty() {
-    return withGroups(Lists.newArrayList());
   }
 
   public PermissionTable calculateEffectivePermissions() {
@@ -56,6 +48,20 @@ public final class GroupTable {
 
   public int count() {
     return groups.size();
+  }
+
+  public static GroupTable withGroups(List<PermissionGroup> groups) {
+    Preconditions.checkNotNull(groups);
+    return new GroupTable(Lists.newArrayList(groups));
+  }
+
+  public static GroupTable empty() {
+    return withGroups(Lists.newArrayList());
+  }
+
+  public static GroupTable withGroups(PermissionGroup... defaultGroups) {
+    Preconditions.checkNotNull(defaultGroups);
+    return withGroups(Arrays.asList(defaultGroups));
   }
 
   @Override

@@ -4,21 +4,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import com.felixklauke.chiara.bukkit.group.GroupConfig;
+import com.felixklauke.chiara.bukkit.group.PermissionGroup;
+import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionRegistry;
 import com.felixklauke.chiara.bukkit.user.UserConfig;
 import com.felixklauke.chiara.bukkit.vault.VaultPermissions;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import net.milkbowl.vault.permission.Permission;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 
 public final class ChiaraModule extends AbstractModule {
+  private static final String PLUGIN_CONFIG = "config.yml";
   private static final String GROUP_CONFIG = "groups.yml";
   private static final String USERS_CONFIG = "users.yml";
   private final Plugin plugin;
@@ -73,5 +80,22 @@ public final class ChiaraModule extends AbstractModule {
   @Singleton
   ObjectMapper provideObjectMapper(YAMLFactory yamlFactory) {
     return new ObjectMapper(yamlFactory);
+  }
+
+  @Provides
+  @Singleton
+  @PluginConfig
+  Configuration providePluginConfig() {
+    var file = new File(plugin.getDataFolder(), PLUGIN_CONFIG);
+    return YamlConfiguration.loadConfiguration(file);
+  }
+
+  @Provides
+  @Singleton
+  @Named("defaultGroupName")
+  String provideDefaultGroup(
+    @PluginConfig Configuration configuration
+  ) {
+    return configuration.getString("default-group");
   }
 }

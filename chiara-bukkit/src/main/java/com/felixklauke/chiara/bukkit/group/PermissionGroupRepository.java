@@ -94,14 +94,14 @@ public final class PermissionGroupRepository {
   ) {
     var configEntry = groups.get(group);
     var permissions = PermissionTable.withBoolPermissions(
-      configEntry.permissions()
+      configEntry.getPermissions()
     );
     var mappedGroups = readInheritance(configEntry, groups);
     return groupFactory.createGroup(
       group,
       permissions,
       GroupTable.withGroups(mappedGroups),
-      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.worlds())
+      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds())
     );
   }
 
@@ -109,7 +109,7 @@ public final class PermissionGroupRepository {
     PermissionGroupConfigEntry configEntry,
     Map<String, PermissionGroupConfigEntry> groups
   ) {
-    return configEntry.inheritance()
+    return configEntry.getInheritance()
       .stream()
       .map(groupName -> readGroup(groupName, groups))
       .collect(Collectors.toList());
@@ -182,15 +182,15 @@ public final class PermissionGroupRepository {
       this.worlds = worlds;
     }
 
-    public Map<String, Boolean> permissions() {
+    public Map<String, Boolean> getPermissions() {
       return permissions;
     }
 
-    public Map<String, Map<String, Boolean>> worlds() {
+    public Map<String, Map<String, Boolean>> getWorlds() {
       return worlds;
     }
 
-    public List<String> inheritance() {
+    public List<String> getInheritance() {
       return inheritance;
     }
   }

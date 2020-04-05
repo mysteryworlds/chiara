@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
-import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository.PermissionGroupConfig;
-import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository.PermissionGroupConfigEntry;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import java.io.IOException;
@@ -20,11 +18,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
 public final class PermissionUserRepository {
   private final Map<UUID, PermissionUser> users = new ConcurrentHashMap<>();
+  private final String defaultGroupName;
   private final PermissionGroupRepository groupRepository;
   private final PermissionUserFactory userFactory;
   private final ObjectMapper objectMapper;
@@ -32,11 +32,13 @@ public final class PermissionUserRepository {
 
   @Inject
   private PermissionUserRepository(
+    @Named("defaultGroupName") String defaultGroupName,
     PermissionGroupRepository groupRepository,
     PermissionUserFactory userFactory,
     ObjectMapper objectMapper,
     @UserConfig Path usersPath
   ) {
+    this.defaultGroupName = defaultGroupName;
     this.groupRepository = groupRepository;
     this.userFactory = userFactory;
     this.objectMapper = objectMapper;
@@ -52,11 +54,21 @@ public final class PermissionUserRepository {
   }
 
   private PermissionUser createUser(UUID uniqueId) {
+    var defaultGroupTable = createDefaultGroupTable();
     return userFactory.createUser(
       uniqueId,
       PermissionTable.empty(),
-      GroupTable.empty(),
+      defaultGroupTable,
       WorldPermissionTable.empty()
+    );
+  }
+
+  private GroupTable createDefaultGroupTable() {
+    var defaultGroup = groupRepository.findGroup(defaultGroupName);
+    return GroupTable.withGroups(
+      defaultGroup.orElseThrow(
+        () -> new IllegalArgumentException("Couldn't find default group: " + defaultGroupName)
+      )
     );
   }
 
@@ -74,6 +86,8 @@ public final class PermissionUserRepository {
   }
 
   private void readUsers(PermissionUserConfig groupConfig) {
+    System.out.println(groupConfig);
+    System.out.println(groupConfig.getUsers());
     var userEntries = groupConfig.getUsers().entrySet();
     for (var userEntry : userEntries) {
       var user = readUser(userEntry.getKey(), userEntry.getValue());
@@ -85,12 +99,12 @@ public final class PermissionUserRepository {
     UUID id,
     PermissionUserConfigEntry configEntry
   ) {
-    var groups = readGroups(configEntry.groups());
+    var groups = readGroups(configEntry.getGroups());
     return userFactory.createUser(
       id,
-      PermissionTable.withBoolPermissions(configEntry.permissions()),
+      PermissionTable.withBoolPermissions(configEntry.getPermissions()),
       GroupTable.withGroups(groups),
-      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.worlds())
+      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds())
     );
   }
 
@@ -184,15 +198,15 @@ public final class PermissionUserRepository {
       this.worlds = worlds;
     }
 
-    public Map<String, Boolean> permissions() {
+    public Map<String, Boolean> getPermissions() {
       return permissions;
     }
 
-    public Map<String, Map<String, Boolean>> worlds() {
+    public Map<String, Map<String, Boolean>> getWorlds() {
       return worlds;
     }
 
-    public List<String> groups() {
+    public List<String> getGroups() {
       return groups;
     }
   }
