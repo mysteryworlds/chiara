@@ -9,6 +9,7 @@ import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import java.util.UUID;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.permissions.PermissionAttachment;
@@ -27,6 +28,8 @@ final class PermissionUserSessionTriggerTest {
   private PermissionUserRepository userRepository;
   @Mock
   private Plugin plugin;
+  @Mock
+  private World world;
 
   private PermissionUserSessionRegistry sessionRegistry = PermissionUserSessionRegistry.empty();
   private PermissionUserSessionTrigger sessionTrigger;
@@ -61,7 +64,9 @@ final class PermissionUserSessionTriggerTest {
       mock(PluginManager.class)
     );
 
+    when(world.getName()).thenReturn("test");
     when(player.getUniqueId()).thenReturn(playerId);
+    when(player.getWorld()).thenReturn(world);
     when(userRepository.findOrCreateUser(playerId)).thenReturn(permissionUser);
     when(player.addAttachment(Mockito.any(Plugin.class))).thenReturn(attachment);
 
