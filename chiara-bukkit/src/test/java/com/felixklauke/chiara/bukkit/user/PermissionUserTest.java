@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.permission.Permission;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
@@ -42,6 +43,7 @@ final class PermissionUserTest {
       permissionTable,
       groups,
       worldPermissions,
+      Metadata.empty(),
       pluginManager
     );
   }

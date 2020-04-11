@@ -9,10 +9,12 @@ import com.google.common.collect.Sets;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+@Singleton
 public final class VaultPermissions extends Permission {
   private static final boolean SUPER_PERMS_SUPPORT = true;
   private static final boolean GROUP_SUPPORT = true;
@@ -138,12 +140,12 @@ public final class VaultPermissions extends Permission {
 
   @Override
   public boolean groupAdd(String world, String group, String permission) {
-    return false;
+    return setGroupWorldPermission(group, permission, world, PermissionStatus.ALLOWED);
   }
 
   @Override
   public boolean groupRemove(String world, String group, String permission) {
-    return false;
+    return setGroupWorldPermission(group, permission, world, PermissionStatus.NOT_SET);
   }
 
   private boolean setGroupPermission(

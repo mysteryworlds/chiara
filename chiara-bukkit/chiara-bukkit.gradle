@@ -8,8 +8,7 @@ dependencies {
   compile 'com.google.inject:guice:4.2.2'
 }
 
-jar {
-  from {
-    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-  }
+shadowJar {
+  minimize()
+  relocate 'com.fasterxml.jackson', 'com.felixklauke.jackson'
 }

@@ -1,6 +1,7 @@
 package com.felixklauke.chiara.bukkit.group;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
@@ -101,7 +102,8 @@ public final class PermissionGroupRepository {
       group,
       permissions,
       GroupTable.withGroups(mappedGroups),
-      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds())
+      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds()),
+      Metadata.withContent(configEntry.getMetadata())
     );
   }
 
@@ -146,18 +148,18 @@ public final class PermissionGroupRepository {
     private Map<String, Boolean> permissions = new HashMap<>();
     private Map<String, Map<String, Boolean>> worlds = new HashMap<>();
     private List<String> inheritance = new ArrayList<>();
+    private Map<String, Object> metadata = new HashMap<>();
 
     public PermissionGroupConfigEntry() {
     }
 
-    public PermissionGroupConfigEntry(
-      Map<String, Boolean> permissions,
-      Map<String, Map<String, Boolean>> worlds,
-      List<String> inheritance
-    ) {
+    public PermissionGroupConfigEntry(Map<String, Boolean> permissions,
+      Map<String, Map<String, Boolean>> worlds, List<String> inheritance,
+      Map<String, Object> metadata) {
       this.permissions = permissions;
       this.worlds = worlds;
       this.inheritance = inheritance;
+      this.metadata = metadata;
     }
 
     public static PermissionGroupConfigEntry fromGroup(PermissionGroup group) {
@@ -165,7 +167,8 @@ public final class PermissionGroupRepository {
         group.basePermissions().asMap(),
         group.worldPermissions().asMap(),
         group.groups().stream().map(PermissionGroup::name)
-          .collect(Collectors.toList())
+          .collect(Collectors.toList()),
+        group.metadata()
       );
     }
 
@@ -192,6 +195,14 @@ public final class PermissionGroupRepository {
 
     public List<String> getInheritance() {
       return inheritance;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+      this.metadata = metadata;
+    }
+
+    public Map<String, Object> getMetadata() {
+      return metadata;
     }
   }
 }

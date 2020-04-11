@@ -1,35 +1,28 @@
 package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
-import com.google.common.base.Preconditions;
 import java.io.Closeable;
+import net.milkbowl.vault.chat.Chat;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
 public final class PermissionUserSession implements Closeable {
+  private final Chat chat;
   private final Player player;
   private final PermissionUser permissionUser;
   private final PermissionAttachment permissionAttachment;
 
-  private PermissionUserSession(
+  PermissionUserSession(
+    Chat chat,
     Player player,
     PermissionUser permissionUser,
     PermissionAttachment permissionAttachment
   ) {
+    this.chat = chat;
     this.player = player;
     this.permissionUser = permissionUser;
     this.permissionAttachment = permissionAttachment;
-  }
-
-  public static PermissionUserSession of(
-    Player player,
-    PermissionUser user,
-    PermissionAttachment permissionAttachment
-  ) {
-    Preconditions.checkNotNull(player);
-    Preconditions.checkNotNull(user);
-    Preconditions.checkNotNull(permissionAttachment);
-    return new PermissionUserSession(player, user, permissionAttachment);
   }
 
   public void recalculatePermissions() {
@@ -50,5 +43,21 @@ public final class PermissionUserSession implements Closeable {
 
   public PermissionUser user() {
     return permissionUser;
+  }
+
+  public void refreshNaming() {
+    var playerPrefix = chat.getPlayerPrefix(player);
+    var playerSuffix = chat.getPlayerSuffix(player);
+    String qualifiedName = String.format(
+      "%s%s%s",
+      playerPrefix,
+      player.getName(),
+      playerSuffix
+    );
+    qualifiedName = ChatColor.translateAlternateColorCodes('&', qualifiedName);
+    player.setCustomNameVisible(true);
+    player.setCustomName(qualifiedName);
+    player.setDisplayName(qualifiedName);
+    player.setPlayerListName(qualifiedName);
   }
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.felixklauke.chiara.bukkit.permission.Permission;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
@@ -43,7 +44,8 @@ final class PermissionGroupTest {
       "TestGroup",
       permissionTable,
       groups,
-      worldPermissions
+      worldPermissions,
+      Metadata.empty()
     );
   }
 
@@ -107,7 +109,8 @@ final class PermissionGroupTest {
       PermissionTable
         .withPermissions(Map.of(TEST_PERMISSION, PermissionStatus.ALLOWED)),
       GroupTable.withGroups(List.of(permissionGroup)),
-      WorldPermissionTable.empty()
+      WorldPermissionTable.empty(),
+      Metadata.empty()
     );
     var hasPermission = overriddenGroup.hasPermission(TEST_PERMISSION.name());
     assertTrue(hasPermission);

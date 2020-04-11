@@ -3,6 +3,7 @@ package com.felixklauke.chiara.bukkit.group;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.felixklauke.chiara.bukkit.permission.Permission;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
@@ -39,6 +40,7 @@ final class GroupTableTest {
       WorldPermissionTable.withWorldPermissions(
         Map.of(EXAMPLE_WORLD, PermissionTable.withPermissions(Map.of(permission, PermissionStatus.DECLINED)))
       ),
+      Metadata.empty(),
       pluginManager
     );
     groups.add(permissionGroup);

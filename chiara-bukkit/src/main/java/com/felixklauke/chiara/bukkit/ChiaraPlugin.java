@@ -8,6 +8,7 @@ import com.felixklauke.chiara.bukkit.user.PermissionUserSessionRegistry;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionTrigger;
 import com.google.inject.Guice;
 import javax.inject.Inject;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -29,6 +30,8 @@ public final class ChiaraPlugin extends JavaPlugin {
   @Inject
   private Permission vaultPermissions;
   @Inject
+  private Chat vaultChat;
+  @Inject
   private PluginManager pluginManager;
   @Inject
   private ServicesManager servicesManager;
@@ -47,6 +50,7 @@ public final class ChiaraPlugin extends JavaPlugin {
     registerCommands();
     registerListeners();
     registerVaultPermission();
+    registerVaultChat();
     startUserSessions();
   }
 
@@ -83,6 +87,15 @@ public final class ChiaraPlugin extends JavaPlugin {
     servicesManager.register(
       Permission.class,
       vaultPermissions,
+      this,
+      ServicePriority.High
+    );
+  }
+
+  private void registerVaultChat() {
+    servicesManager.register(
+      Chat.class,
+      vaultChat,
       this,
       ServicePriority.High
     );
