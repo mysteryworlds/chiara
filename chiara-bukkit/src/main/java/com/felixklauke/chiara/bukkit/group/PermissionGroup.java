@@ -18,9 +18,10 @@ public final class PermissionGroup extends PermissionEntity {
     PermissionTable permissions,
     GroupTable inheritedGroups,
     WorldPermissionTable worldPermissions,
+    Metadata metadata,
     PluginManager pluginManager
   ) {
-    super(permissions, inheritedGroups, worldPermissions);
+    super(permissions, inheritedGroups, worldPermissions, metadata);
     this.name = name;
     this.pluginManager = pluginManager;
   }

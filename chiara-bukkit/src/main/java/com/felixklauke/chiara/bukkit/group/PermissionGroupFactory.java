@@ -1,5 +1,6 @@
 package com.felixklauke.chiara.bukkit.group;
 
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
@@ -18,7 +19,8 @@ public final class PermissionGroupFactory {
     String name,
     PermissionTable permissions,
     GroupTable groups,
-    WorldPermissionTable worldPermissions
+    WorldPermissionTable worldPermissions,
+    Metadata metadata
   ) {
     Preconditions.checkNotNull(name);
     Preconditions.checkNotNull(permissions);
@@ -29,6 +31,7 @@ public final class PermissionGroupFactory {
       permissions,
       groups,
       worldPermissions,
+      metadata,
       pluginManager
     );
   }

@@ -8,6 +8,7 @@ import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.user.PermissionUserSessionRegistry;
 import com.felixklauke.chiara.bukkit.user.UserConfig;
+import com.felixklauke.chiara.bukkit.vault.VaultChat;
 import com.felixklauke.chiara.bukkit.vault.VaultPermissions;
 import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,6 +48,7 @@ public final class ChiaraModule extends AbstractModule {
     bind(ServicesManager.class)
       .toInstance(plugin.getServer().getServicesManager());
     bind(Permission.class).to(VaultPermissions.class);
+    bind(Chat.class).to(VaultChat.class);
   }
 
   @Provides

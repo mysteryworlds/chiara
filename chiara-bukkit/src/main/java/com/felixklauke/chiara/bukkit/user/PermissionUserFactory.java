@@ -2,6 +2,7 @@ package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
 import com.google.common.base.Preconditions;
@@ -25,17 +26,20 @@ public final class PermissionUserFactory {
     UUID userId,
     PermissionTable permissions,
     GroupTable groups,
-    WorldPermissionTable worldPermissions
+    WorldPermissionTable worldPermissions,
+    Metadata metadata
   ) {
     Preconditions.checkNotNull(userId);
     Preconditions.checkNotNull(permissions);
     Preconditions.checkNotNull(groups);
     Preconditions.checkNotNull(worldPermissions);
+    Preconditions.checkNotNull(metadata);
     return new PermissionUser(
       userId,
       permissions,
       groups,
       worldPermissions,
+      metadata,
       pluginManager
     );
   }

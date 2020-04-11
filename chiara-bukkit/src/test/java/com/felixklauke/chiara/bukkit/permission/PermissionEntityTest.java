@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,7 +24,8 @@ final class PermissionEntityTest {
     permissionEntity = new PermissionEntity(
       permissions,
       groups,
-      worldPermissions
+      worldPermissions,
+      Metadata.empty()
     );
   }
 

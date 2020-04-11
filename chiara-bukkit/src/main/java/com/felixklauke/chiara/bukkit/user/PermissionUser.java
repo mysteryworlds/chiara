@@ -1,12 +1,12 @@
 package com.felixklauke.chiara.bukkit.user;
 
 import com.felixklauke.chiara.bukkit.group.GroupTable;
-import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
 import com.felixklauke.chiara.bukkit.permission.Permission;
 import com.felixklauke.chiara.bukkit.permission.PermissionEntity;
 import com.felixklauke.chiara.bukkit.permission.PermissionStatus;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import java.util.UUID;
 import org.bukkit.plugin.PluginManager;
@@ -20,9 +20,10 @@ public final class PermissionUser extends PermissionEntity {
     PermissionTable permissions,
     GroupTable groups,
     WorldPermissionTable worldPermissions,
+    Metadata metadata,
     PluginManager pluginManager
   ) {
-    super(permissions, groups, worldPermissions);
+    super(permissions, groups, worldPermissions, metadata);
     this.id = id;
     this.pluginManager = pluginManager;
   }

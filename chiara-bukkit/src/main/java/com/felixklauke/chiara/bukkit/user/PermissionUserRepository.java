@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.felixklauke.chiara.bukkit.group.GroupTable;
 import com.felixklauke.chiara.bukkit.group.PermissionGroup;
 import com.felixklauke.chiara.bukkit.group.PermissionGroupRepository;
+import com.felixklauke.chiara.bukkit.permission.PermissionEntity.Metadata;
 import com.felixklauke.chiara.bukkit.permission.PermissionTable;
 import com.felixklauke.chiara.bukkit.permission.WorldPermissionTable;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +23,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 @Singleton
 public final class PermissionUserRepository {
@@ -46,20 +51,30 @@ public final class PermissionUserRepository {
   }
 
   public Optional<PermissionUser> findUser(UUID playerUniqueId) {
+    Preconditions.checkNotNull(playerUniqueId);
     return Optional.ofNullable(users.get(playerUniqueId));
   }
 
+  public PermissionUser findOrCreateUser(String name) {
+    Preconditions.checkNotNull(name);
+    var offlinePlayer = Bukkit.getOfflinePlayer(name);
+    return findOrCreateUser(offlinePlayer.getUniqueId());
+  }
+
   public PermissionUser findOrCreateUser(UUID uniqueId) {
+    Preconditions.checkNotNull(uniqueId);
     return users.computeIfAbsent(uniqueId, this::createUser);
   }
 
   private PermissionUser createUser(UUID uniqueId) {
+    Preconditions.checkNotNull(uniqueId);
     var defaultGroupTable = createDefaultGroupTable();
     return userFactory.createUser(
       uniqueId,
       PermissionTable.empty(),
       defaultGroupTable,
-      WorldPermissionTable.empty()
+      WorldPermissionTable.empty(),
+      Metadata.empty()
     );
   }
 
@@ -87,7 +102,6 @@ public final class PermissionUserRepository {
 
   private void readUsers(PermissionUserConfig groupConfig) {
     System.out.println(groupConfig);
-    System.out.println(groupConfig.getUsers());
     var userEntries = groupConfig.getUsers().entrySet();
     for (var userEntry : userEntries) {
       var user = readUser(userEntry.getKey(), userEntry.getValue());
@@ -104,7 +118,8 @@ public final class PermissionUserRepository {
       id,
       PermissionTable.withBoolPermissions(configEntry.getPermissions()),
       GroupTable.withGroups(groups),
-      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds())
+      WorldPermissionTable.withMapWorldBoolPermissions(configEntry.getWorlds()),
+      Metadata.withContent(configEntry.getMetadata())
     );
   }
 
@@ -155,12 +170,20 @@ public final class PermissionUserRepository {
     public void setUsers(Map<UUID, PermissionUserConfigEntry> users) {
       this.users = users;
     }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+        .add("users", users)
+        .toString();
+    }
   }
 
   public static final class PermissionUserConfigEntry {
     private Map<String, Boolean> permissions = new HashMap<>();
     private Map<String, Map<String, Boolean>> worlds = new HashMap<>();
     private List<String> groups = new ArrayList<>();
+    private Map<String, Object> metadata = new HashMap<>();
 
     public PermissionUserConfigEntry() {
     }
@@ -168,11 +191,13 @@ public final class PermissionUserRepository {
     public PermissionUserConfigEntry(
       Map<String, Boolean> permissions,
       Map<String, Map<String, Boolean>> worlds,
-      List<String> groups
+      List<String> groups,
+      Map<String, Object> metadata
     ) {
       this.permissions = permissions;
       this.worlds = worlds;
       this.groups = groups;
+      this.metadata = metadata;
     }
 
     public static PermissionUserConfigEntry fromUser(PermissionUser user) {
@@ -180,7 +205,8 @@ public final class PermissionUserRepository {
         user.basePermissions().asMap(),
         user.worldPermissions().asMap(),
         user.groups().stream().map(PermissionGroup::name)
-          .collect(Collectors.toList())
+          .collect(Collectors.toList()),
+        user.metadata()
       );
     }
 
@@ -208,6 +234,24 @@ public final class PermissionUserRepository {
 
     public List<String> getGroups() {
       return groups;
+    }
+
+    public Map<String, Object> getMetadata() {
+      return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+      this.metadata = metadata;
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+        .add("permissions", permissions)
+        .add("worlds", worlds)
+        .add("groups", groups)
+        .add("metadata", metadata)
+        .toString();
     }
   }
 }
