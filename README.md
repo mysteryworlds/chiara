@@ -7,6 +7,11 @@ inspired by [PermissionsBukkit](https://github.com/SpaceManiac/PermissionsBukkit
 configuration and simplicity. This plugin is meant to be used for small servers where all data can
 be held in memory easily.
 
+## Build Status
+| Build Status | Gradle Build                                                                                                                                                                          |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| master       | [![Gradle Build](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml) |
+
 ## Information
 - [Website](https://www.mysteryworlds.com)
 - [Issue Tracker](https://github.com/mysteryworlds/chiara/issues)
