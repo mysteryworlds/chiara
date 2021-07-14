@@ -1,8 +1,3 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=alert_status)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=coverage)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=FelixKlauke_chiara&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=FelixKlauke_chiara)
-
 # chiara
 Simple but effective bukkit permissions plugin.
 
@@ -14,17 +9,12 @@ be held in memory easily.
 
 ## Information
 - [Website](https://www.mysteryworlds.com)
-- [Issue Tracker](https://github.com/FelixKlauke/chiara/issues)
-- [Wiki](https://github.com/FelixKlauke/chiara/wiki)
+- [Issue Tracker](https://github.com/mysteryworlds/chiara/issues)
+- [Wiki](https://github.com/mysteryworlds/chiara/wiki)
 - [License](LICENSE)
 
 ## Contributing
 If you are interested in contributing, please read the [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Build Status
-|             | Build Status                                                                                                            |
-|-------------|-------------------------------------------------------------------------------------------------------------------------|
-| Master      | ![Java CI with Gradle](https://github.com/FelixKlauke/chiara/workflows/Java%20CI%20with%20Gradle/badge.svg) |
 
 ## Configuration
 
