@@ -2,10 +2,10 @@
 name: Chiara
 
 # Current version delivered via maven
-version: 3.0.0
+version: 4.0.0
 
 # The main class of the plugin
-main: com.felixklauke.chiara.bukkit.ChiaraPlugin
+main: com.mysteryworlds.chiara.ChiaraPlugin
 
 # Human readable description
 description: Hassle free and stupid simple permissions plugin
@@ -24,7 +24,7 @@ softdepend:
 prefix: Chiara
 
 # My homepage
-website: https://www.felix-klauke.com
+website: https://www.mysteryworlds.com
 
 commands:
   permission:
