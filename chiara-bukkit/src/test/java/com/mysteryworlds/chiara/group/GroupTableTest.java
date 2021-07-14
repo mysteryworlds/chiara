@@ -1,6 +1,6 @@
 package com.mysteryworlds.chiara.group;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.mysteryworlds.chiara.permission.Permission;
 import com.mysteryworlds.chiara.permission.PermissionEntity.Metadata;

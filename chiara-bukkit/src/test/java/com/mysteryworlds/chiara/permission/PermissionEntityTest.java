@@ -8,8 +8,11 @@ import com.mysteryworlds.chiara.group.PermissionGroup;
 import com.mysteryworlds.chiara.permission.PermissionEntity.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 final class PermissionEntityTest {
   private PermissionTable permissions;
   private GroupTable groups;

@@ -32,9 +32,19 @@ repositories {
       includeGroup 'org.spigotmc'
     }
   }
+  maven {
+    name 'D3adpsace Theresa GitHub Package Registry'
+    description 'D3adpsace Theresa GitHub Package Registry'
+    url 'https://maven.pkg.github.com/d3adspace/theresa'
+    credentials {
+      username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+      password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+    }
+  }
 }
 
 dependencies {
+  implementation 'de.d3adspace:theresa-core:3.4.0'
   implementation 'org.bstats:bstats-bukkit:2.2.1'
   implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
   implementation 'com.github.MilkBowl:VaultAPI:1.7'
@@ -42,6 +52,8 @@ dependencies {
   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+  testImplementation 'org.mockito:mockito-core:3.11.2'
+  testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
 }
 
 test {
