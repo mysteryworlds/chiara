@@ -8,10 +8,9 @@ configuration and simplicity. This plugin is meant to be used for small servers 
 be held in memory easily.
 
 ## Build Status
-| Build Status | Gradle Build                                                                                                                                                                          | GitHub Release  |
-|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------- |
-| master       | [![Gradle Build](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml) | [![GitHub Release](https://github.com/mysteryworlds/chiara/actions/workflows/create-release.yml/badge.svg)](https://github.com/mysteryworlds/chiara/actions/workflows/create-release.yml) |
-
+| Build Status 	| Gradle Build                                                                                                                                                                          	| GitHub Release                                                                                                                                                                            	| CodeQL                                                                                                                                                            	|
+|--------------	|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|-------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| master       	| [![Gradle Build](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/mysteryworlds/chiara/actions/workflows/gradle.yml) 	| [![GitHub Release](https://github.com/mysteryworlds/chiara/actions/workflows/create-release.yml/badge.svg)](https://github.com/mysteryworlds/chiara/actions/workflows/create-release.yml) 	| [![CodeQL](https://github.com/mysteryworlds/chiara/actions/workflows/codeql.yml/badge.svg)](https://github.com/mysteryworlds/chiara/actions/workflows/codeql.yml) 	|
 ## Information
 - [Website](https://www.mysteryworlds.com)
 - [Issue Tracker](https://github.com/mysteryworlds/chiara/issues)
