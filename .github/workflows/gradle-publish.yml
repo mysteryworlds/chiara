@@ -23,9 +23,9 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
       - name: Build with Gradle
-        run: gradle build
+        run: ./gradlew build
       - name: Publish to GitHub Packages
-        run: gradle publish
+        run: ./gradlew publish
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
