@@ -1,9 +1,14 @@
 plugins {
   id 'java'
+  id 'signing'
+  id 'maven-publish'
 }
 
 group = 'com.mysteryworlds'
 version = '4.0.0'
+
+sourceCompatibility = '16'
+targetCompatibility = '16'
 
 repositories {
   mavenCentral()
@@ -68,4 +73,12 @@ java {
 jar {
   exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
   configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+}
+
+signing {
+  useInMemoryPgpKeys(
+    findProperty("GPG_KEY") as String,
+    findProperty("GPG_KEY_PASSPHRASE") as String
+  )
+  sign configurations.archives
 }
