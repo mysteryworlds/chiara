@@ -71,6 +71,7 @@ java {
 }
 
 jar {
+  archiveName 'chiara'
   exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
   configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
 }
