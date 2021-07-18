@@ -5,6 +5,7 @@ on:
     releaseversion:
       description: 'Release version'
       required: true
+      default: '0.0.1'
 
 jobs:
   build:
