@@ -25,3 +25,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ORG_GRADLE_PROJECT_GPG_KEY: ${{ secrets.GPG_KEY }}
         ORG_GRADLE_PROJECT_GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+    - name: Generate JaCoCo Badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        jacoco-csv-file: chiara-bukkit/build/reports/jacoco/test/jacocoTestReport.csv
+        generate-coverage-badge: true
+        generate-branches-badge: true

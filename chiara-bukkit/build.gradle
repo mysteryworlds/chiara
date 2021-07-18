@@ -2,6 +2,7 @@ plugins {
   id 'java'
   id 'signing'
   id 'maven-publish'
+  id 'jacoco'
 }
 
 group = 'com.mysteryworlds'
@@ -63,6 +64,7 @@ dependencies {
 
 test {
   useJUnitPlatform()
+  finalizedBy jacocoTestReport
 }
 
 java {
@@ -102,4 +104,17 @@ signing {
   )
   sign configurations.archives
   sign publishing.publications.gpr
+}
+
+jacoco {
+  toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+  dependsOn test
+  reports {
+    xml.required.set(true)
+    html.required.set(true)
+    csv.required.set(true)
+  }
 }
