@@ -77,10 +77,29 @@ jar {
   }
 }
 
+publishing {
+  repositories {
+    maven {
+      name = "GitHubPackages"
+      url = uri("https://maven.pkg.github.com/mysteryworlds/chiara")
+      credentials {
+        username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+        password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+      }
+    }
+  }
+  publications {
+    gpr(MavenPublication) {
+      from components.java
+    }
+  }
+}
+
 signing {
   useInMemoryPgpKeys(
     findProperty("GPG_KEY") as String,
     findProperty("GPG_KEY_PASSPHRASE") as String
   )
   sign configurations.archives
+  sign publishing.publications.gpr
 }
