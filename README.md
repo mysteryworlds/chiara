@@ -157,5 +157,54 @@ permissions:
     description: Permission to list a users groups.
 ```
 
+## Usage
+
+
+#### Gradle
+
+**Gradle repositories**
+```groovy
+repositories {
+  maven {
+    name = "mysteryworlds-chiara-github-package-registry"
+    description = "Mysteryworlds Chiara GitHub Package Registry"
+    url = "https://maven.pkg.github.com/mysteryworlds/chiara/"
+    credentials {
+      username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+      password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+    }
+  }
+}
+```
+
+**Gradle dependencies**
+```groovy
+dependencies {
+  implementation 'com.mysteryworlds:chiara-bukkit:4.2.0'
+}
+```
+
+#### Maven
+
+**Maven repositories**
+```xml
+<repositories>
+    <repository>
+        <id>mysteryworlds-chiara-github-package-registry</id>
+        <name>Mysteryworlds Chiara GitHub Package Registry</name>
+        <url>https://maven.pkg.github.com/mysteryworlds/chiara/</url>
+    </repository>
+</repositories>
+```
+
+**Maven dependencies**
+```xml
+<dependency>
+  <groupId>com.mysteryworlds</groupId>
+  <artifactId>chiara-bukkit</artifactId>
+  <version>4.2.0</version>
+</dependency>
+```
+
 ## Developers
 - [Felix Klauke](https://github.com/felixklauke)
