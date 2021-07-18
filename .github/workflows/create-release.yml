@@ -53,7 +53,12 @@ jobs:
           body: |
             Hey there :wave:,
 
-            the new version `${{ steps.changelog.outputs.changelog }}` is finally out!
+            the new version `${{ github.event.inputs.releaseversion }}` is finally out!
+
+            Thank you for the interest in chiara. You can download the newest version below.
+
+            If you want to support the development of chiara and many other awesome pieces
+            of software you can consider sponsoring us.
 
             ### Things that changed since last release
             ${{ steps.changelog.outputs.changelog }}
@@ -62,6 +67,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: artifacts
+          path: artifacts
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
