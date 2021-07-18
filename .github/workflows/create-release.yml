@@ -51,6 +51,9 @@ jobs:
           tag_name: ${{ github.event.inputs.releaseversion }}
           release_name: ${{ github.event.inputs.releaseversion }}
           body: |
+            Hey there :wave:,
+
+            the new version `${{ steps.changelog.outputs.changelog }}` is finally out!
 
             ### Things that changed since last release
             ${{ steps.changelog.outputs.changelog }}
