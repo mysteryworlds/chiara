@@ -2,10 +2,11 @@ name: GitHub Release
 
 on:
   workflow_dispatch:
-    releaseversion:
-      description: 'Release version'
-      required: true
-      default: '0.0.1'
+    inputs:
+      releaseversion:
+        description: 'Release version'
+        required: true
+        default: '0.0.1'
 
 jobs:
   build:
