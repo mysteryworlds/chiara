@@ -17,8 +17,6 @@ jobs:
           distribution: 'adopt'
           server-id: github
           settings-path: ${{ github.workspace }}
-      - name: Build with Gradle
-        run: ./gradlew build
       - name: Publish to GitHub Packages
         run: ./gradlew publish
         env:
