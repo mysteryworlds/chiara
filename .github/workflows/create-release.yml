@@ -30,7 +30,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: spigot-plugins
-          path: chiara-bukkit/build/libs/*.jar
+          path: chiara-bukkit/build/libs/*.*
   release:
     runs-on: ubuntu-latest
     needs:
@@ -66,6 +66,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: chiara-bukkit/build/libs/chiara.jar
-          asset_name: chiara-${{ github.event.inputs.releaseversion }}.jar
+          asset_path: chiara-bukkit/build/libs/chiara-bukkit-${{ github.event.inputs.releaseversion }}.jar
+          asset_name: chiara-bukkit-${{ github.event.inputs.releaseversion }}.jar
           asset_content_type: application/java-archive
+      - name: Upload Release Asset Signature
+        id: upload-release-asset-signature
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: chiara-bukkit/build/libs/chiara-bukkit-${{ github.event.inputs.releaseversion }}.jar.asc
+          asset_name: chiara-bukkit-${{ github.event.inputs.releaseversion }}.jar.asc
+          asset_content_type: text/plain

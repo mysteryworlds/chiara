@@ -1,14 +1,13 @@
 package com.mysteryworlds.chiara.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.mysteryworlds.chiara.group.GroupTable;
 import com.mysteryworlds.chiara.group.PermissionGroup;
 import com.mysteryworlds.chiara.group.PermissionGroupRepository;
 import com.mysteryworlds.chiara.permission.PermissionEntity.Metadata;
 import com.mysteryworlds.chiara.permission.PermissionTable;
 import com.mysteryworlds.chiara.permission.WorldPermissionTable;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,28 +23,29 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import org.bukkit.Bukkit;
+import org.yaml.snakeyaml.Yaml;
 
 @Singleton
 public final class PermissionUserRepository {
   private final Map<UUID, PermissionUser> users = new ConcurrentHashMap<>();
+  private final Yaml yaml;
   private final String defaultGroupName;
   private final PermissionGroupRepository groupRepository;
   private final PermissionUserFactory userFactory;
-  private final ObjectMapper objectMapper;
   private final Path usersPath;
 
   @Inject
   private PermissionUserRepository(
+    Yaml yaml,
     @Named("defaultGroupName") String defaultGroupName,
     PermissionGroupRepository groupRepository,
     PermissionUserFactory userFactory,
-    ObjectMapper objectMapper,
     @UserConfig Path usersPath
   ) {
+    this.yaml = yaml;
     this.defaultGroupName = defaultGroupName;
     this.groupRepository = groupRepository;
     this.userFactory = userFactory;
-    this.objectMapper = objectMapper;
     this.usersPath = usersPath;
   }
 
@@ -89,7 +89,7 @@ public final class PermissionUserRepository {
   public void load() {
     try {
       var content = Files.readString(usersPath);
-      var usersConfig = objectMapper.readValue(
+      var usersConfig = yaml.loadAs(
         content,
         PermissionUserConfig.class
       );
@@ -131,7 +131,7 @@ public final class PermissionUserRepository {
   public void save() {
     var userConfig = writeUserConfig();
     try {
-      var content = objectMapper.writeValueAsString(userConfig);
+      var content = yaml.dump(userConfig);
       Files.writeString(usersPath, content);
     } catch (IOException e) {
       e.printStackTrace();

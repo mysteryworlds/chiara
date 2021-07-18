@@ -1,7 +1,5 @@
 package com.mysteryworlds.chiara.group;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.nio.file.Paths;
 import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.yaml.snakeyaml.Yaml;
 
 @ExtendWith(MockitoExtension.class)
 class PermissionGroupRepositoryTest {
@@ -22,7 +21,7 @@ class PermissionGroupRepositoryTest {
     groupRepository = new PermissionGroupRepository(
       new PermissionGroupFactory(pluginManager),
       Paths.get("src", "test", "resources", "groups.yml"),
-      new ObjectMapper(new YAMLFactory())
+      new Yaml()
     );
   }
 

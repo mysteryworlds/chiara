@@ -1,10 +1,9 @@
 package com.mysteryworlds.chiara.group;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 import com.mysteryworlds.chiara.permission.PermissionEntity.Metadata;
 import com.mysteryworlds.chiara.permission.PermissionTable;
 import com.mysteryworlds.chiara.permission.WorldPermissionTable;
-import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.yaml.snakeyaml.Yaml;
 
 @Singleton
 public final class PermissionGroupRepository {
@@ -25,17 +25,17 @@ public final class PermissionGroupRepository {
 
   private final PermissionGroupFactory groupFactory;
   private final Path configPath;
-  private final ObjectMapper objectMapper;
+  private final Yaml yaml;
 
   @Inject
   PermissionGroupRepository(
     PermissionGroupFactory groupFactory,
     @GroupConfig Path configPath,
-    ObjectMapper objectMapper
+    Yaml yaml
   ) {
     this.groupFactory = groupFactory;
     this.configPath = configPath;
-    this.objectMapper = objectMapper;
+    this.yaml = yaml;
   }
 
   public void save(PermissionGroup group) {
@@ -55,7 +55,7 @@ public final class PermissionGroupRepository {
   public void save() {
     var groupConfig = writeGroupConfig();
     try {
-      var content = objectMapper.writeValueAsString(groupConfig);
+      var content = yaml.dump(groupConfig);
       Files.writeString(configPath, content);
     } catch (IOException e) {
       e.printStackTrace();
@@ -73,8 +73,10 @@ public final class PermissionGroupRepository {
   public void load() {
     try {
       var content = Files.readString(configPath);
-      var groupConfig = objectMapper
-        .readValue(content, PermissionGroupConfig.class);
+      var groupConfig = yaml.loadAs(
+        content,
+        PermissionGroupConfig.class
+      );
       readGroups(groupConfig);
     } catch (IOException e) {
       e.printStackTrace();

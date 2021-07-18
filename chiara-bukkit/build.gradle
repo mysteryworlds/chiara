@@ -50,11 +50,9 @@ repositories {
 
 dependencies {
   implementation 'de.d3adspace:theresa-core:3.4.0'
-  implementation 'org.bstats:bstats-bukkit:2.2.1'
-  implementation 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-  implementation 'com.github.MilkBowl:VaultAPI:1.7'
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
-  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3'
+  compileOnly 'org.bstats:bstats-bukkit:2.2.1'
+  compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
+  compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
   testImplementation 'org.mockito:mockito-core:3.11.2'
@@ -71,9 +69,10 @@ java {
 }
 
 jar {
-  archiveName 'chiara'
-  exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
-  configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+  exclude 'META-INF/LICENSE.txt', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+  }
 }
 
 signing {

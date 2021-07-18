@@ -1,16 +1,13 @@
 package com.mysteryworlds.chiara;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
+import com.google.common.base.Preconditions;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.mysteryworlds.chiara.group.GroupConfig;
 import com.mysteryworlds.chiara.user.PermissionUserSessionRegistry;
 import com.mysteryworlds.chiara.user.UserConfig;
 import com.mysteryworlds.chiara.vault.VaultChat;
 import com.mysteryworlds.chiara.vault.VaultPermissions;
-import com.google.common.base.Preconditions;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +20,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 public final class ChiaraModule extends AbstractModule {
   private static final String PLUGIN_CONFIG = "config.yml";
@@ -71,20 +70,6 @@ public final class ChiaraModule extends AbstractModule {
 
   @Provides
   @Singleton
-  YAMLFactory provideYamLFactory() {
-    return YAMLFactory.builder()
-      .disable(Feature.WRITE_DOC_START_MARKER)
-      .build();
-  }
-
-  @Provides
-  @Singleton
-  ObjectMapper provideObjectMapper(YAMLFactory yamlFactory) {
-    return new ObjectMapper(yamlFactory);
-  }
-
-  @Provides
-  @Singleton
   @PluginConfig
   Configuration providePluginConfig() {
     var file = new File(plugin.getDataFolder(), PLUGIN_CONFIG);
@@ -98,5 +83,14 @@ public final class ChiaraModule extends AbstractModule {
     @PluginConfig Configuration configuration
   ) {
     return configuration.getString("default-group");
+  }
+
+  @Provides
+  @Singleton
+  Yaml provideYaml() {
+    var dumperOptions = new DumperOptions();
+    return new Yaml(
+      dumperOptions
+    );
   }
 }
