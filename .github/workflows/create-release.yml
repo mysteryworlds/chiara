@@ -65,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: chiara-bukkit/build/libs/chiara.jar
           asset_name: chiara-${{ github.event.inputs.releaseversion }}.jar
           asset_content_type: application/java-archive
